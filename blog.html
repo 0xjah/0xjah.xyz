@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blog | 0xjah.xyz</title>
+    <link rel="icon" type="image/x-icon" href="/static/img/lain-head.jpg" />
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <style>
+        #end-button-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="site-container">
+        <div class="about-me">
+            <h1 style="display: flex; justify-content: space-between; align-items: center;">
+                0xjah.xyz | Blog
+                <a href="https://classic.systemspace.network/">
+                    <img src="/static/img/kec.png" style="width: 40px;" alt="kec logo" />
+                </a>
+            </h1>
+            <p>A space in the Wired where I vent, log fixes for glitches in life, and leave fragments—just like Lain.
+            </p>
+
+            <h2>Categories</h2>
+            <div class="category-selector">
+                <button type="button" onclick="filterCategory('all')" class="category-btn active">All</button>
+                <button type="button" onclick="filterCategory('tech')" class="category-btn">Tech</button>
+                <button type="button" onclick="filterCategory('religion')" class="category-btn">Religion</button>
+                <button type="button" onclick="filterCategory('anime')" class="category-btn">Anime/Manga</button>
+                <button type="button" onclick="filterCategory('movie')" class="category-btn">Movie</button>
+                <button type="button" onclick="filterCategory('philosophy')" class="category-btn">Philosophy</button>
+            </div>
+
+            <ul id="blog-posts">
+                <li data-category="tech">
+                    <a href="?post=post_ai_is_trash" onclick="loadPost(event, 'post_ai_is_trash')" class="post-link">
+                        Ai is trash unless locally - Jun 07, 2025
+                    </a>
+                </li>
+                <li data-category="anime">
+                    <a href="?post=post_lain" onclick="loadPost(event, 'post_lain')" class="post-link">
+                        Why Serial Experiments Lain is the best anime ever - Jan 27, 2023
+                    </a>
+                </li>
+                <li data-category="movie">
+                    <a href="?post=post_lily_chou_chou" onclick="loadPost(event, 'post_lily_chou_chou')"
+                        class="post-link">
+                        Whispers in the Ether: All About Lily Chou-Chou - Jun 07, 2023
+                    </a>
+                </li>
+                <li data-category="philosophy">
+                    <a href="?post=post_privacy" onclick="loadPost(event, 'post_privacy')" class="post-link">
+                        Why You Should Care About Your Privacy in This Era - Jun 09, 2025
+                    </a>
+                </li>
+            </ul>
+
+            <div id="blog-post-content" style="margin-top: 20px;"></div>
+
+            <div id="end-button-container">
+                <button onclick="clearPost()">End</button>
+            </div>
+        </div>
+
+        <div class="status">
+            <h2>Status</h2>
+            <p>Throughout Heaven and Earth, I Alone am Honored</p>
+
+            <h2>Site navigation</h2>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
+                    <li><a href="/blog" hx-get="/blog.html" hx-target=".site-container" hx-push-url="true">/log/</a>
+                    </li>
+                    <li><a href="https://github.com/0xjah" hx-boost="false">/proj/</a></li>
+                    <li><a href="/misc" hx-get="/misc.html" hx-target=".site-container" hx-push-url="true">/msc/</a>
+                    </li>
+                </ul>
+            </div>
+
+            <h2>Buttons</h2>
+            <p>Random but cool.</p>
+            <div class="cool-sites">
+                <div class="marquee-container">
+                    <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html"
+                        hx-trigger="load">
+                        <p>Loading buttons...</p>
+                    </div>
+                </div>
+            </div>
+
+            <img style="width: 250px;" src="/static/img/TempleOS_logo.jpg" alt="Temple OS Logo" />
+            <br />
+            Use <a href="https://templeos.org" hx-boost="false">Temple OS</a>
+            <br />
+            <p style="margin-top: 40px; font-style: italic; font-size: 14px;">
+                "An idiot admires complexity, a genius admires simplicity"<br />— Terry A Davis
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function filterCategory(category) {
+            const posts = document.querySelectorAll('#blog-posts li');
+            const buttons = document.querySelectorAll('.category-btn');
+
+            posts.forEach(post => {
+                const matches = category === 'all' || post.dataset.category === category;
+                post.style.display = matches ? '' : 'none';
+            });
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.category-btn[onclick*="${category}"]`).classList.add('active');
+        }
+
+        function loadPost(event, postName) {
+            event.preventDefault();
+
+            history.pushState({}, '', `/blog?post=${postName}`);
+
+            htmx.ajax('GET', `/partials/blog/${postName}.html`, {
+                target: '#blog-post-content',
+                swap: 'innerHTML'
+            });
+
+            document.getElementById("end-button-container").style.display = "block";
+        }
+
+        function clearPost() {
+            document.getElementById("blog-post-content").innerHTML = "";
+            document.getElementById("end-button-container").style.display = "none";
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const post = params.get('post');
+
+            if (post) {
+                htmx.ajax('GET', `/partials/blog/${post}.html`, {
+                    target: '#blog-post-content',
+                    swap: 'innerHTML'
+                });
+                document.getElementById("end-button-container").style.display = "block";
+            }
+        });
+
+        window.addEventListener('popstate', () => {
+            const params = new URLSearchParams(window.location.search);
+            const post = params.get('post');
+            if (post) {
+                htmx.ajax('GET', `/partials/blog/${post}.html`, {
+                    target: '#blog-post-content',
+                    swap: 'innerHTML'
+                });
+                document.getElementById("end-button-container").style.display = "block";
+            } else {
+                clearPost();
+            }
+        });
+    </script>
+</body>
+
+</html>

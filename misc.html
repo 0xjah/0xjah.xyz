@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Misc | 0xjah.xyz</title>
+    <link rel="icon" type="image/x-icon" href="static/lain-head.jpg" />
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="static/css/style.css" />
+</head>
+
+<body>
+    <div class="site-container">
+        <div class="about-me">
+            <h1 style="display: flex; justify-content: space-between; align-items: center;">
+                0xjah.xyz | misc
+                <a href="https://classic.systemspace.network/">
+                    <img src="/static/img/kec.png" style="width: 40px;" alt="kec logo" />
+                </a>
+            </h1>
+            <p>My public deployments and writeups</p>
+            <ul>
+                <li>
+                    <a href="#" hx-get="/partials/ui/wip.html" hx-target="#wip-container" hx-swap="innerHTML">
+                        Lain ChatBot (wip)
+                    </a>
+                </li>
+            </ul>
+            <div id="wip-container" style="margin-top: 20px;"></div>
+        </div>
+
+        <div class="status">
+            <h2>Status</h2>
+            <p>Throughout Heaven and Earth, I Alone am Honored</p>
+
+            <h2>Site navigation</h2>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
+                    <li><a href="/blog.html" hx-get="/blog.html" hx-target=".site-container"
+                            hx-push-url="true">/log/</a></li>
+                    <li><a href="https://github.com/0xjah" hx-boost="false">/proj/</a></li>
+                    <li><a href="/misc.html" hx-get="/misc.html" hx-target=".site-container"
+                            hx-push-url="true">/msc/</a></li>
+                </ul>
+            </div>
+            <h2>Buttons</h2>
+            <p>Random but cool.</p>
+            <div class="cool-sites">
+                <div class="marquee-container">
+                    <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html"
+                        hx-trigger="load">
+                        <p>Loading buttons...</p>
+                    </div>
+                </div>
+            </div>
+            <img style="width: 250px;" src="/static/img/TempleOS_logo.jpg" alt="Temple OS Logo" />
+            <br />
+            Use <a href="https://templeos.org" hx-boost="false">Temple OS</a>
+            <br />
+            <a href="">
+                <p class="quote" style="margin-top: 40px; font-style: italic; font-size: 14px;">
+                    “An idiot admires complexity, a genius admires simplicity”<br />— Terry A Davis
+                </p>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

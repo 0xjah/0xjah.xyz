@@ -1,0 +1,295 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+html,
+body {
+    background-color: oklch(10% 0 0);
+    color: oklch(96% 0 0);
+    font-family: 'Press Start 2P', monospace;
+    font-size: small;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    height: 100vh;
+}
+
+.site-container {
+    display: flex;
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px 20px;
+    gap: 40px;
+    box-sizing: border-box;
+}
+
+.about-me {
+    flex: 3;
+}
+
+.status {
+    flex: 1;
+    min-width: 200px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid oklch(20% 0 0);
+    padding-bottom: 5px;
+}
+
+h2 {
+    font-size: 18px;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid oklch(20% 0 0);
+    padding-bottom: 5px;
+}
+
+p,
+li {
+    font-size: 16px;
+}
+
+ul {
+    padding-left: 20px;
+    list-style-type: none;
+}
+
+li {
+    margin-bottom: 8px;
+}
+
+li:hover {
+    color: oklch(80% 0.2 160);
+}
+
+li:before {
+    content: "- ";
+    margin-left: -15px;
+}
+
+a {
+    color: oklch(96% 0 0);
+    text-decoration: none;
+    border-bottom: 1px solid oklch(25% 0 0);
+    transition: border-color 0.2s;
+}
+
+a:hover {
+    color: oklch(75% 0.2 160);
+}
+
+.profile-img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 15px;
+}
+
+.social-links i {
+    width: 20px;
+    margin-right: 5px;
+}
+
+.footer {
+    margin-top: 60px;
+    font-size: 14px;
+    color: oklch(50% 0 0);
+}
+ button {
+    background-color: transparent;
+    border: 1px solid oklch(25% 0 0);
+    color: oklch(96% 0 0);
+    font-family: 'Press Start 2P', monospace;
+    padding: 5px 15px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.2s, color 0.2s;
+    margin-top: 10px;
+}
+ button:hover {
+    background-color: oklch(20% 0 0);
+    color: oklch(80% 0.2 160);
+    border-color: oklch(80% 0.2 160);
+}
+
+
+.cool-sites {
+    margin: 20px 0;
+    position: relative;
+    background-color: oklch(12% 0 0);
+    border: 1px solid oklch(20% 0 0);
+    padding: 10px;
+    height: 33px;
+    overflow: hidden;
+}
+
+.buttons-container {
+    display: flex;
+    position: absolute;
+    white-space: nowrap;
+    animation: marquee 40s linear infinite;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+}
+
+.marquee {
+    display: inline-block;
+    animation: marquee 5s linear infinite;
+}
+
+.quote {
+    margin-top: 40px;
+    font-style: italic;
+    font-size: 14px;
+    border-left: 3px solid;
+    padding-left: 10px;
+    margin-left: 0;
+}
+
+.button-img {
+    height: 31px;
+    margin-right: 10px;
+    border: 1px solid oklch(20% 0 0);
+}
+
+.nav-links {
+    margin: 20px 0;
+}
+
+.nav-links ul {
+    padding-left: 0;
+}
+
+.nav-links li {
+    margin-bottom: 8px;
+}
+
+.nav-links li:before {
+    content: none;
+}
+
+.nav-links a {
+    margin: 0;
+    border-bottom: none;
+    display: inline-block;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+.category-selector {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.category-btn {
+    background-color: transparent;
+    border: 1px solid oklch(25% 0 0);
+    color: oklch(96% 0 0);
+    font-family: 'Press Start 2P', monospace;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.category-btn:hover {
+    background-color: oklch(20% 0 0);
+    color: oklch(80% 0.2 160);
+}
+
+.category-btn.active {
+    background-color: oklch(80% 0.2 160);
+    color: oklch(0% 0 0);
+    border-color: oklch(80% 0.2 160);
+}
+
+.wip-title {
+    font-size: 18px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    color: oklch(50% 0.15 160);
+    text-shadow:
+        0 0 5px oklch(80% 0.3 160),
+        0 0 10px oklch(80% 0.3 160),
+        0 0 15px oklch(35% 0.15 160);
+}
+
+.wip-subtitle {
+    font-style: italic;
+    font-size: 12px;
+    margin-bottom: 15px;
+    color: oklch(70% 0.15 160);
+}
+
+.wip-note {
+    margin-top: 20px;
+    font-size: 10px;
+    color: oklch(60% 0.1 160);
+    text-align: right;
+}
+
+.writeup-fragment {
+    font-family: monospace;
+    border-left: 2px solid oklch(50% 0.15 160);
+    padding-left: 10px;
+    margin: 15px 0;
+    background: oklch(12% 0 0 / 30%);
+}
+
+.writeup-fragment pre {
+    background: oklch(12% 0 0);
+    padding: 8px;
+    overflow-x: auto;
+}
+
+.hex-tag {
+    color: oklch(80% 0.3 160);
+    opacity: 0.7;
+    font-size: 0.9em;
+}
+
+.dialogue {
+    font-style: italic;
+    color: oklch(70% 0 0);
+    border-bottom: 1px dashed oklch(20% 0 0);
+    padding-bottom: 5px;
+}
+
+@media (max-width: 768px) {
+    .site-container {
+        flex-direction: column;
+    }
+
+    .profile-img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .status {
+        width: 100%;
+    }
+}

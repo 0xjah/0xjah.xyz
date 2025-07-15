@@ -1,9 +1,13 @@
-<div class="wip-container">
-    <h2 class="wip-title">Work In Progress</h2>
-    <p class="wip-subtitle">quiet hums of the wired world...</p>
-    <ul class="wip-list">
-        <li data-glitch="Lain ChatBot">Lain ChatBot — whispering in the network, still forming...</li>
-        <li data-glitch="Echoes of Lily">Echoes of Lily — ephemeral melodies & code, coming soon.</li>
-    </ul>
-    <p class="wip-note">last synced: 06.2025</p>
+<div class="wip-minimal">
+  <h2>Work In Progress</h2>
+  <ul>
+    <li>Lain ChatBot — forming in the net</li>
+    <li>Echoes of Lily — code & echoes soon</li>
+  </ul>
+<p class="wip-date" 
+   hx-get="/api/last-updated" 
+   hx-trigger="load" 
+   hx-swap="innerHTML">
+   Loading...
+</p>
 </div>

@@ -78,11 +78,9 @@
             <div class="nav-links">
                 <ul>
                     <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
-                    <li><a href="/blog" hx-get="/blog.html" hx-target=".site-container" hx-push-url="true">/log/</a>
-                    </li>
-                    <li><a href="https://github.com/0xjah" hx-boost="false">/proj/</a></li>
-                    <li><a href="/misc" hx-get="/misc.html" hx-target=".site-container" hx-push-url="true">/msc/</a>
-                    </li>
+                    <li><a href="/pages/blog" hx-get="/pages/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
+                    <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+                    <li><a href="/pages/misc" hx-get="/pages/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
                 </ul>
             </div>
 
@@ -90,7 +88,7 @@
             <p>Random but cool.</p>
             <div class="cool-sites">
                 <div class="marquee-container">
-                    <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html"
+                    <div class="buttons-container" id="buttons-container" hx-get="/static/partials/ui/buttons.html"
                         hx-trigger="load">
                         <p>Loading buttons...</p>
                     </div>
@@ -108,64 +106,66 @@
     </div>
 
     <script>
-        function filterCategory(category) {
-            const posts = document.querySelectorAll('#blog-posts li');
-            const buttons = document.querySelectorAll('.category-btn');
+    function filterCategory(category) {
+        const posts = document.querySelectorAll('#blog-posts li');
+        const buttons = document.querySelectorAll('.category-btn');
 
-            posts.forEach(post => {
-                const matches = category === 'all' || post.dataset.category === category;
-                post.style.display = matches ? '' : 'none';
-            });
+        posts.forEach(post => {
+            const matches = category === 'all' || post.dataset.category === category;
+            post.style.display = matches ? '' : 'none';
+        });
 
-            buttons.forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.category-btn[onclick*="${category}"]`).classList.add('active');
-        }
+        buttons.forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.category-btn[onclick*="${category}"]`).classList.add('active');
+    }
 
-        function loadPost(event, postName) {
-            event.preventDefault();
+    function loadPost(event, postName) {
+        event.preventDefault();
 
-            history.pushState({}, '', `/blog?post=${postName}`);
+        history.pushState({}, '', `/pages/blog?post=${postName}`);
 
-            htmx.ajax('GET', `/partials/blog/${postName}.html`, {
+        htmx.ajax('GET', `/static/partials/blog/${postName}.html`, {
+            target: '#blog-post-content',
+            swap: 'innerHTML'
+        });
+
+        document.getElementById("end-button-container").style.display = "block";
+    }
+
+    function clearPost() {
+        document.getElementById("blog-post-content").innerHTML = "";
+        document.getElementById("end-button-container").style.display = "none";
+        history.pushState({}, '', '/pages/blog');  // reset URL path to /pages/blog
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const post = params.get('post');
+
+        if (post) {
+            htmx.ajax('GET', `/static/partials/blog/${post}.html`, {
                 target: '#blog-post-content',
                 swap: 'innerHTML'
             });
-
             document.getElementById("end-button-container").style.display = "block";
         }
+    });
 
-        function clearPost() {
-            document.getElementById("blog-post-content").innerHTML = "";
-            document.getElementById("end-button-container").style.display = "none";
+    window.addEventListener('popstate', () => {
+        const params = new URLSearchParams(window.location.search);
+        const post = params.get('post');
+        if (post) {
+            htmx.ajax('GET', `/static/partials/blog/${post}.html`, {
+                target: '#blog-post-content',
+                swap: 'innerHTML'
+            });
+            document.getElementById("end-button-container").style.display = "block";
+        } else {
+            clearPost();
         }
+    });
+</script>
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            const post = params.get('post');
-
-            if (post) {
-                htmx.ajax('GET', `/partials/blog/${post}.html`, {
-                    target: '#blog-post-content',
-                    swap: 'innerHTML'
-                });
-                document.getElementById("end-button-container").style.display = "block";
-            }
-        });
-
-        window.addEventListener('popstate', () => {
-            const params = new URLSearchParams(window.location.search);
-            const post = params.get('post');
-            if (post) {
-                htmx.ajax('GET', `/partials/blog/${post}.html`, {
-                    target: '#blog-post-content',
-                    swap: 'innerHTML'
-                });
-                document.getElementById("end-button-container").style.display = "block";
-            } else {
-                clearPost();
-            }
-        });
-    </script>
 </body>
 
 </html>

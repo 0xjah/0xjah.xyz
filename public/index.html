@@ -109,19 +109,20 @@
 
       <h2>Site navigation</h2>
       <div class="nav-links">
-        <ul>
-          <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
-          <li><a href="/pages/blog" hx-get="/pages/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
-          <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
-          <li><a href="/pages/misc" hx-get="/pages/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
-        </ul>
+        
+<ul>
+  <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
+  <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
+  <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+  <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
+</ul>
       </div>
 
       <h2>Buttons</h2>
       <p>Random but cool.</p>
       <div class="cool-sites">
         <div class="marquee-container">
-          <div class="buttons-container" id="buttons-container" hx-get="/static/partials/ui/buttons.html" hx-trigger="load">
+          <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html" hx-trigger="load">
             <p>Loading buttons...</p>
           </div>
         </div>

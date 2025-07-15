@@ -14,15 +14,12 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	// Serve static files (CSS, JS, images) under /static/
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("public/static"))))
 
-	// Serve partials explicitly
 	mux.HandleFunc("/partials/ui/buttons.html", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "public/partials/ui/buttons.html")
 	})
 
-	// Serve main pages with pretty URLs
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/":

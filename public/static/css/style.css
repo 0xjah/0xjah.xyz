@@ -1,11 +1,20 @@
 /* font import */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/JetBrainsMono.css');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+:root {
+    --accent-color-h: 340; /* Default hue if JavaScript fails */
+    --accent-color-c: 0.2; /* Default chroma if JavaScript fails */
+}
 
 html,
 body {
     background-color: oklch(10% 0 0);
     color: oklch(96% 0 0);
-    font-family: 'Press Start 2P', monospace;
+    /* font-family: 'Press Start 2P', monospace; */
+/* font-family: 'JetBrains Mono', monospace; */
+font-family: 'Fira Code', monospace;
+
     font-size: small;
     margin: 0;
     padding: 0;
@@ -62,7 +71,7 @@ li {
 }
 
 li:hover {
-    color: oklch(90% 0.2 340);
+    color: oklch(90% var(--accent-color-c) var(--accent-color-h));
 }
 
 li:before {
@@ -78,7 +87,7 @@ a {
 }
 
 a:hover {
-    color: oklch(85% 0.2 340);
+    color: oklch(85% var(--accent-color-c) var(--accent-color-h));
 }
 
 .profile-img {
@@ -116,8 +125,8 @@ button {
 
 button:hover {
     background-color: oklch(20% 0 0);
-    color: oklch(90% 0.2 340);
-    border-color: oklch(90% 0.2 340);
+    color: oklch(90% var(--accent-color-c) var(--accent-color-h));
+    border-color: oklch(90% var(--accent-color-c) var(--accent-color-h));
 }
 
 .cool-sites {
@@ -218,27 +227,27 @@ button:hover {
 
 .category-btn:hover {
     background-color: oklch(20% 0 0);
-    color: oklch(90% 0.2 340);
+    color: oklch(90% var(--accent-color-c) var(--accent-color-h));
 }
 
 .category-btn.active {
-    background-color: oklch(90% 0.2 340);
+    background-color: oklch(90% var(--accent-color-c) var(--accent-color-h));
     color: oklch(0% 0 0);
-    border-color: oklch(90% 0.2 340);
+    border-color: oklch(90% var(--accent-color-c) var(--accent-color-h));
 }
 
 .wip-minimal {
-  border-left: 2px solid oklch(70% 0.15 340);
+  border-left: 2px solid oklch(70% calc(var(--accent-color-c) * 0.75) var(--accent-color-h));
   padding-left: 15px;
   margin: 40px 0;
   font-size: 12px;
-  color: oklch(85% 0.1 340);
+  color: oklch(85% calc(var(--accent-color-c) * 0.5) var(--accent-color-h));
 }
 
 .wip-minimal h2 {
   font-size: 14px;
   margin-bottom: 10px;
-  color: oklch(90% 0.2 340);
+  color: oklch(90% var(--accent-color-c) var(--accent-color-h));
   text-transform: uppercase;
 }
 
@@ -262,7 +271,7 @@ button:hover {
 
 .writeup-fragment {
     font-family: monospace;
-    border-left: 2px solid oklch(70% 0.15 340);
+    border-left: 2px solid oklch(70% calc(var(--accent-color-c) * 0.75) var(--accent-color-h));
     padding-left: 10px;
     margin: 15px 0;
     background: oklch(12% 0 0 / 30%);
@@ -275,7 +284,7 @@ button:hover {
 }
 
 .hex-tag {
-    color: oklch(90% 0.3 340);
+    color: oklch(90% calc(var(--accent-color-c) * 1.5) var(--accent-color-h));
     opacity: 0.7;
     font-size: 0.9em;
 }

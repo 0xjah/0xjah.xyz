@@ -7,21 +7,73 @@
   <title>Home | 0xjah.xyz</title>
   <link rel="icon" type="image/x-icon" href="/static/img/lain-head.jpg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
   <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
   <script defer>
-    document.addEventListener('DOMContentLoaded', function () {
+    // Check if this is the first visit
+    window.handleSplash = function() {
+      // If splash was already shown this session, don't show it again
+      if (sessionStorage.getItem('splashShown')) {
+        const splashDiv = document.getElementById('splash');
+        if (splashDiv) {
+          splashDiv.remove();
+        }
+        return;
+      }
+
+      const splash = document.querySelector('.splash-screen');
+      if (splash) {
+        // Reset splash state
+        splash.classList.remove('fade-out');
+        splash.style.display = '';
+        
+        setTimeout(function() {
+          splash.classList.add('fade-out');
+          setTimeout(() => {
+            splash.style.display = 'none';
+            // Mark splash as shown for this session
+            sessionStorage.setItem('splashShown', 'true');
+          }, 500);
+        }, 2000);
+      }
+    }
+
+    // Only handle splash on first page load
+    document.addEventListener('htmx:afterSettle', function(evt) {
+      if (evt.target.id === 'splash' && !sessionStorage.getItem('splashShown')) {
+        handleSplash();
+      } else if (evt.target.id === 'splash') {
+        // Remove splash if already shown
+        const splashDiv = document.getElementById('splash');
+        if (splashDiv) {
+          splashDiv.remove();
+        }
+      }
+    });
+
+    function updateEmail() {
       const user = ["0xjah"];
       const domain = ["waifu", "club"];
       const emailElement = document.getElementById('email');
       if (emailElement) {
         emailElement.innerHTML = `<a href="mailto:${user.join(".")}@${domain.join(".")}">${user.join("[dot]")}[at]${domain.join("[dot]")}</a>`;
       }
+    }
+
+    document.addEventListener('DOMContentLoaded', updateEmail);
+    document.addEventListener('htmx:afterSettle', updateEmail);
+
+    // Handle status reloading
+    document.addEventListener('htmx:afterSettle', function(evt) {
+      if (evt.target.id === 'status-header' || evt.target.querySelector('#status-header')) {
+        htmx.trigger('#status-header', 'load');
+      }
     });
   </script>
 </head>
 
 <body>
+  <div id="splash" hx-get="/partials/ui/splash.html" hx-trigger="load"></div>
   <div class="site-container">
     <main class="about-me">
       <h1 style="display: flex; justify-content: space-between; align-items: center;">
@@ -104,8 +156,11 @@
     </main>
 
     <aside class="status">
-      <h2>Status</h2>
-      <p class="quote">[ WHO ARE YOU . . . ] » 𝗜 𝗮𝗺 𝗟𝗮𝗶𝗻.</p>
+      <div id="status-header" 
+           hx-get="/partials/ui/status_header.html" 
+           hx-trigger="load"
+           hx-swap="innerHTML">
+      </div>
 
       <h2>Site navigation</h2>
       <div class="nav-links">

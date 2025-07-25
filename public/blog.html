@@ -41,23 +41,38 @@
 
             <ul id="blog-posts">
                 <li data-category="tech">
-                    <a href="?post=post_ai_is_trash" onclick="loadPost(event, 'post_ai_is_trash')" class="post-link">
+                    <a href="/blog?post=post_ai_is_trash" 
+                       hx-get="/partials/blog/post_ai_is_trash.html"
+                       hx-target="#blog-post-content"
+                       hx-push-url="true"
+                       class="post-link">
                         Ai is trash unless locally - Jun 07, 2025
                     </a>
                 </li>
                 <li data-category="anime">
-                    <a href="?post=post_lain" onclick="loadPost(event, 'post_lain')" class="post-link">
+                    <a href="/blog?post=post_lain"
+                       hx-get="/partials/blog/post_lain.html"
+                       hx-target="#blog-post-content"
+                       hx-push-url="true"
+                       class="post-link">
                         Why Serial Experiments Lain is the best anime ever - Jan 27, 2023
                     </a>
                 </li>
                 <li data-category="movie">
-                    <a href="?post=post_lily_chou_chou" onclick="loadPost(event, 'post_lily_chou_chou')"
-                        class="post-link">
+                    <a href="/blog?post=post_lily_chou_chou"
+                       hx-get="/partials/blog/post_lily_chou_chou.html"
+                       hx-target="#blog-post-content"
+                       hx-push-url="true"
+                       class="post-link">
                         Whispers in the Ether: All About Lily Chou-Chou - Jun 07, 2023
                     </a>
                 </li>
                 <li data-category="philosophy">
-                    <a href="?post=post_privacy" onclick="loadPost(event, 'post_privacy')" class="post-link">
+                    <a href="/blog?post=post_privacy"
+                       hx-get="/partials/blog/post_privacy.html"
+                       hx-target="#blog-post-content"
+                       hx-push-url="true"
+                       class="post-link">
                         Why You Should Care About Your Privacy in This Era - Jun 09, 2025
                     </a>
                 </li>
@@ -66,7 +81,9 @@
             <div id="blog-post-content" style="margin-top: 20px;"></div>
 
             <div id="end-button-container">
-                <button onclick="clearPost()">End</button>
+                <button hx-get="/blog"
+                        hx-target=".site-container"
+                        hx-push-url="true">End</button>
             </div>
         </div>
 
@@ -78,9 +95,9 @@
             <div class="nav-links">
                 <ul>
                     <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
-                    <li><a href="/pages/blog" hx-get="/pages/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
+                    <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
                     <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
-                    <li><a href="/pages/misc" hx-get="/pages/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
+                    <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
                 </ul>
             </div>
 
@@ -88,7 +105,7 @@
             <p>Random but cool.</p>
             <div class="cool-sites">
                 <div class="marquee-container">
-                    <div class="buttons-container" id="buttons-container" hx-get="/static/partials/ui/buttons.html"
+                    <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html"
                         hx-trigger="load">
                         <p>Loading buttons...</p>
                     </div>
@@ -106,65 +123,48 @@
     </div>
 
     <script>
-    function filterCategory(category) {
-        const posts = document.querySelectorAll('#blog-posts li');
-        const buttons = document.querySelectorAll('.category-btn');
+        // Category filter function
+        function filterCategory(category) {
+            const posts = document.querySelectorAll('#blog-posts li');
+            const buttons = document.querySelectorAll('.category-btn');
 
-        posts.forEach(post => {
-            const matches = category === 'all' || post.dataset.category === category;
-            post.style.display = matches ? '' : 'none';
+            posts.forEach(post => {
+                const matches = category === 'all' || post.dataset.category === category;
+                post.style.display = matches ? '' : 'none';
+            });
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.category-btn[onclick*="${category}"]`).classList.add('active');
+        }
+
+        // HTMX event handlers
+        htmx.on("htmx:afterSwap", (e) => {
+            if (e.detail.target.id === "blog-post-content") {
+                document.getElementById("end-button-container").style.display = "block";
+            }
         });
 
-        buttons.forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`.category-btn[onclick*="${category}"]`).classList.add('active');
-    }
-
-    function loadPost(event, postName) {
-        event.preventDefault();
-
-        history.pushState({}, '', `/pages/blog?post=${postName}`);
-
-        htmx.ajax('GET', `/static/partials/blog/${postName}.html`, {
-            target: '#blog-post-content',
-            swap: 'innerHTML'
+        // Load post on page load if URL has post parameter
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const post = params.get('post');
+            if (post) {
+                htmx.ajax('GET', `/partials/blog/${post}.html`, {
+                    target: '#blog-post-content',
+                    swap: 'innerHTML'
+                });
+                document.getElementById("end-button-container").style.display = "block";
+            }
         });
 
-        document.getElementById("end-button-container").style.display = "block";
-    }
-
-    function clearPost() {
-        document.getElementById("blog-post-content").innerHTML = "";
-        document.getElementById("end-button-container").style.display = "none";
-        history.pushState({}, '', '/pages/blog');  // reset URL path to /pages/blog
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const post = params.get('post');
-
-        if (post) {
-            htmx.ajax('GET', `/static/partials/blog/${post}.html`, {
-                target: '#blog-post-content',
-                swap: 'innerHTML'
-            });
-            document.getElementById("end-button-container").style.display = "block";
-        }
-    });
-
-    window.addEventListener('popstate', () => {
-        const params = new URLSearchParams(window.location.search);
-        const post = params.get('post');
-        if (post) {
-            htmx.ajax('GET', `/static/partials/blog/${post}.html`, {
-                target: '#blog-post-content',
-                swap: 'innerHTML'
-            });
-            document.getElementById("end-button-container").style.display = "block";
-        } else {
-            clearPost();
-        }
-    });
-</script>
+        // Handle browser back/forward
+        htmx.on("htmx:beforeTransition", (e) => {
+            if (!e.detail.path.includes('?post=')) {
+                document.getElementById("blog-post-content").innerHTML = "";
+                document.getElementById("end-button-container").style.display = "none";
+            }
+        });
+    </script>
 
 </body>
 

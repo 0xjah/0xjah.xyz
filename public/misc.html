@@ -14,13 +14,11 @@
     <div class="site-container">
         <main class="about-me">
             <h1 style="display: flex; justify-content: space-between; align-items: center;">
-                <a style="border-bottom: none;" href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">0xjah.me</a>
-                <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer">
-                    <img src="/static/img/kec.png" style="width: 40px;" alt="Kec Group Logo" />
+                0xjah.me | Misc
+                <a href="https://classic.systemspace.network/">
+                    <img src="/static/img/kec.png" style="width: 40px;" alt="kec logo" />
                 </a>
             </h1>
-
-            <h2>Miscellaneous</h2>
             <p>My public deployments and writeups</p>
             
             <div class="misc-content">
@@ -35,7 +33,7 @@
             </div>
         </main>
 
-        <aside class="status">
+                <aside class="status">
             <div id="status-header" hx-get="/partials/ui/status_header.html" hx-trigger="load"></div>
 
             <h2>Site navigation</h2>
@@ -47,6 +45,7 @@
                     <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
                 </ul>
             </div>
+            
             <h2>Buttons</h2>
             <p>Random but cool.</p>
             <div class="cool-sites">
@@ -57,16 +56,13 @@
                     </div>
                 </div>
             </div>
-            <img style="width: 250px;" src="/static/img/TempleOS_logo.jpg" alt="Temple OS Logo" />
-            <br />
-            Use <a href="https://templeos.org" hx-boost="false">Temple OS</a>
-            <br />
-            <a href="">
-                <p class="quote" style="margin-top: 40px; font-style: italic; font-size: 14px;">
-                    “An idiot admires complexity, a genius admires simplicity”<br />— Terry A Davis
-                </p>
-            </a>
-        </div>
+            
+            <img style="width: 250px;" src="/static/img/TempleOS_logo.jpg" alt="TempleOS Logo" /><br />
+            Use <a href="https://templeos.org" target="_blank" rel="noopener noreferrer">Temple OS</a><br />
+            <p style="margin-top: 40px; font-style: italic; font-size: 14px;">
+                "An idiot admires complexity, a genius admires simplicity"<br />— Terry A Davis
+            </p>
+        </aside>
     </div>
 </body>
 

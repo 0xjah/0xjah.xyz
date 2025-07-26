@@ -4,52 +4,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Home | 0xjah.me</title>
+  <title>0xjah.me | HI </title>
+  <meta name="description" content="Hi, I'm 0xjah, a 20 year old self-taught programmer and pentester with an interest in C and electronics. Welcome to my corner of the Wired." />
+  <meta name="keywords" content="0xjah, programmer, pentester, cybersecurity, C programming, electronics, portfolio" />
+  <meta name="author" content="0xjah" />
+  <meta name="robots" content="index, follow" />
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="0xjah.me | Programmer & Pentester" />
+  <meta property="og:description" content="Self-taught programmer and pentester interested in C and electronics. My personal portfolio and blog." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://0xjah.me" />
+  <meta property="og:image" content="https://github.com/0xjah.png" />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="0xjah.me | Programmer & Pentester" />
+  <meta name="twitter:description" content="Self-taught programmer and pentester interested in C and electronics." />
+  <meta name="twitter:image" content="https://github.com/0xjah.png" />
+  <meta name="twitter:creator" content="@0x_jah" />
+  
+  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="/static/img/lain-head.jpg" />
+  <link rel="apple-touch-icon" href="/static/img/lain-head.jpg" />
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/static/css/style.css" as="style" />
+  <link rel="preload" href="https://unpkg.com/htmx.org@1.9.10" as="script" />
+  
+  <!-- External Resources -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
   <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
   <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
   <script defer>
-    // Check if this is the first visit
-    window.handleSplash = function() {
-      // If splash was already shown this session, don't show it again
-      if (sessionStorage.getItem('splashShown')) {
-        const splashDiv = document.getElementById('splash');
-        if (splashDiv) {
-          splashDiv.remove();
-        }
-        return;
-      }
-
-      const splash = document.querySelector('.splash-screen');
-      if (splash) {
-        // Reset splash state
-        splash.classList.remove('fade-out');
-        splash.style.display = '';
-        
-        setTimeout(function() {
-          splash.classList.add('fade-out');
-          setTimeout(() => {
-            splash.style.display = 'none';
-            // Mark splash as shown for this session
-            sessionStorage.setItem('splashShown', 'true');
-          }, 500);
-        }, 2000);
-      }
-    }
-
-    // Only handle splash on first page load
-    document.addEventListener('htmx:afterSettle', function(evt) {
-      if (evt.target.id === 'splash' && !sessionStorage.getItem('splashShown')) {
-        handleSplash();
-      } else if (evt.target.id === 'splash') {
-        // Remove splash if already shown
-        const splashDiv = document.getElementById('splash');
-        if (splashDiv) {
-          splashDiv.remove();
-        }
-      }
-    });
+    // Reset function for testing
+    window.resetSplash = () => {
+      sessionStorage.removeItem('splashShown');
+      location.reload();
+    };
 
     function updateEmail() {
       const user = ["0xjah"];
@@ -60,7 +52,12 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', updateEmail);
+    // Initialize splash screen and other features
+    document.addEventListener('DOMContentLoaded', function() {
+      new SplashScreen();
+      updateEmail();
+    });
+
     document.addEventListener('htmx:afterSettle', updateEmail);
 
     // Handle status reloading
@@ -73,7 +70,20 @@
 </head>
 
 <body>
-  <div id="splash" hx-get="/partials/ui/splash.html" hx-trigger="load"></div>
+  <!-- HTMX-based splash screen - only loads if not shown before -->
+  <script>
+    if (!sessionStorage.getItem('splashShown')) {
+      document.write(`
+        <div id="splash-container" 
+             hx-get="/splash" 
+             hx-trigger="load"
+             hx-swap="innerHTML">
+        </div>
+      `);
+      sessionStorage.setItem('splashShown', 'true');
+    }
+  </script>
+  
   <div class="site-container">
     <main class="about-me">
       <h1 style="display: flex; justify-content: space-between; align-items: center;">

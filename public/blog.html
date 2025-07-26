@@ -11,8 +11,37 @@
     <style>
         #end-button-container {
             display: none;
-            margin-top: 20px;
+            margin-top: 30px;
             text-align: center;
+        }
+        
+        .end-btn {
+            background: transparent;
+            color: oklch(var(--accent-l, 70%) var(--accent-c) var(--accent-h));
+            border: 1px solid oklch(var(--accent-l, 70%) var(--accent-c) var(--accent-h));
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .end-btn:hover {
+            background: oklch(var(--accent-l, 70%) var(--accent-c) var(--accent-h));
+            color: oklch(10% 0 0);
+        }
+        
+        .category-btn {
+            font-family: 'Fira Code', monospace !important;
+        }
+        
+        /* Ensure the button is hidden initially */
+        body #end-button-container {
+            display: none !important;
+        }
+        
+        body #end-button-container.show {
+            display: block !important;
         }
     </style>
 </head>
@@ -81,9 +110,9 @@
             <div id="blog-post-content" style="margin-top: 20px;"></div>
 
             <div id="end-button-container">
-                <button hx-get="/blog"
-                        hx-target=".site-container"
-                        hx-push-url="true">End</button>
+                <button class="end-btn" onclick="handleBackToTop()">
+                    ↑ Back to top
+                </button>
             </div>
         </div>
 
@@ -123,45 +152,117 @@
     </div>
 
     <script>
+        // Utility functions
+        function handleBackToTop() {
+            console.log('Back to top clicked'); // Debug log
+            
+            // Try multiple scroll methods for better compatibility
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+            
+            // Also try the smooth scroll method
+            if ('scrollBehavior' in document.documentElement.style) {
+                window.scrollTo({ 
+                    top: 0, 
+                    behavior: 'smooth' 
+                });
+            }
+            
+            // Clear post content after scroll starts
+            setTimeout(() => {
+                document.getElementById("blog-post-content").innerHTML = "";
+                
+                // Hide the button
+                const endBtn = document.getElementById("end-button-container");
+                endBtn.classList.remove('show');
+                
+                // Update URL to remove post parameter
+                const url = new URL(window.location);
+                url.searchParams.delete('post');
+                window.history.pushState({}, '', url);
+            }, 100);
+        }
+        
+        function showEndButton() {
+            const endBtn = document.getElementById("end-button-container");
+            endBtn.classList.add('show');
+        }
+        
+        function hideEndButton() {
+            const endBtn = document.getElementById("end-button-container");
+            endBtn.classList.remove('show');
+        }
+
         // Category filter function
         function filterCategory(category) {
             const posts = document.querySelectorAll('#blog-posts li');
             const buttons = document.querySelectorAll('.category-btn');
 
+            // Filter posts
             posts.forEach(post => {
                 const matches = category === 'all' || post.dataset.category === category;
                 post.style.display = matches ? '' : 'none';
             });
 
+            // Update active button
             buttons.forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.category-btn[onclick*="${category}"]`).classList.add('active');
+            event.target.classList.add('active');
         }
 
         // HTMX event handlers
         htmx.on("htmx:afterSwap", (e) => {
             if (e.detail.target.id === "blog-post-content") {
-                document.getElementById("end-button-container").style.display = "block";
+                showEndButton();
+                // Smooth scroll to the loaded content
+                setTimeout(() => {
+                    document.getElementById("blog-post-content").scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 100);
             }
         });
 
-        // Load post on page load if URL has post parameter
+        // Initialize page state
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const post = params.get('post');
+            
+            // Ensure button is hidden initially
+            hideEndButton();
+            
             if (post) {
                 htmx.ajax('GET', `/partials/blog/${post}.html`, {
                     target: '#blog-post-content',
                     swap: 'innerHTML'
+                }).then(() => {
+                    showEndButton();
                 });
-                document.getElementById("end-button-container").style.display = "block";
             }
         });
 
-        // Handle browser back/forward
-        htmx.on("htmx:beforeTransition", (e) => {
-            if (!e.detail.path.includes('?post=')) {
+        // Handle browser back/forward navigation
+        window.addEventListener('popstate', (e) => {
+            const params = new URLSearchParams(window.location.search);
+            const post = params.get('post');
+            
+            if (!post) {
                 document.getElementById("blog-post-content").innerHTML = "";
-                document.getElementById("end-button-container").style.display = "none";
+                hideEndButton();
+            }
+        });
+
+        // Handle HTMX navigation - hide button before loading new content
+        htmx.on("htmx:beforeRequest", (e) => {
+            if (e.detail.target.id === "blog-post-content") {
+                hideEndButton();
+            }
+        });
+        
+        // Handle case where HTMX request fails
+        htmx.on("htmx:responseError", (e) => {
+            if (e.detail.target.id === "blog-post-content") {
+                hideEndButton();
             }
         });
     </script>

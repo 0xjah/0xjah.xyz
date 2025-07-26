@@ -1,4 +1,4 @@
-# 0xjah.xyz
+# 0xjah.me
 
 Hello there!
 

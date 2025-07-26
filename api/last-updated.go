@@ -18,7 +18,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "text/plain")
 
-	url := "https://api.github.com/repos/0xjah/0xjah.xyz"
+	url := "https://api.github.com/repos/0xjah/0xjah.me"
 	req, _ := http.NewRequest("GET", url, nil)
 
 	if githubToken != "" {

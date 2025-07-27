@@ -10,29 +10,45 @@
   <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
   <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
   <script defer>
-    // Per-tab splash handling using sessionStorage
-    let splashShown = sessionStorage.getItem('splashShown') === 'true';
-
-    function handleSplash() {
-      const splashDiv = document.getElementById('splash');
-      const splashScreen = document.querySelector('.splash-screen');
+    // Simple splash manager
+    window.splashManager = {
+      shown: sessionStorage.getItem('splashShown') === 'true',
       
-      if (!splashScreen || !splashDiv) return;
-
-      if (splashShown) {
-        splashDiv.style.display = 'none';
-        return;
-      }
-
-      // Show splash and auto-hide after 3 seconds
-      setTimeout(() => {
+      show: function(splashScreen) {
+        if (!splashScreen || this.shown) return;
+        
+        document.getElementById('splash').style.display = 'block';
+        
+        // Smooth fade-in
+        requestAnimationFrame(() => {
+          splashScreen.classList.add('fade-in');
+        });
+        
+        // Auto-hide after 2.5 seconds
+        setTimeout(() => this.hide(splashScreen), 2500);
+      },
+      
+      hide: function(splashScreen) {
+        if (!splashScreen) return;
+        
         splashScreen.classList.add('fade-out');
+        
         setTimeout(() => {
-          splashDiv.style.display = 'none';
+          document.getElementById('splash').style.display = 'none';
+          this.shown = true;
           sessionStorage.setItem('splashShown', 'true');
-        }, 500);
-      }, 3000);
-    }
+        }, 400);
+      },
+      
+      init: function() {
+        const splashDiv = document.getElementById('splash');
+        if (!splashDiv || this.shown) {
+          if (splashDiv) splashDiv.style.display = 'none';
+          return;
+        }
+        htmx.trigger(splashDiv, 'load');
+      }
+    };
 
     // Initialize email
     function updateEmail() {
@@ -43,10 +59,30 @@
     }
 
     // Event listeners
-    document.addEventListener('DOMContentLoaded', updateEmail);
+    document.addEventListener('DOMContentLoaded', function() {
+      updateEmail();
+      splashManager.init();
+    });
+    
+    // Prevent navigation to current page
+    document.addEventListener('htmx:beforeRequest', function(evt) {
+      // Check if trying to navigate to current page
+      if (evt.detail.requestConfig.verb === 'get') {
+        const currentPath = window.location.pathname;
+        const targetPath = evt.detail.requestConfig.path;
+        
+        // If navigating to the same page, prevent the request
+        if (currentPath === targetPath || (currentPath === '/' && targetPath === '/')) {
+          evt.preventDefault();
+        }
+      }
+    });
+    
     document.addEventListener('htmx:afterSettle', function(evt) {
-      if (evt.target.id === 'splash') {
-        handleSplash();
+      // Only show splash on initial load, not on navigation
+      if (evt.target.id === 'splash' && !splashManager.shown) {
+        const splashScreen = document.querySelector('.splash-screen');
+        if (splashScreen) splashManager.show(splashScreen);
       }
       updateEmail();
     });
@@ -54,7 +90,7 @@
 </head>
 
 <body>
-  <div id="splash" hx-get="/partials/ui/splash.html" hx-trigger="load once"></div>
+  <div id="splash" hx-get="/partials/ui/splash.html" hx-trigger="load" hx-swap="innerHTML" style="display: none;"></div>
   <div class="site-container">
     <main class="about-me">
       <h1 style="display: flex; justify-content: space-between; align-items: center;">

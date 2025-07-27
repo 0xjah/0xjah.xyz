@@ -1,9 +1,4 @@
 <style>
-  :root {
-    --accent-color-h: 225;
-    --accent-color-c: 0.045;
-  }
-  
   .splash-screen {
     position: fixed;
     top: 0;
@@ -16,126 +11,88 @@
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    transition: opacity 0.5s;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
     font-family: 'Fira Code', monospace;
   }
+  
+  .splash-screen.fade-in {
+    opacity: 1;
+  }
+  
   .splash-screen.fade-out {
     opacity: 0;
     pointer-events: none;
   }
+  
   .splash-text {
     color: oklch(96% 0 0);
     font-size: 24px;
     text-align: center;
-    margin: 20px;
-    opacity: 0;
+    margin: 10px;
     font-family: 'Fira Code', monospace;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease-out;
   }
+  
+  .splash-screen.fade-in .splash-text {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
   .splash-text:first-child {
-    animation: typewriter 1s steps(20) forwards;
-    color: oklch(90% var(--accent-color-c) var(--accent-color-h));
+    color: oklch(90% 0.045 225);
     font-weight: bold;
+    transition-delay: 0.1s;
   }
+  
   .splash-text:last-child {
-    animation: typewriter 1s steps(20) 0.5s forwards;
     font-size: 16px;
-    color: oklch(85% calc(var(--accent-color-c) * 0.5) var(--accent-color-h));
-  }
-  @keyframes typewriter {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    color: oklch(85% 0.022 225);
+    transition-delay: 0.2s;
   }
 </style>
 
 <div id="splash-screen" class="splash-screen">
   <div class="splash-text">0XJAH.ME</div>
-  <div id="current-date" class="splash-text">LOADING TIME...</div>
+  <div id="current-time" class="splash-text">ENTERING THE WIRED AT...</div>
 </div>
 
 <script>
-window.splashManager = window.splashManager || {
-  updateDateTime: function() {
-    const date = new Date();
-    const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-    const dayName = days[date.getDay()];
-    
-    const formattedDate = date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: '2-digit', 
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    }).replace(/\//g, '.').replace(',', '');
-    
-    return `${dayName} / ${formattedDate}`;
-  },
-
-  timeInterval: null,
-
-  cleanup: function() {
-    if (this.timeInterval) {
-      clearInterval(this.timeInterval);
-      this.timeInterval = null;
+// Initialize time display immediately
+(function() {
+  function updateTime() {
+    const timeElement = document.getElementById('current-time');
+    if (timeElement) {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('en-US', { 
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      timeElement.textContent = `ENTERING THE WIRED AT ${timeString}`;
     }
-  },
-
-  startClock: function() {
-    const dateElement = document.getElementById('current-date');
-    if (!dateElement) return;
-
-    const updateTime = () => {
-      if (dateElement && document.body.contains(dateElement)) {
-        dateElement.textContent = this.updateDateTime();
-      } else {
-        this.cleanup();
-      }
-    };
-
-    this.cleanup(); // Clear any existing interval
-    updateTime(); // Update immediately
-    this.timeInterval = setInterval(updateTime, 1000);
-  },
-
-  initializeSplash: function() {
-    const splash = document.getElementById('splash-screen');
-    if (!splash) return;
-
-    const dateElement = document.getElementById('current-date');
-    if (!dateElement) return;
-
-    // Start the clock after a brief delay
-    setTimeout(() => {
-      this.startClock();
-    }, 500);
   }
-};
 
-// Initialize on partial load
-document.addEventListener('htmx:afterSwap', function(evt) {
-  if (evt.detail.target.querySelector('#splash-screen')) {
-    window.splashManager.initializeSplash();
-  }
-});
-
-// Initialize immediately if we're on the first page load
-window.splashManager.initializeSplash();
-
-// Cleanup on navigation
-document.addEventListener('htmx:beforeCleanupElement', function(evt) {
-  if (evt.target.matches('.splash-screen')) {
-    window.splashManager.cleanup();
-  }
-});
-</script>
-
-<script>
-  // Cleanup when the splash is removed from the DOM
-  document.addEventListener('htmx:beforeCleanupElement', function(evt) {
-    if (evt.target.matches('.splash-screen')) {
-      evt.target.classList.remove('fade-out');
-      evt.target.style.display = '';
+  // Update time immediately
+  updateTime();
+  
+  // Start interval for updates
+  const timeInterval = setInterval(updateTime, 1000);
+  
+  // Clean up interval after 3 seconds
+  setTimeout(() => {
+    clearInterval(timeInterval);
+  }, 3000);
+  
+  // Fade in after small delay
+  setTimeout(() => {
+    const splashScreen = document.getElementById('splash-screen');
+    if (splashScreen) {
+      splashScreen.classList.add('fade-in');
     }
-  });
+  }, 100);
+})();
 </script>

@@ -196,6 +196,20 @@
             }
         });
 
+        // Prevent navigation to current page
+        document.addEventListener('htmx:beforeRequest', function(evt) {
+            // Check if trying to navigate to current page
+            if (evt.detail.requestConfig.verb === 'get') {
+                const currentPath = window.location.pathname;
+                const targetPath = evt.detail.requestConfig.path;
+                
+                // If navigating to the same page, prevent the request
+                if (currentPath === targetPath) {
+                    evt.preventDefault();
+                }
+            }
+        });
+
         // Handle browser back/forward navigation
         htmx.on("htmx:beforeTransition", (e) => {
             if (!e.detail.path.includes('?post=')) {

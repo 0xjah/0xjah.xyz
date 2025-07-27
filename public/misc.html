@@ -10,6 +10,30 @@
     <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
     <script defer>
+        // Mobile navigation toggle
+        function toggleMobileNav() {
+            const nav = document.getElementById('mobile-nav');
+            if (nav) {
+                nav.classList.toggle('active');
+            }
+        }
+
+        // Close mobile nav when clicking outside
+        function closeMobileNavOnOutsideClick(event) {
+            const nav = document.getElementById('mobile-nav');
+            const trigger = document.querySelector('.kec-nav-trigger');
+            
+            if (nav && trigger && !nav.contains(event.target) && !trigger.contains(event.target)) {
+                nav.classList.remove('active');
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click outside listener for navigation
+            document.addEventListener('click', closeMobileNavOnOutsideClick);
+        });
+
         // Prevent navigation to current page
         document.addEventListener('htmx:beforeRequest', function(evt) {
             // Check if trying to navigate to current page
@@ -31,9 +55,25 @@
         <main class="about-me">
             <h1 style="display: flex; justify-content: space-between; align-items: center;">
                 <a style="border-bottom: none;" href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">0xjah.me | Misc</a>
-                <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer">
-                    <img src="/static/img/kec.png" style="width: 40px;" alt="Kec Group Logo" />
-                </a>
+                <div class="kec-nav-container">
+                    <img src="/static/img/kec.png" 
+                         style="width: 40px;" 
+                         alt="Kec Group Logo" 
+                         class="kec-nav-trigger"
+                         onclick="toggleMobileNav()"
+                         title="Click for navigation" />
+                    <div class="mobile-nav-overlay" id="mobile-nav">
+                        <ul>
+                            <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
+                            <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
+                            <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+                            <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
+                            <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px;">
+                                <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer">lainon.life</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </h1>
 
             <p>Public deployments, writeups, and experimental projects—fragments scattered across the Wired.</p>
@@ -75,10 +115,21 @@
                 </div>
             </div>
 
+            <h2>Recommendations</h2>
+
             <img style="width: 250px;" src="/static/img/TempleOS_logo.jpg" alt="TempleOS Logo" /><br />
             Use <a href="https://templeos.org" target="_blank" rel="noopener noreferrer">Temple OS</a><br />
             <p style="margin-top: 40px; font-style: italic; font-size: 14px;">
                 "An idiot admires complexity, a genius admires simplicity"<br />— Terry A Davis
+            </p>
+
+            <img style="width: 250px;" src="/static/img/lilychouchou.jpg" alt="All About Lily Chou-Chou" /><br />
+            Watch <a href="https://www.imdb.com/title/tt0305669/" target="_blank" rel="noopener noreferrer">All About Lily Chou-Chou</a><br />
+            <p style="margin-top: 20px; font-style: italic; font-size: 14px;">
+                "Dear blue cat, talk to me. Tell me about Lily. Or about the Ether. Or about her, a girl who likes Lily and Debussy."
+            </p>
+            <p style="margin-top: 10px; font-style: italic; font-size: 14px;">
+                "The ether is there. It exists. It just can't be seen."<br />— Shunji Iwai
             </p>
         </aside>
     </div>

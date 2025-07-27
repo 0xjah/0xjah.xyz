@@ -336,6 +336,89 @@ button:hover {
     border-color: oklch(40% 0 0);
 }
 
+/* Hide navigation on desktop */
+.nav-links {
+    display: none;
+}
+
+/* Hide "Site navigation" heading on desktop */
+.status h2:first-of-type {
+    display: none;
+}
+
+/* Navigation overlay for kec image dropdown */
+.mobile-nav-overlay {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid oklch(25% 0 0);
+    border-radius: 8px;
+    padding: 15px;
+    min-width: 140px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.mobile-nav-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.mobile-nav-overlay ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mobile-nav-overlay li {
+    margin-bottom: 10px;
+}
+
+.mobile-nav-overlay li:before {
+    content: none;
+}
+
+.mobile-nav-overlay a {
+    color: oklch(96% 0 0);
+    text-decoration: none;
+    border-bottom: none;
+    font-size: 14px;
+    display: block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.mobile-nav-overlay a:hover {
+    color: oklch(90% var(--accent-color-c) var(--accent-color-h));
+    background: oklch(15% 0 0);
+}
+
+/* Kec image container for navigation */
+.kec-nav-container {
+    position: relative;
+    display: inline-block;
+}
+
+.kec-nav-trigger {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.kec-nav-trigger:hover {
+    transform: scale(1.05);
+    background: oklch(15% 0 0);
+}
+
 @media (max-width: 768px) {
     .site-container {
         flex-direction: column;
@@ -348,5 +431,14 @@ button:hover {
 
     .status {
         width: 100%;
+    }
+    
+    /* Show navigation elements on mobile */
+    .nav-links {
+        display: block;
+    }
+    
+    .status h2:first-of-type {
+        display: block;
     }
 }

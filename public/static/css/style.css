@@ -1,20 +1,18 @@
-/* font import */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-@import url('https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/JetBrainsMono.css');
+/* Font import */
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+
+/* CSS Variables */
 :root {
-    --accent-color-h: 340; /* Default hue if JavaScript fails */
-    --accent-color-c: 0.2; /* Default chroma if JavaScript fails */
+    --accent-color-h: 220; /* Dark blue hue */
+    --accent-color-c: 0.15; /* Slightly reduced chroma for darker blue */
 }
 
+/* Base styles */
 html,
 body {
     background-color: oklch(10% 0 0);
     color: oklch(96% 0 0);
-    /* font-family: 'Press Start 2P', monospace; */
-/* font-family: 'JetBrains Mono', monospace; */
-font-family: 'Fira Code', monospace;
-
+    font-family: 'Fira Code', monospace;
     font-size: small;
     margin: 0;
     padding: 0;
@@ -22,6 +20,7 @@ font-family: 'Fira Code', monospace;
     height: 100vh;
 }
 
+/* Layout */
 .site-container {
     display: flex;
     max-width: 1000px;
@@ -41,6 +40,7 @@ font-family: 'Fira Code', monospace;
     min-width: 200px;
 }
 
+/* Typography */
 h1 {
     font-size: 24px;
     margin-bottom: 10px;
@@ -61,6 +61,7 @@ li {
     font-size: 16px;
 }
 
+/* Lists */
 ul {
     padding-left: 20px;
     list-style-type: none;
@@ -79,6 +80,7 @@ li:before {
     margin-left: -15px;
 }
 
+/* Links */
 a {
     color: oklch(96% 0 0);
     text-decoration: none;
@@ -90,6 +92,7 @@ a:hover {
     color: oklch(85% var(--accent-color-c) var(--accent-color-h));
 }
 
+/* Images */
 .profile-img {
     width: 200px;
     height: 200px;
@@ -100,22 +103,24 @@ a:hover {
     margin-bottom: 15px;
 }
 
+.button-img {
+    height: 31px;
+    margin-right: 10px;
+    border: 1px solid oklch(20% 0 0);
+}
+
+/* Social links */
 .social-links i {
     width: 20px;
     margin-right: 5px;
 }
 
-.footer {
-    margin-top: 60px;
-    font-size: 14px;
-    color: oklch(50% 0 0);
-}
-
+/* Buttons */
 button {
     background-color: transparent;
     border: 1px solid oklch(25% 0 0);
     color: oklch(96% 0 0);
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'Fira Code', monospace;
     padding: 5px 15px;
     cursor: pointer;
     font-size: 12px;
@@ -129,6 +134,37 @@ button:hover {
     border-color: oklch(90% var(--accent-color-c) var(--accent-color-h));
 }
 
+/* Category buttons */
+.category-selector {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.category-btn {
+    background-color: transparent;
+    border: 1px solid oklch(25% 0 0);
+    color: oklch(96% 0 0);
+    font-family: 'Fira Code', monospace;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.category-btn:hover {
+    background-color: oklch(20% 0 0);
+    color: oklch(90% var(--accent-color-c) var(--accent-color-h));
+}
+
+.category-btn.active {
+    background-color: oklch(90% var(--accent-color-c) var(--accent-color-h));
+    color: oklch(0% 0 0);
+    border-color: oklch(90% var(--accent-color-c) var(--accent-color-h));
+}
+
+/* Buttons container and marquee */
 .cool-sites {
     margin: 20px 0;
     position: relative;
@@ -146,15 +182,6 @@ button:hover {
     animation: marquee 40s linear infinite;
 }
 
-@keyframes marquee {
-    0% {
-        transform: translateX(0%);
-    }
-    100% {
-        transform: translateX(-100%);
-    }
-}
-
 .marquee-container {
     overflow: hidden;
     white-space: nowrap;
@@ -166,21 +193,16 @@ button:hover {
     animation: marquee 5s linear infinite;
 }
 
-.quote {
-    margin-top: 40px;
-    font-style: italic;
-    font-size: 14px;
-    border-left: 3px solid;
-    padding-left: 10px;
-    margin-left: 0;
+@keyframes marquee {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
 }
 
-.button-img {
-    height: 31px;
-    margin-right: 10px;
-    border: 1px solid oklch(20% 0 0);
-}
-
+/* Navigation links */
 .nav-links {
     margin: 20px 0;
 }
@@ -207,68 +229,51 @@ button:hover {
     text-decoration: underline;
 }
 
-.category-selector {
-    margin: 20px 0;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+/* Quote styling */
+.quote {
+    margin-top: 40px;
+    font-style: italic;
+    font-size: 14px;
+    border-left: 3px solid;
+    padding-left: 10px;
+    margin-left: 0;
 }
 
-.category-btn {
-    background-color: transparent;
-    border: 1px solid oklch(25% 0 0);
-    color: oklch(96% 0 0);
-    font-family: 'Press Start 2P', monospace;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-.category-btn:hover {
-    background-color: oklch(20% 0 0);
-    color: oklch(90% var(--accent-color-c) var(--accent-color-h));
-}
-
-.category-btn.active {
-    background-color: oklch(90% var(--accent-color-c) var(--accent-color-h));
-    color: oklch(0% 0 0);
-    border-color: oklch(90% var(--accent-color-c) var(--accent-color-h));
-}
-
+/* WIP and content blocks */
 .wip-minimal {
-  border-left: 2px solid oklch(70% calc(var(--accent-color-c) * 0.75) var(--accent-color-h));
-  padding-left: 15px;
-  margin: 40px 0;
-  font-size: 12px;
-  color: oklch(85% calc(var(--accent-color-c) * 0.5) var(--accent-color-h));
+    border-left: 2px solid oklch(70% calc(var(--accent-color-c) * 0.75) var(--accent-color-h));
+    padding-left: 15px;
+    margin: 40px 0;
+    font-size: 12px;
+    color: oklch(85% calc(var(--accent-color-c) * 0.5) var(--accent-color-h));
 }
 
 .wip-minimal h2 {
-  font-size: 14px;
-  margin-bottom: 10px;
-  color: oklch(90% var(--accent-color-c) var(--accent-color-h));
-  text-transform: uppercase;
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: oklch(90% var(--accent-color-c) var(--accent-color-h));
+    text-transform: uppercase;
 }
 
 .wip-minimal ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .wip-minimal li {
-  margin-bottom: 6px;
-  line-height: 1.4;
+    margin-bottom: 6px;
+    line-height: 1.4;
 }
 
 .wip-date {
-  text-align: right;
-  font-size: 10px;
-  color: oklch(60% 0.05 340);
-  margin-top: 10px;
+    text-align: right;
+    font-size: 10px;
+    color: oklch(60% 0.05 340);
+    margin-top: 10px;
 }
 
+/* Writeup and content fragments */
 .writeup-fragment {
     font-family: monospace;
     border-left: 2px solid oklch(70% calc(var(--accent-color-c) * 0.75) var(--accent-color-h));
@@ -296,6 +301,73 @@ button:hover {
     padding-bottom: 5px;
 }
 
+/* Project status indicators */
+.status-wip {
+    color: oklch(70% 0.15 60); /* Yellow-ish */
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.status-coming {
+    color: oklch(70% 0.15 280); /* Purple-ish */
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.project-link {
+    text-decoration: none;
+    color: oklch(90% var(--accent-color-c) var(--accent-color-h));
+    border-bottom: 1px solid transparent;
+    transition: border-bottom-color 0.2s ease;
+}
+
+.project-link:hover {
+    border-bottom-color: oklch(90% var(--accent-color-c) var(--accent-color-h));
+}
+
+/* Misc projects styling */
+#misc-projects {
+    list-style: none;
+    padding: 0;
+}
+
+#misc-projects li {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid oklch(20% 0 0);
+    border-radius: 4px;
+    background: oklch(8% 0 0);
+}
+
+#misc-projects li:hover {
+    border-color: oklch(30% 0 0);
+    background: oklch(12% 0 0);
+}
+
+/* End button */
+#end-button-container {
+    display: none;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.end-button {
+    background: oklch(20% 0 0);
+    color: oklch(90% var(--accent-color-c) var(--accent-color-h));
+    border: 1px solid oklch(30% 0 0);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9em;
+}
+
+.end-button:hover {
+    background: oklch(25% 0 0);
+    border-color: oklch(40% 0 0);
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
     .site-container {
         flex-direction: column;

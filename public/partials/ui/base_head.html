@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" hx-boost="true">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{.Title}} | 0xjah.me</title>
+  <link rel="icon" type="image/x-icon" href="/static/img/lain-head.jpg" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
+  <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
+  <script defer>
+    // Per-tab splash handling using sessionStorage
+    let splashShown = sessionStorage.getItem('splashShown') === 'true';
+
+    function handleSplash() {
+      const splashDiv = document.getElementById('splash');
+      const splashScreen = document.querySelector('.splash-screen');
+      
+      if (!splashScreen || !splashDiv) return;
+
+      if (splashShown) {
+        // Hide splash div completely if already shown
+        splashDiv.style.display = 'none';
+        return;
+      }
+
+      // Show splash and auto-hide after 3 seconds
+      setTimeout(() => {
+        splashScreen.classList.add('fade-out');
+        setTimeout(() => {
+          splashDiv.style.display = 'none';
+          splashShown = true;
+          sessionStorage.setItem('splashShown', 'true');
+        }, 500);
+      }, 3000);
+    }
+
+    // Initialize email obfuscation
+    function updateEmail() {
+      const emailElement = document.getElementById('email');
+      if (emailElement) {
+        emailElement.innerHTML = '<a href="mailto:0xjah@waifu.club">0xjah[at]waifu[dot]club</a>';
+      }
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', updateEmail);
+    document.addEventListener('htmx:afterSettle', function(evt) {
+      // Only handle splash when it's the splash div that settled
+      if (evt.target.id === 'splash') {
+        handleSplash();
+      }
+      
+      updateEmail();
+      
+      // Reload status header when needed
+      if (evt.target.id === 'status-header' || evt.target.querySelector('#status-header')) {
+        htmx.trigger('#status-header', 'load');
+      }
+    });
+  </script>
+</head>

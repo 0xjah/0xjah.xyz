@@ -41,10 +41,21 @@
 
             <ul id="blog-posts">
                 <li data-category="tech">
+                    <a href="/blog?post=post_htmx_revolution" 
+                       hx-get="/partials/blog/post_htmx_revolution.html"
+                       hx-target="#blog-post-content"
+                       hx-push-url="true"
+                       hx-swap="innerHTML"
+                       class="post-link">
+                        The HTMX Revolution: Simplicity Over Complexity - Jul 27, 2025
+                    </a>
+                </li>
+                <li data-category="tech">
                     <a href="/blog?post=post_ai_is_trash" 
                        hx-get="/partials/blog/post_ai_is_trash.html"
                        hx-target="#blog-post-content"
                        hx-push-url="true"
+                       hx-swap="innerHTML"
                        class="post-link">
                         Ai is trash unless locally - Jun 07, 2025
                     </a>
@@ -54,6 +65,7 @@
                        hx-get="/partials/blog/post_lain.html"
                        hx-target="#blog-post-content"
                        hx-push-url="true"
+                       hx-swap="innerHTML"
                        class="post-link">
                         Why Serial Experiments Lain is the best anime ever - Jan 27, 2023
                     </a>
@@ -63,6 +75,7 @@
                        hx-get="/partials/blog/post_lily_chou_chou.html"
                        hx-target="#blog-post-content"
                        hx-push-url="true"
+                       hx-swap="innerHTML"
                        class="post-link">
                         Whispers in the Ether: All About Lily Chou-Chou - Jun 07, 2023
                     </a>
@@ -72,6 +85,7 @@
                        hx-get="/partials/blog/post_privacy.html"
                        hx-target="#blog-post-content"
                        hx-push-url="true"
+                       hx-swap="innerHTML"
                        class="post-link">
                         Why You Should Care About Your Privacy in This Era - Jun 09, 2025
                     </a>
@@ -81,9 +95,12 @@
             <div id="blog-post-content" style="margin-top: 20px;"></div>
 
             <div id="end-button-container">
-                <button hx-get="/blog"
-                        hx-target=".site-container"
-                        hx-push-url="true">End</button>
+                <button hx-get="/blog" 
+                        hx-target=".site-container" 
+                        hx-push-url="true"
+                        id="back-to-top-btn">
+                    ↑ Back to Top
+                </button>
             </div>
         </div>
 
@@ -123,14 +140,25 @@
     </div>
 
     <script>
+        // Utility function for smooth scroll to top
+        function scrollToTop(delay = 100) {
+            setTimeout(() => {
+                const h1Element = document.querySelector('h1');
+                if (h1Element) {
+                    h1Element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }, delay);
+        }
+
         // Category filter function
         function filterCategory(category) {
             const posts = document.querySelectorAll('#blog-posts li');
             const buttons = document.querySelectorAll('.category-btn');
 
             posts.forEach(post => {
-                const matches = category === 'all' || post.dataset.category === category;
-                post.style.display = matches ? '' : 'none';
+                post.style.display = (category === 'all' || post.dataset.category === category) ? '' : 'none';
             });
 
             buttons.forEach(btn => btn.classList.remove('active'));
@@ -139,8 +167,17 @@
 
         // HTMX event handlers
         htmx.on("htmx:afterSwap", (e) => {
-            if (e.detail.target.id === "blog-post-content") {
+            const target = e.detail.target;
+            
+            // Handle blog post loading
+            if (target.id === "blog-post-content") {
                 document.getElementById("end-button-container").style.display = "block";
+                scrollToTop();
+            }
+            
+            // Handle "Back to Top" button (blog page reload)
+            if (target.classList && target.classList.contains("site-container")) {
+                scrollToTop();
             }
         });
 
@@ -148,16 +185,18 @@
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const post = params.get('post');
+            
             if (post) {
                 htmx.ajax('GET', `/partials/blog/${post}.html`, {
                     target: '#blog-post-content',
                     swap: 'innerHTML'
                 });
                 document.getElementById("end-button-container").style.display = "block";
+                scrollToTop(300);
             }
         });
 
-        // Handle browser back/forward
+        // Handle browser back/forward navigation
         htmx.on("htmx:beforeTransition", (e) => {
             if (!e.detail.path.includes('?post=')) {
                 document.getElementById("blog-post-content").innerHTML = "";

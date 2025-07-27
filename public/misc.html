@@ -7,39 +7,83 @@
     <title>Misc | 0xjah.me</title>
     <link rel="icon" type="image/x-icon" href="/static/img/lain-head.jpg" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-    <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
+    <script defer>
+        // Show/hide end button after project interactions
+        function showEndButton() {
+            const endContainer = document.getElementById('end-button-container');
+            if (endContainer) {
+                endContainer.style.display = 'block';
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('htmx:afterSettle', function(evt) {
+            // Show end button after project content loads
+            if (evt.target.id === 'project-container') {
+                showEndButton();
+            }
+            
+            // Reload status header when needed
+            if (evt.target.id === 'status-header' || evt.target.querySelector('#status-header')) {
+                htmx.trigger('#status-header', 'load');
+            }
+        });
+    </script>
+</head>
 
 <body>
     <div class="site-container">
         <main class="about-me">
             <h1 style="display: flex; justify-content: space-between; align-items: center;">
-                <a style="border-bottom: none;" href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">0xjah.me</a>
+                <a style="border-bottom: none;" href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">0xjah.me | Misc</a>
                 <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer">
                     <img src="/static/img/kec.png" style="width: 40px;" alt="Kec Group Logo" />
                 </a>
             </h1>
 
-            <h2>Miscellaneous</h2>
-            <p>My public deployments and writeups</p>
-            
+            <p>Public deployments, writeups, and experimental projects—fragments scattered across the Wired.</p>
+
+            <h2>Projects</h2>
             <div class="misc-content">
-                <ul>
+                <ul id="misc-projects">
                     <li>
-                        <a href="#" hx-get="/partials/ui/wip.html" hx-target="#wip-container" hx-swap="innerHTML">
-                            Lain ChatBot (wip)
+                        <a href="#" hx-get="/partials/ui/wip.html" hx-target="#project-container" hx-swap="innerHTML" class="project-link">
+                            Lain ChatBot - <span class="status-wip">WIP</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="project-link">
+                            CTF Writeups - <span class="status-coming">Coming Soon</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="project-link">
+                            Hardware Hacking Demos - <span class="status-coming">Coming Soon</span>
                         </a>
                     </li>
                 </ul>
-                <div id="wip-container" style="margin-top: 20px;"></div>
+                
+                <div id="project-container" style="margin-top: 20px;"></div>
+            </div>
+
+            <p>&gt; more experiments loading...</p>
+
+            <div id="end-button-container">
+                <button onclick="location.reload()" class="end-button">↻ reload</button>
             </div>
         </main>
 
         <aside class="status">
-            <div id="status-header" hx-get="/partials/ui/status_header.html" hx-trigger="load"></div>
+            <div id="status-header" 
+                 hx-get="/partials/ui/status_header.html" 
+                 hx-trigger="load"
+                 hx-swap="innerHTML">
+            </div>
 
             <h2>Site navigation</h2>
-            <div class="nav-links">
+            <div class="nav-links">                
                 <ul>
                     <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
                     <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
@@ -47,26 +91,23 @@
                     <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
                 </ul>
             </div>
+
             <h2>Buttons</h2>
             <p>Random but cool.</p>
             <div class="cool-sites">
                 <div class="marquee-container">
-                    <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html"
-                        hx-trigger="load">
+                    <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html" hx-trigger="load">
                         <p>Loading buttons...</p>
                     </div>
                 </div>
             </div>
-            <img style="width: 250px;" src="/static/img/TempleOS_logo.jpg" alt="Temple OS Logo" />
-            <br />
-            Use <a href="https://templeos.org" hx-boost="false">Temple OS</a>
-            <br />
-            <a href="">
-                <p class="quote" style="margin-top: 40px; font-style: italic; font-size: 14px;">
-                    “An idiot admires complexity, a genius admires simplicity”<br />— Terry A Davis
-                </p>
-            </a>
-        </div>
+
+            <img style="width: 250px;" src="/static/img/TempleOS_logo.jpg" alt="TempleOS Logo" /><br />
+            Use <a href="https://templeos.org" target="_blank" rel="noopener noreferrer">Temple OS</a><br />
+            <p style="margin-top: 40px; font-style: italic; font-size: 14px;">
+                "An idiot admires complexity, a genius admires simplicity"<br />— Terry A Davis
+            </p>
+        </aside>
     </div>
 </body>
 

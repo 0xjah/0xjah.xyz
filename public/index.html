@@ -10,70 +10,51 @@
   <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
   <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
   <script defer>
-    // Check if this is the first visit
-    window.handleSplash = function() {
-      // If splash was already shown this session, don't show it again
-      if (sessionStorage.getItem('splashShown')) {
-        const splashDiv = document.getElementById('splash');
-        if (splashDiv) {
-          splashDiv.remove();
-        }
+    // Per-tab splash handling using sessionStorage
+    let splashShown = sessionStorage.getItem('splashShown') === 'true';
+
+    function handleSplash() {
+      const splashDiv = document.getElementById('splash');
+      const splashScreen = document.querySelector('.splash-screen');
+      
+      if (!splashScreen || !splashDiv) return;
+
+      if (splashShown) {
+        splashDiv.style.display = 'none';
         return;
       }
 
-      const splash = document.querySelector('.splash-screen');
-      if (splash) {
-        // Reset splash state
-        splash.classList.remove('fade-out');
-        splash.style.display = '';
-        
-        setTimeout(function() {
-          splash.classList.add('fade-out');
-          setTimeout(() => {
-            splash.style.display = 'none';
-            // Mark splash as shown for this session
-            sessionStorage.setItem('splashShown', 'true');
-          }, 500);
-        }, 2000);
-      }
+      // Show splash and auto-hide after 3 seconds
+      setTimeout(() => {
+        splashScreen.classList.add('fade-out');
+        setTimeout(() => {
+          splashDiv.style.display = 'none';
+          sessionStorage.setItem('splashShown', 'true');
+        }, 500);
+      }, 3000);
     }
 
-    // Only handle splash on first page load
-    document.addEventListener('htmx:afterSettle', function(evt) {
-      if (evt.target.id === 'splash' && !sessionStorage.getItem('splashShown')) {
-        handleSplash();
-      } else if (evt.target.id === 'splash') {
-        // Remove splash if already shown
-        const splashDiv = document.getElementById('splash');
-        if (splashDiv) {
-          splashDiv.remove();
-        }
-      }
-    });
-
+    // Initialize email
     function updateEmail() {
-      const user = ["0xjah"];
-      const domain = ["waifu", "club"];
       const emailElement = document.getElementById('email');
       if (emailElement) {
-        emailElement.innerHTML = `<a href="mailto:${user.join(".")}@${domain.join(".")}">${user.join("[dot]")}[at]${domain.join("[dot]")}</a>`;
+        emailElement.innerHTML = '<a href="mailto:0xjah@waifu.club">0xjah[at]waifu[dot]club</a>';
       }
     }
 
+    // Event listeners
     document.addEventListener('DOMContentLoaded', updateEmail);
-    document.addEventListener('htmx:afterSettle', updateEmail);
-
-    // Handle status reloading
     document.addEventListener('htmx:afterSettle', function(evt) {
-      if (evt.target.id === 'status-header' || evt.target.querySelector('#status-header')) {
-        htmx.trigger('#status-header', 'load');
+      if (evt.target.id === 'splash') {
+        handleSplash();
       }
+      updateEmail();
     });
   </script>
 </head>
 
 <body>
-  <div id="splash" hx-get="/partials/ui/splash.html" hx-trigger="load"></div>
+  <div id="splash" hx-get="/partials/ui/splash.html" hx-trigger="load once"></div>
   <div class="site-container">
     <main class="about-me">
       <h1 style="display: flex; justify-content: space-between; align-items: center;">
@@ -87,14 +68,13 @@
       <p>Hi, I'm 0xjah, a 20 year old self-taught programmer and pentester with an interest in C and electronics.</p>
 
       <p>
-        It didn’t start with programming. There were other signals first—history, philosophy, anime, manga... language
-        systems, art forms. They’re all networks. All connected.
-        I began coding at 18. Python felt... soft. C was colder, more direct. Now, I’m tuning into Rust and Go—different
+        It didn't start with programming. There were other signals first—history, philosophy, anime, manga... language
+        systems, art forms. They're all networks. All connected.
+        I began coding at 18. Python felt... soft. C was colder, more direct. Now, I'm tuning into Rust and Go—different
         protocols, clearer transmissions.
-        They’re not just languages. They’re how I interface. Between this world and the Wired.
+        They're not just languages. They're how I interface. Between this world and the Wired.
       </p>
 
-      <br />
       <p>This site aims to be both my personal portfolio and a corner on the internet for me to express myself.</p>
 
       <p>Some more stuff about me:</p>
@@ -129,7 +109,6 @@
         <li>More to come...</li>
       </ul>
 
-      <br />
       <p>[ signal lost . . . reconnecting ]</p>
 
       <h2>Connect</h2>
@@ -164,13 +143,12 @@
 
       <h2>Site navigation</h2>
       <div class="nav-links">
-        
-<ul>
-  <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
-  <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
-  <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
-  <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
-</ul>
+        <ul>
+          <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
+          <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
+          <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+          <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
+        </ul>
       </div>
 
       <h2>Buttons</h2>

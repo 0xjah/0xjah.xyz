@@ -21,7 +21,7 @@ type Config struct {
 func Load() *Config {
 	cfg := &Config{
 		Port:           getEnv("PORT", "3000"),
-		Host:           getEnv("HOST", "localhost"),
+		Host:           getEnv("HOST", "0.0.0.0"),
 		Environment:    getEnv("ENV", "development"),
 		LogLevel:       getEnv("LOG_LEVEL", "info"),
 		StaticCacheTTL: getEnvAsInt("STATIC_CACHE_TTL", 31536000), // 1 year

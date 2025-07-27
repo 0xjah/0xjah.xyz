@@ -1,34 +1,45 @@
 <style>
+  :root {
+    --accent-color-h: 225;
+    --accent-color-c: 0.045;
+  }
+  
   .splash-screen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: black;
+    background-color: oklch(10% 0 0);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 9999;
     transition: opacity 0.5s;
+    font-family: 'Fira Code', monospace;
   }
   .splash-screen.fade-out {
     opacity: 0;
     pointer-events: none;
   }
   .splash-text {
-    color: oklch(90% 0.2 340);
+    color: oklch(96% 0 0);
     font-size: 24px;
     text-align: center;
     margin: 20px;
     opacity: 0;
+    font-family: 'Fira Code', monospace;
   }
   .splash-text:first-child {
     animation: typewriter 1s steps(20) forwards;
+    color: oklch(90% var(--accent-color-c) var(--accent-color-h));
+    font-weight: bold;
   }
   .splash-text:last-child {
     animation: typewriter 1s steps(20) 0.5s forwards;
+    font-size: 16px;
+    color: oklch(85% calc(var(--accent-color-c) * 0.5) var(--accent-color-h));
   }
   @keyframes typewriter {
     from { opacity: 0; }

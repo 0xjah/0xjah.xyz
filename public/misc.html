@@ -9,28 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
     <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
-    <script defer>
-        // Show/hide end button after project interactions
-        function showEndButton() {
-            const endContainer = document.getElementById('end-button-container');
-            if (endContainer) {
-                endContainer.style.display = 'block';
-            }
-        }
-
-        // Event listeners
-        document.addEventListener('htmx:afterSettle', function(evt) {
-            // Show end button after project content loads
-            if (evt.target.id === 'project-container') {
-                showEndButton();
-            }
-            
-            // Reload status header when needed
-            if (evt.target.id === 'status-header' || evt.target.querySelector('#status-header')) {
-                htmx.trigger('#status-header', 'load');
-            }
-        });
-    </script>
 </head>
 
 <body>
@@ -46,33 +24,13 @@
             <p>Public deployments, writeups, and experimental projects—fragments scattered across the Wired.</p>
 
             <h2>Projects</h2>
-            <div class="misc-content">
-                <ul id="misc-projects">
-                    <li>
-                        <a href="#" hx-get="/partials/ui/wip.html" hx-target="#project-container" hx-swap="innerHTML" class="project-link">
-                            Lain ChatBot - <span class="status-wip">WIP</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="project-link">
-                            CTF Writeups - <span class="status-coming">Coming Soon</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="project-link">
-                            Hardware Hacking Demos - <span class="status-coming">Coming Soon</span>
-                        </a>
-                    </li>
-                </ul>
-                
-                <div id="project-container" style="margin-top: 20px;"></div>
-            </div>
+            <ul id="misc-projects">
+                <li>Lain ChatBot - <span class="status-wip">WIP</span></li>
+                <li>CTF Writeups - <span class="status-coming">Coming Soon</span></li>
+                <li>Hardware Hacking Demos - <span class="status-coming">Coming Soon</span></li>
+            </ul>
 
             <p>&gt; more experiments loading...</p>
-
-            <div id="end-button-container">
-                <button onclick="location.reload()" class="end-button">↻ reload</button>
-            </div>
         </main>
 
         <aside class="status">

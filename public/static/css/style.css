@@ -1,13 +1,9 @@
-/* Font import */
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
 
-/* CSS Variables */
 :root {
-    --accent-color-h: 220; /* Dark blue hue */
-    --accent-color-c: 0.15; /* Slightly reduced chroma for darker blue */
+    --accent-color-h: 225;
+    --accent-color-c: 0.05;
 }
-
-/* Base styles */
 html,
 body {
     background-color: oklch(10% 0 0);
@@ -20,7 +16,6 @@ body {
     height: 100vh;
 }
 
-/* Layout */
 .site-container {
     display: flex;
     max-width: 1000px;
@@ -40,7 +35,6 @@ body {
     min-width: 200px;
 }
 
-/* Typography */
 h1 {
     font-size: 24px;
     margin-bottom: 10px;
@@ -61,7 +55,6 @@ li {
     font-size: 16px;
 }
 
-/* Lists */
 ul {
     padding-left: 20px;
     list-style-type: none;
@@ -80,7 +73,6 @@ li:before {
     margin-left: -15px;
 }
 
-/* Links */
 a {
     color: oklch(96% 0 0);
     text-decoration: none;
@@ -92,7 +84,6 @@ a:hover {
     color: oklch(85% var(--accent-color-c) var(--accent-color-h));
 }
 
-/* Images */
 .profile-img {
     width: 200px;
     height: 200px;
@@ -109,13 +100,11 @@ a:hover {
     border: 1px solid oklch(20% 0 0);
 }
 
-/* Social links */
 .social-links i {
     width: 20px;
     margin-right: 5px;
 }
 
-/* Buttons */
 button {
     background-color: transparent;
     border: 1px solid oklch(25% 0 0);
@@ -134,7 +123,6 @@ button:hover {
     border-color: oklch(90% var(--accent-color-c) var(--accent-color-h));
 }
 
-/* Category buttons */
 .category-selector {
     margin: 20px 0;
     display: flex;
@@ -164,7 +152,6 @@ button:hover {
     border-color: oklch(90% var(--accent-color-c) var(--accent-color-h));
 }
 
-/* Buttons container and marquee */
 .cool-sites {
     margin: 20px 0;
     position: relative;
@@ -202,7 +189,6 @@ button:hover {
     }
 }
 
-/* Navigation links */
 .nav-links {
     margin: 20px 0;
 }
@@ -229,7 +215,6 @@ button:hover {
     text-decoration: underline;
 }
 
-/* Quote styling */
 .quote {
     margin-top: 40px;
     font-style: italic;
@@ -239,10 +224,7 @@ button:hover {
     margin-left: 0;
 }
 
-/* WIP and content blocks */
 .wip-minimal {
-    border-left: 2px solid oklch(70% calc(var(--accent-color-c) * 0.75) var(--accent-color-h));
-    padding-left: 15px;
     margin: 40px 0;
     font-size: 12px;
     color: oklch(85% calc(var(--accent-color-c) * 0.5) var(--accent-color-h));
@@ -269,11 +251,10 @@ button:hover {
 .wip-date {
     text-align: right;
     font-size: 10px;
-    color: oklch(60% 0.05 340);
+    color: oklch(60% var(--accent-color-c) var(--accent-color-h));
     margin-top: 10px;
 }
 
-/* Writeup and content fragments */
 .writeup-fragment {
     font-family: monospace;
     border-left: 2px solid oklch(70% calc(var(--accent-color-c) * 0.75) var(--accent-color-h));
@@ -301,15 +282,14 @@ button:hover {
     padding-bottom: 5px;
 }
 
-/* Project status indicators */
 .status-wip {
-    color: oklch(70% 0.15 60); /* Yellow-ish */
+    color: oklch(70% var(--accent-color-c) var(--accent-color-h));
     font-size: 0.8em;
     font-weight: bold;
 }
 
 .status-coming {
-    color: oklch(70% 0.15 280); /* Purple-ish */
+    color: oklch(70% var(--accent-color-c) var(--accent-color-h));
     font-size: 0.8em;
     font-weight: bold;
 }
@@ -325,26 +305,15 @@ button:hover {
     border-bottom-color: oklch(90% var(--accent-color-c) var(--accent-color-h));
 }
 
-/* Misc projects styling */
 #misc-projects {
     list-style: none;
     padding: 0;
 }
 
 #misc-projects li {
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid oklch(20% 0 0);
-    border-radius: 4px;
-    background: oklch(8% 0 0);
+    margin-bottom: 8px;
 }
 
-#misc-projects li:hover {
-    border-color: oklch(30% 0 0);
-    background: oklch(12% 0 0);
-}
-
-/* End button */
 #end-button-container {
     display: none;
     margin-top: 20px;
@@ -367,7 +336,6 @@ button:hover {
     border-color: oklch(40% 0 0);
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
     .site-container {
         flex-direction: column;

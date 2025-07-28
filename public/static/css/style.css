@@ -442,3 +442,53 @@ button:hover {
         display: block;
     }
 }
+
+/* HTMX-specific styles */
+.htmx-indicator {
+    opacity: 0.6;
+    font-style: italic;
+    font-size: 0.9em;
+    color: oklch(70% 0 0);
+}
+
+.htmx-request .htmx-indicator {
+    opacity: 1;
+}
+
+.htmx-request.htmx-indicator {
+    opacity: 1;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.button-clicked {
+    animation: buttonClick 0.3s ease;
+}
+
+@keyframes buttonClick {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+.error {
+    color: oklch(70% 0.15 30);
+    font-style: italic;
+    padding: 10px;
+    background: oklch(15% 0.05 30);
+    border-left: 3px solid oklch(70% 0.15 30);
+    border-radius: 4px;
+}
+
+/* Project list hover effects */
+.project-list li a {
+    transition: transform 0.2s ease;
+    display: inline-block;
+}

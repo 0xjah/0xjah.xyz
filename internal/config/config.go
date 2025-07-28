@@ -15,6 +15,8 @@ type Config struct {
 	StaticCacheTTL int
 	HTMLCacheTTL   int
 	CORSOrigins    string
+	GitHubToken    string
+	GitHubRepo     string
 }
 
 // Load loads configuration from environment variables
@@ -27,6 +29,8 @@ func Load() *Config {
 		StaticCacheTTL: getEnvAsInt("STATIC_CACHE_TTL", 31536000), // 1 year
 		HTMLCacheTTL:   getEnvAsInt("HTML_CACHE_TTL", 0),          // no cache
 		CORSOrigins:    getEnv("CORS_ORIGINS", "*"),
+		GitHubToken:    getEnv("GITHUB_TOKEN", ""),
+		GitHubRepo:     getEnv("GITHUB_REPO", "0xjah/0xjah.xyz"),
 	}
 
 	log.Printf("Server configuration loaded - Port: %s, Environment: %s", cfg.Port, cfg.Environment)

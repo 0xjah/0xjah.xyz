@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" hx-boost="true">
+<html lang="en" hx-boost="true" hx-ext="head-support">
 
 <head>
   <meta charset="UTF-8" />
@@ -9,8 +9,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
   <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
   <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
+  <script src="https://unpkg.com/htmx.org/dist/ext/head-support.js" defer></script>
   <script defer>
-    // Simple splash manager
+    // HTMX-powered splash manager
     window.splashManager = {
       shown: sessionStorage.getItem('splashShown') === 'true',
       
@@ -18,8 +19,6 @@
         if (!splashScreen || this.shown) return;
         
         document.getElementById('splash').style.display = 'block';
-        
-        // Smooth fade-in
         requestAnimationFrame(() => {
           splashScreen.classList.add('fade-in');
         });
@@ -32,7 +31,6 @@
         if (!splashScreen) return;
         
         splashScreen.classList.add('fade-out');
-        
         setTimeout(() => {
           document.getElementById('splash').style.display = 'none';
           this.shown = true;
@@ -50,49 +48,13 @@
       }
     };
 
-    // Initialize email
-    function updateEmail() {
-      const emailElement = document.getElementById('email');
-      if (emailElement) {
-        emailElement.innerHTML = '<a href="mailto:0xjah@waifu.club">0xjah[at]waifu[dot]club</a>';
-      }
-    }
-
-    // Mobile navigation toggle
-    function toggleMobileNav() {
-      const nav = document.getElementById('mobile-nav');
-      if (nav) {
-        nav.classList.toggle('active');
-      }
-    }
-
-    // Close mobile nav when clicking outside
-    function closeMobileNavOnOutsideClick(event) {
-      const nav = document.getElementById('mobile-nav');
-      const trigger = document.querySelector('.kec-nav-trigger');
-      
-      if (nav && trigger && !nav.contains(event.target) && !trigger.contains(event.target)) {
-        nav.classList.remove('active');
-      }
-    }
-
-    // Event listeners
-    document.addEventListener('DOMContentLoaded', function() {
-      updateEmail();
-      splashManager.init();
-      
-      // Add click outside listener for navigation
-      document.addEventListener('click', closeMobileNavOnOutsideClick);
-    });
-    
-    // Prevent navigation to current page
+    // HTMX event handlers
     document.addEventListener('htmx:beforeRequest', function(evt) {
-      // Check if trying to navigate to current page
+      // Prevent navigation to current page
       if (evt.detail.requestConfig.verb === 'get') {
         const currentPath = window.location.pathname;
         const targetPath = evt.detail.requestConfig.path;
         
-        // If navigating to the same page, prevent the request
         if (currentPath === targetPath || (currentPath === '/' && targetPath === '/')) {
           evt.preventDefault();
         }
@@ -100,12 +62,43 @@
     });
     
     document.addEventListener('htmx:afterSettle', function(evt) {
-      // Only show splash on initial load, not on navigation
+      // Handle splash screen on initial load
       if (evt.target.id === 'splash' && !splashManager.shown) {
         const splashScreen = document.querySelector('.splash-screen');
         if (splashScreen) splashManager.show(splashScreen);
       }
-      updateEmail();
+    });
+
+    // Global navigation toggle function
+    window.toggleMobileNav = function() {
+      const nav = document.getElementById('mobile-nav');
+      if (nav) {
+        nav.classList.toggle('active');
+      }
+    };
+
+    // HTMX error handling
+    document.addEventListener('htmx:responseError', function(evt) {
+      console.error('HTMX request failed:', evt.detail);
+      if (evt.target.id === 'status-header') {
+        evt.target.innerHTML = '<div class="error">Status unavailable</div>';
+      } else if (evt.target.id === 'projects-list') {
+        evt.target.innerHTML = '<div class="error">Projects unavailable</div>';
+      } else if (evt.target.id === 'buttons-container') {
+        evt.target.innerHTML = '<div class="error">Buttons unavailable</div>';
+      } else if (evt.target.id === 'email') {
+        evt.target.innerHTML = 'Email unavailable';
+      }
+    });
+
+    document.addEventListener('htmx:timeout', function(evt) {
+      console.warn('HTMX request timed out:', evt.detail);
+      evt.target.innerHTML = '<div class="error">Request timed out</div>';
+    });
+
+    // Initialize on DOM load
+    document.addEventListener('DOMContentLoaded', function() {
+      splashManager.init();
     });
   </script>
 </head>
@@ -123,14 +116,16 @@
                class="kec-nav-trigger"
                onclick="toggleMobileNav()"
                title="Click for navigation" />
-          <div class="mobile-nav-overlay" id="mobile-nav">
+          <div class="mobile-nav-overlay" 
+               id="mobile-nav"
+               onclick="if (!event.target.closest('a') && !event.target.closest('.kec-nav-trigger')) this.classList.remove('active')">
             <ul>
-              <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
-              <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
-              <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
-              <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
+              <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true" onclick="document.getElementById('mobile-nav').classList.remove('active')">/me/</a></li>
+              <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true" onclick="document.getElementById('mobile-nav').classList.remove('active')">/log/</a></li>
+              <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer" onclick="document.getElementById('mobile-nav').classList.remove('active')">/proj/</a></li>
+              <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true" onclick="document.getElementById('mobile-nav').classList.remove('active')">/msc/</a></li>
               <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px;">
-                <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer">lainon.life</a>
+                <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer" onclick="document.getElementById('mobile-nav').classList.remove('active')">lainon.life</a>
               </li>
             </ul>
           </div>
@@ -170,8 +165,11 @@
       <p>&gt; can you hear it?</p>
 
       <h2>Projects</h2>
-      <div id="projects-list" hx-get="/partials/ui/projects.html" hx-trigger="load">
-        <p>Loading projects...</p>
+      <div id="projects-list" 
+           hx-get="/partials/ui/projects.html" 
+           hx-trigger="load"
+           hx-indicator="#projects-loading">
+        <div id="projects-loading" class="htmx-indicator">Loading projects...</div>
       </div>
 
       <p>the system is awake.</p>
@@ -193,7 +191,13 @@
         <a href="https://x.com/0x_jah" target="_blank" rel="noopener noreferrer">x.com/0x_jah</a><br />
 
         <i class="fa-solid fa-envelope"></i>
-        <span id="email"></span><br />
+        <span id="email" 
+              hx-get="/partials/ui/email.html" 
+              hx-trigger="load"
+              hx-swap="innerHTML"
+              hx-indicator="#email-loading">
+          <span id="email-loading" class="htmx-indicator">Loading email...</span>
+        </span><br />
 
         <i class="fa-brands fa-bitcoin"></i>
         BTC: bc1q3fuzzq5avauzjsf4yka8p83jvt93rzdgxfyvzp5wwz<br />kt97dhea3qhy7j27<br />
@@ -210,8 +214,10 @@
     <aside class="status">
       <div id="status-header" 
            hx-get="/partials/ui/status_header.html" 
-           hx-trigger="load"
-           hx-swap="innerHTML">
+           hx-trigger="load, every 30s"
+           hx-swap="innerHTML"
+           hx-indicator="#status-loading">
+        <div id="status-loading" class="htmx-indicator">Loading status...</div>
       </div>
 
       <h2>Site navigation</h2>
@@ -228,27 +234,35 @@
       <p>Random but cool.</p>
       <div class="cool-sites">
         <div class="marquee-container">
-          <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html" hx-trigger="load">
-            <p>Loading buttons...</p>
+          <div class="buttons-container" id="buttons-container" 
+               hx-get="/partials/ui/buttons.html" 
+               hx-trigger="load"
+               hx-indicator="#buttons-loading">
+            <div id="buttons-loading" class="htmx-indicator">Loading buttons...</div>
           </div>
         </div>
       </div>
       <h2>Recommendations</h2>
 
-      <img style="width: 250px;" src="/static/img/TempleOS_logo.jpg" alt="TempleOS Logo" /><br />
-      Use <a href="https://templeos.org" target="_blank" rel="noopener noreferrer">Temple OS</a><br />
-      <p style="margin-top: 40px; font-style: italic; font-size: 14px;">
-        "An idiot admires complexity, a genius admires simplicity"<br />— Terry A Davis
-      </p>
+      <div hx-on:mouseenter="this.style.transform = 'scale(1.02)'" 
+           hx-on:mouseleave="this.style.transform = 'scale(1)'"
+           style="transition: transform 0.2s ease;">
+        <img style="width: 250px;" src="/static/img/TempleOS_logo.jpg" alt="TempleOS Logo" /><br />
+        Use <a href="https://templeos.org" target="_blank" rel="noopener noreferrer">Temple OS</a><br />
+        <p style="margin-top: 40px; font-style: italic; font-size: 14px;">
+          "An idiot admires complexity, a genius admires simplicity"<br />— Terry A Davis
+        </p>
+      </div>
 
-      <img style="width: 250px;" src="/static/img/lilychouchou.jpg" alt="All About Lily Chou-Chou" /><br />
-      Watch <a href="https://www.imdb.com/title/tt0305669/" target="_blank" rel="noopener noreferrer">All About Lily Chou-Chou</a><br />
-      <p style="margin-top: 20px; font-style: italic; font-size: 14px;">
-        "Dear blue cat, talk to me. Tell me about Lily. Or about the Ether. Or about her, a girl who likes Lily and Debussy."
-      </p>
-      <p style="margin-top: 10px; font-style: italic; font-size: 14px;">
-        "The ether is there. It exists. It just can't be seen."<br />— Shunji Iwai
-      </p>
+      <div hx-on:mouseenter="this.style.transform = 'scale(1.02)'" 
+           hx-on:mouseleave="this.style.transform = 'scale(1)'"
+           style="transition: transform 0.2s ease;">
+        <img style="width: 250px;" src="/static/img/lilychouchou.jpg" alt="All About Lily Chou-Chou" /><br />
+        Watch <a href="https://www.imdb.com/title/tt0297721/" target="_blank" rel="noopener noreferrer">All About Lily Chou-Chou</a><br />
+        <p style="margin-top: 20px; font-style: italic; font-size: 14px;">
+          "Dear blue cat, talk to me. Tell me about Lily. Or about the Ether. Or about her, a girl who likes Lily and Debussy."
+        </p>
+      </div>
     </aside>
   </div>
 </body>

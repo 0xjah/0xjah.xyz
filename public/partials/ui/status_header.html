@@ -1,4 +1,18 @@
-<div class="status-header">
+<div class="status-header" hx-classes="add fade-in:200ms">
   <h2>Status</h2>
-  <p class="quote">active</p>
+  <p class="quote" 
+     hx-on:click="htmx.trigger(this.parentElement, 'hx:refresh'); htmx.trigger('#repo-timestamp', 'refresh')"
+     style="cursor: pointer;"
+     title="Click to refresh">
+    active • online • listening
+  </p>
+  <small style="opacity: 0.6; font-size: 0.75em; display: block; margin-top: 4px;">
+    Last updated: <span id="repo-timestamp" 
+                     hx-get="/api/github-last-updated-html" 
+                     hx-trigger="load, every 5m, refresh"
+                     hx-swap="innerHTML"
+                     title="Last GitHub repository update">
+      loading...
+    </span>
+  </small>
 </div>

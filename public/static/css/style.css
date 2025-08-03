@@ -296,13 +296,14 @@ button:hover {
 
 .project-link {
     text-decoration: none;
-    color: oklch(90% var(--accent-color-c) var(--accent-color-h));
+    color: oklch(96% 0 0) !important;
     border-bottom: 1px solid transparent;
     transition: border-bottom-color 0.2s ease;
 }
 
 .project-link:hover {
-    border-bottom-color: oklch(90% var(--accent-color-c) var(--accent-color-h));
+    color: oklch(85% var(--accent-color-c) var(--accent-color-h)) !important;
+    border-bottom-color: oklch(85% var(--accent-color-c) var(--accent-color-h));
 }
 
 #misc-projects {

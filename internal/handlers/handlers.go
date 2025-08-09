@@ -40,10 +40,21 @@ func (h *Handlers) Routes(w http.ResponseWriter, r *http.Request) {
 			http.ServeFile(w, r, "public/index.html")
 		}
 	case "/blog":
-		if isHTMXRequest {
+		// Check if there's a post query parameter
+		postParam := r.URL.Query().Get("post")
+		log.Printf("Blog request - Path: %s, Post param: %s, HTMX: %t", r.URL.Path, postParam, isHTMXRequest)
+
+		if postParam != "" && isHTMXRequest {
+			// Serve the specific blog post partial
+			postFile := fmt.Sprintf("public/partials/blog/%s.html", postParam)
+			log.Printf("Serving blog post file: %s", postFile)
+			http.ServeFile(w, r, postFile)
+		} else if isHTMXRequest {
 			// Return only the content for HTMX requests
+			log.Printf("Serving blog content partial")
 			http.ServeFile(w, r, "public/partials/pages/blog_content.html")
 		} else {
+			log.Printf("Serving full blog page")
 			http.ServeFile(w, r, "public/blog.html")
 		}
 	case "/misc":

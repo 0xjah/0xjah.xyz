@@ -59,7 +59,7 @@
             <ul id="blog-posts">
                 <li data-category="tech">
                     <a href="/blog?post=post_htmx_revolution" 
-                       hx-get="/partials/blog/post_htmx_revolution.html"
+                       hx-get="/blog?post=post_htmx_revolution"
                        hx-target="#blog-post-content"
                        hx-push-url="true"
                        hx-swap="innerHTML"
@@ -69,7 +69,7 @@
                 </li>
                 <li data-category="tech">
                     <a href="/blog?post=post_ai_is_trash" 
-                       hx-get="/partials/blog/post_ai_is_trash.html"
+                       hx-get="/blog?post=post_ai_is_trash"
                        hx-target="#blog-post-content"
                        hx-push-url="true"
                        hx-swap="innerHTML"
@@ -79,7 +79,7 @@
                 </li>
                 <li data-category="anime">
                     <a href="/blog?post=post_lain"
-                       hx-get="/partials/blog/post_lain.html"
+                       hx-get="/blog?post=post_lain"
                        hx-target="#blog-post-content"
                        hx-push-url="true"
                        hx-swap="innerHTML"
@@ -89,7 +89,7 @@
                 </li>
                 <li data-category="movie">
                     <a href="/blog?post=post_lily_chou_chou"
-                       hx-get="/partials/blog/post_lily_chou_chou.html"
+                       hx-get="/blog?post=post_lily_chou_chou"
                        hx-target="#blog-post-content"
                        hx-push-url="true"
                        hx-swap="innerHTML"
@@ -99,7 +99,7 @@
                 </li>
                 <li data-category="philosophy">
                     <a href="/blog?post=post_privacy"
-                       hx-get="/partials/blog/post_privacy.html"
+                       hx-get="/blog?post=post_privacy"
                        hx-target="#blog-post-content"
                        hx-push-url="true"
                        hx-swap="innerHTML"
@@ -150,21 +150,11 @@
             </div>
 
             <h2>Recommendations</h2>
-
-            <img style="width: 250px;" src="/static/img/TempleOS_logo.jpg" alt="TempleOS Logo" /><br />
-            Use <a href="https://templeos.org" target="_blank" rel="noopener noreferrer">Temple OS</a><br />
-            <p style="margin-top: 40px; font-style: italic; font-size: 14px;">
-                "An idiot admires complexity, a genius admires simplicity"<br />— Terry A Davis
-            </p>
-
-            <img style="width: 250px;" src="/static/img/lilychouchou.jpg" alt="All About Lily Chou-Chou" /><br />
-            Watch <a href="https://www.imdb.com/title/tt0305669/" target="_blank" rel="noopener noreferrer">All About Lily Chou-Chou</a><br />
-            <p style="margin-top: 20px; font-style: italic; font-size: 14px;">
-                "Dear blue cat, talk to me. Tell me about Lily. Or about the Ether. Or about her, a girl who likes Lily and Debussy."
-            </p>
-            <p style="margin-top: 10px; font-style: italic; font-size: 14px;">
-                "The ether is there. It exists. It just can't be seen."<br />— Shunji Iwai
-            </p>
+            <div hx-get="/partials/ui/recommendations.html" 
+                 hx-trigger="load"
+                 hx-swap="innerHTML">
+                <p>Loading recommendations...</p>
+            </div>
         </div>
     </div>
 
@@ -190,6 +180,20 @@
         // Add click outside listener for navigation
         document.addEventListener('DOMContentLoaded', function() {
             document.addEventListener('click', closeMobileNavOnOutsideClick);
+            
+            // Add click handlers for post links to ensure button shows
+            const postLinks = document.querySelectorAll('.post-link');
+            postLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Ensure the button shows for any post link click
+                    setTimeout(() => {
+                        const endButtonContainer = document.getElementById("end-button-container");
+                        if (endButtonContainer) {
+                            endButtonContainer.style.display = "block";
+                        }
+                    }, 200);
+                });
+            });
         });
 
         // Utility function for smooth scroll to top
@@ -223,12 +227,20 @@
             
             // Handle blog post loading
             if (target.id === "blog-post-content") {
-                document.getElementById("end-button-container").style.display = "block";
+                const endButtonContainer = document.getElementById("end-button-container");
+                if (endButtonContainer) {
+                    endButtonContainer.style.display = "block";
+                }
                 scrollToTop();
             }
             
             // Handle "Back to Top" button (blog page reload)
             if (target.classList && target.classList.contains("site-container")) {
+                const endButtonContainer = document.getElementById("end-button-container");
+                if (endButtonContainer) {
+                    endButtonContainer.style.display = "none";
+                }
+                document.getElementById("blog-post-content").innerHTML = "";
                 scrollToTop();
             }
         });
@@ -239,20 +251,28 @@
             const post = params.get('post');
             
             if (post) {
-                htmx.ajax('GET', `/partials/blog/${post}.html`, {
+                htmx.ajax('GET', `/blog?post=${post}`, {
                     target: '#blog-post-content',
                     swap: 'innerHTML'
+                }).then(() => {
+                    const endButtonContainer = document.getElementById("end-button-container");
+                    if (endButtonContainer) {
+                        endButtonContainer.style.display = "block";
+                    }
+                    scrollToTop(300);
+                }).catch(() => {
+                    console.error('Failed to load blog post');
                 });
-                document.getElementById("end-button-container").style.display = "block";
-                scrollToTop(300);
             }
         });
 
         // Prevent navigation to current page
         document.addEventListener('htmx:beforeRequest', function(evt) {
+            console.log('HTMX Request:', evt.detail.requestConfig.path);
+            
             // Check if trying to navigate to current page
             if (evt.detail.requestConfig.verb === 'get') {
-                const currentPath = window.location.pathname;
+                const currentPath = window.location.pathname + window.location.search;
                 const targetPath = evt.detail.requestConfig.path;
                 
                 // If navigating to the same page, prevent the request
@@ -265,9 +285,30 @@
         // Handle browser back/forward navigation
         htmx.on("htmx:beforeTransition", (e) => {
             if (!e.detail.path.includes('?post=')) {
+                const endButtonContainer = document.getElementById("end-button-container");
+                if (endButtonContainer) {
+                    endButtonContainer.style.display = "none";
+                }
                 document.getElementById("blog-post-content").innerHTML = "";
-                document.getElementById("end-button-container").style.display = "none";
             }
+        });
+
+        // Additional event handler to ensure button shows when content is loaded
+        htmx.on("htmx:afterRequest", (e) => {
+            const url = e.detail.requestConfig.path;
+            if (url && url.includes('/blog?post=')) {
+                setTimeout(() => {
+                    const endButtonContainer = document.getElementById("end-button-container");
+                    if (endButtonContainer) {
+                        endButtonContainer.style.display = "block";
+                    }
+                }, 100);
+            }
+        });
+
+        // Handle URL push after successful request
+        htmx.on("htmx:pushedIntoHistory", (e) => {
+            console.log('URL pushed:', e.detail.path);
         });
     </script>
 

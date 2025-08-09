@@ -100,6 +100,33 @@ a:hover {
     border: 1px solid oklch(20% 0 0);
 }
 
+.button-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.button-grid .button-img {
+    margin-right: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.button-grid .button-img:hover {
+    transform: scale(1.05);
+}
+
+.button-clicked {
+    animation: button-click 0.3s ease;
+}
+
+@keyframes button-click {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
 .social-links i {
     width: 20px;
     margin-right: 5px;
@@ -337,16 +364,6 @@ button:hover {
     border-color: oklch(40% 0 0);
 }
 
-/* Hide navigation on desktop */
-.nav-links {
-    display: none;
-}
-
-/* Hide "Site navigation" heading on desktop */
-.status h2:first-of-type {
-    display: none;
-}
-
 /* Navigation overlay for kec image dropdown */
 .mobile-nav-overlay {
     position: absolute;
@@ -432,15 +449,6 @@ button:hover {
 
     .status {
         width: 100%;
-    }
-    
-    /* Show navigation elements on mobile */
-    .nav-links {
-        display: block;
-    }
-    
-    .status h2:first-of-type {
-        display: block;
     }
 }
 

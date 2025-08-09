@@ -237,26 +237,11 @@
         </div>
       </div>
       <h2>Recommendations</h2>
-
-      <div hx-on:mouseenter="this.style.transform = 'scale(1.02)'" 
-           hx-on:mouseleave="this.style.transform = 'scale(1)'"
-           style="transition: transform 0.2s ease;">
-        <img style="width: 250px;" src="/static/img/TempleOS_logo.jpg" alt="TempleOS Logo" /><br />
-        Use <a href="https://templeos.org" target="_blank" rel="noopener noreferrer">Temple OS</a><br />
-        <p style="margin-top: 40px; font-style: italic; font-size: 14px;">
-          "An idiot admires complexity, a genius admires simplicity"<br />— Terry A Davis
-        </p>
-      </div>
-
-      <div hx-on:mouseenter="this.style.transform = 'scale(1.02)'" 
-           hx-on:mouseleave="this.style.transform = 'scale(1)'"
-           style="transition: transform 0.2s ease;">
-        <img style="width: 250px;" src="/static/img/lilychouchou.jpg" alt="All About Lily Chou-Chou" /><br />
-        Watch <a href="https://www.imdb.com/title/tt0297721/" target="_blank" rel="noopener noreferrer">All About Lily Chou-Chou</a><br />
-        <p style="margin-top: 20px; font-style: italic; font-size: 14px;">
-          "Dear blue cat, talk to me. Tell me about Lily. Or about the Ether. Or about her, a girl who likes Lily and Debussy."
-        </p>
-      </div>
+            <div hx-get="/partials/ui/recommendations.html" 
+                 hx-trigger="load"
+                 hx-swap="innerHTML">
+                 <p>Loading recommendations...</p>
+            </div>
     </aside>
   </div>
 </body>

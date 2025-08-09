@@ -13,40 +13,40 @@
     z-index: 9999;
     opacity: 0;
     transition: opacity 0.4s ease-in-out;
-    font-family: 'Fira Code', monospace;
+    font-family: "Fira Code", monospace;
   }
-  
+
   .splash-screen.fade-in {
     opacity: 1;
   }
-  
+
   .splash-screen.fade-out {
     opacity: 0;
     pointer-events: none;
   }
-  
+
   .splash-text {
     color: oklch(96% 0 0);
     font-size: 24px;
     text-align: center;
     margin: 10px;
-    font-family: 'Fira Code', monospace;
+    font-family: "Fira Code", monospace;
     opacity: 0;
     transform: translateY(10px);
     transition: all 0.3s ease-out;
   }
-  
+
   .splash-screen.fade-in .splash-text {
     opacity: 1;
     transform: translateY(0);
   }
-  
+
   .splash-text:first-child {
     color: oklch(90% 0.045 225);
     font-weight: bold;
     transition-delay: 0.1s;
   }
-  
+
   .splash-text:last-child {
     font-size: 16px;
     color: oklch(85% 0.022 225);
@@ -60,39 +60,39 @@
 </div>
 
 <script>
-// Initialize time display immediately
-(function() {
-  function updateTime() {
-    const timeElement = document.getElementById('current-time');
-    if (timeElement) {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString('en-US', { 
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      });
-      timeElement.textContent = `ENTERING THE WIRED AT ${timeString}`;
+  // Initialize time display immediately
+  (function () {
+    function updateTime() {
+      const timeElement = document.getElementById("current-time");
+      if (timeElement) {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString("en-US", {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+        timeElement.textContent = `ENTERING THE WIRED AT ${timeString}`;
+      }
     }
-  }
 
-  // Update time immediately
-  updateTime();
-  
-  // Start interval for updates
-  const timeInterval = setInterval(updateTime, 1000);
-  
-  // Clean up interval after 3 seconds
-  setTimeout(() => {
-    clearInterval(timeInterval);
-  }, 3000);
-  
-  // Fade in after small delay
-  setTimeout(() => {
-    const splashScreen = document.getElementById('splash-screen');
-    if (splashScreen) {
-      splashScreen.classList.add('fade-in');
-    }
-  }, 100);
-})();
+    // Update time immediately
+    updateTime();
+
+    // Start interval for updates
+    const timeInterval = setInterval(updateTime, 1000);
+
+    // Clean up interval after 3 seconds
+    setTimeout(() => {
+      clearInterval(timeInterval);
+    }, 3000);
+
+    // Fade in after small delay
+    setTimeout(() => {
+      const splashScreen = document.getElementById("splash-screen");
+      if (splashScreen) {
+        splashScreen.classList.add("fade-in");
+      }
+    }, 100);
+  })();
 </script>

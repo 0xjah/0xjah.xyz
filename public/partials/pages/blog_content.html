@@ -1,23 +1,75 @@
 <div class="about-me">
-  <h1 style="display: flex; justify-content: space-between; align-items: center;">
-    <a style="border-bottom: none;" href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">0xjah.me | Blog</a>
+  <h1 style="display: flex; justify-content: space-between; align-items: center">
+    <a style="border-bottom: none" href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">
+      0xjah.me | Blog
+    </a>
     <div class="kec-nav-container">
-      <img src="/static/img/kec.png" 
-           style="width: 40px;" 
-           alt="Kec Group Logo" 
-           class="kec-nav-trigger"
-           onclick="toggleMobileNav()"
-           title="Click for navigation" />
-      <div class="mobile-nav-overlay" 
-           id="mobile-nav"
-           onclick="if (!event.target.closest('a') && !event.target.closest('.kec-nav-trigger')) this.classList.remove('active')">
+      <img
+        src="/static/img/kec.png"
+        style="width: 40px"
+        alt="Kec Group Logo"
+        class="kec-nav-trigger"
+        onclick="toggleMobileNav()"
+        title="Click for navigation"
+      />
+      <div
+        class="mobile-nav-overlay"
+        id="mobile-nav"
+        onclick="if (!event.target.closest('a') && !event.target.closest('.kec-nav-trigger')) this.classList.remove('active')"
+      >
         <ul>
-          <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true" onclick="document.getElementById('mobile-nav').classList.remove('active')">/me/</a></li>
-          <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true" onclick="document.getElementById('mobile-nav').classList.remove('active')">/log/</a></li>
-          <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer" onclick="document.getElementById('mobile-nav').classList.remove('active')">/proj/</a></li>
-          <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true" onclick="document.getElementById('mobile-nav').classList.remove('active')">/msc/</a></li>
-          <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px;">
-            <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer" onclick="document.getElementById('mobile-nav').classList.remove('active')">lainon.life</a>
+          <li>
+            <a
+              href="/"
+              hx-get="/"
+              hx-target=".site-container"
+              hx-push-url="true"
+              onclick="document.getElementById('mobile-nav').classList.remove('active')"
+            >
+              /me/
+            </a>
+          </li>
+          <li>
+            <a
+              href="/blog"
+              hx-get="/blog"
+              hx-target=".site-container"
+              hx-push-url="true"
+              onclick="document.getElementById('mobile-nav').classList.remove('active')"
+            >
+              /log/
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/0xjah"
+              target="_blank"
+              rel="noopener noreferrer"
+              onclick="document.getElementById('mobile-nav').classList.remove('active')"
+            >
+              /proj/
+            </a>
+          </li>
+          <li>
+            <a
+              href="/misc"
+              hx-get="/misc"
+              hx-target=".site-container"
+              hx-push-url="true"
+              onclick="document.getElementById('mobile-nav').classList.remove('active')"
+            >
+              /msc/
+            </a>
+          </li>
+          <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px">
+            <a
+              href="https://lainon.life/"
+              target="_blank"
+              rel="noopener noreferrer"
+              onclick="document.getElementById('mobile-nav').classList.remove('active')"
+            >
+              lainon.life
+            </a>
           </li>
         </ul>
       </div>
@@ -27,107 +79,104 @@
 
   <h2>Categories</h2>
   <div class="category-selector">
-    <button type="button" 
-            onclick="filterCategory('all', event)" 
-            class="category-btn active">All</button>
-    <button type="button" 
-            onclick="filterCategory('tech', event)" 
-            class="category-btn">Tech</button>
-    <button type="button" 
-            onclick="filterCategory('religion', event)" 
-            class="category-btn">Religion</button>
-    <button type="button" 
-            onclick="filterCategory('anime', event)" 
-            class="category-btn">Anime/Manga</button>
-    <button type="button" 
-            onclick="filterCategory('movie', event)" 
-            class="category-btn">Movie</button>
-    <button type="button" 
-            onclick="filterCategory('philosophy', event)" 
-            class="category-btn">Philosophy</button>
+    <button type="button" onclick="filterCategory('all', event)" class="category-btn active">All</button>
+    <button type="button" onclick="filterCategory('tech', event)" class="category-btn">Tech</button>
+    <button type="button" onclick="filterCategory('religion', event)" class="category-btn">Religion</button>
+    <button type="button" onclick="filterCategory('anime', event)" class="category-btn">Anime/Manga</button>
+    <button type="button" onclick="filterCategory('movie', event)" class="category-btn">Movie</button>
+    <button type="button" onclick="filterCategory('philosophy', event)" class="category-btn">Philosophy</button>
   </div>
 
   <ul id="blog-posts">
     <li data-category="tech">
-      <a href="/blog?post=post_htmx_revolution" 
-         hx-get="/partials/blog/post_htmx_revolution.html"
-         hx-target="#blog-post-content"
-         hx-push-url="true"
-         hx-swap="innerHTML"
-         class="post-link">
+      <a
+        href="/blog?post=post_htmx_revolution"
+        hx-get="/partials/blog/post_htmx_revolution.html"
+        hx-target="#blog-post-content"
+        hx-push-url="true"
+        hx-swap="innerHTML"
+        class="post-link"
+      >
         The HTMX Revolution: Simplicity Over Complexity - Jul 27, 2025
       </a>
     </li>
     <li data-category="tech">
-      <a href="/blog?post=post_ai_is_trash" 
-         hx-get="/partials/blog/post_ai_is_trash.html"
-         hx-target="#blog-post-content"
-         hx-push-url="true"
-         hx-swap="innerHTML"
-         class="post-link">
+      <a
+        href="/blog?post=post_ai_is_trash"
+        hx-get="/partials/blog/post_ai_is_trash.html"
+        hx-target="#blog-post-content"
+        hx-push-url="true"
+        hx-swap="innerHTML"
+        class="post-link"
+      >
         Ai is trash unless locally - Jun 07, 2025
       </a>
     </li>
     <li data-category="anime">
-      <a href="/blog?post=post_lain"
-         hx-get="/partials/blog/post_lain.html"
-         hx-target="#blog-post-content"
-         hx-push-url="true"
-         hx-swap="innerHTML"
-         class="post-link">
+      <a
+        href="/blog?post=post_lain"
+        hx-get="/partials/blog/post_lain.html"
+        hx-target="#blog-post-content"
+        hx-push-url="true"
+        hx-swap="innerHTML"
+        class="post-link"
+      >
         Why Serial Experiments Lain is the best anime ever - Jan 27, 2023
       </a>
     </li>
     <li data-category="movie">
-      <a href="/blog?post=post_lily_chou_chou"
-         hx-get="/partials/blog/post_lily_chou_chou.html"
-         hx-target="#blog-post-content"
-         hx-push-url="true"
-         hx-swap="innerHTML"
-         class="post-link">
+      <a
+        href="/blog?post=post_lily_chou_chou"
+        hx-get="/partials/blog/post_lily_chou_chou.html"
+        hx-target="#blog-post-content"
+        hx-push-url="true"
+        hx-swap="innerHTML"
+        class="post-link"
+      >
         Whispers in the Ether: All About Lily Chou-Chou - Jun 07, 2023
       </a>
     </li>
     <li data-category="religion">
-      <a href="/blog?post=post_muslim_support"
-         hx-get="/partials/blog/post_muslim_support.html"
-         hx-target="#blog-post-content"
-         hx-push-url="true"
-         hx-swap="innerHTML"
-         class="post-link">
+      <a
+        href="/blog?post=post_muslim_support"
+        hx-get="/partials/blog/post_muslim_support.html"
+        hx-target="#blog-post-content"
+        hx-push-url="true"
+        hx-swap="innerHTML"
+        class="post-link"
+      >
         The Obligation to Support Muslims - Jul 30, 2025
       </a>
     </li>
     <li data-category="philosophy">
-      <a href="/blog?post=post_privacy"
-         hx-get="/partials/blog/post_privacy.html"
-         hx-target="#blog-post-content"
-         hx-push-url="true"
-         hx-swap="innerHTML"
-         class="post-link">
+      <a
+        href="/blog?post=post_privacy"
+        hx-get="/partials/blog/post_privacy.html"
+        hx-target="#blog-post-content"
+        hx-push-url="true"
+        hx-swap="innerHTML"
+        class="post-link"
+      >
         Why You Should Care About Your Privacy in This Era - Jun 09, 2025
       </a>
     </li>
   </ul>
 
-  <div id="blog-post-content" style="margin-top: 20px;"></div>
+  <div id="blog-post-content" style="margin-top: 20px"></div>
 
-  <div id="end-button-container" style="display: none; margin-top: 20px; text-align: center;">
-    <button hx-get="/blog" 
-            hx-target=".site-container" 
-            hx-push-url="true"
-            id="back-to-top-btn">
-      ↑ Back to Top
-    </button>
+  <div id="end-button-container" style="display: none; margin-top: 20px; text-align: center">
+    <button hx-get="/blog" hx-target=".site-container" hx-push-url="true" id="back-to-top-btn">↑ Back to Top</button>
   </div>
 </div>
 
 <div class="status">
-  <div id="status-header" 
-       hx-get="/partials/ui/status_header.html" 
-       hx-trigger="load, every 30s"
-       hx-swap="innerHTML"
-       hx-indicator="#status-loading">
+  <div
+    id="status-header"
+    hx-get="/partials/ui/status_header.html"
+    hx-trigger="load, every 30s"
+    hx-swap="innerHTML"
+    hx-indicator="#status-loading"
+  >
     <div id="status-loading" class="htmx-indicator">Loading status...</div>
   </div>
 
@@ -145,10 +194,13 @@
   <p>Random but cool.</p>
   <div class="cool-sites">
     <div class="marquee-container">
-      <div class="buttons-container" id="buttons-container" 
-           hx-get="/partials/ui/buttons.html" 
-           hx-trigger="load"
-           hx-indicator="#buttons-loading">
+      <div
+        class="buttons-container"
+        id="buttons-container"
+        hx-get="/partials/ui/buttons.html"
+        hx-trigger="load"
+        hx-indicator="#buttons-loading"
+      >
         <div id="buttons-loading" class="htmx-indicator">Loading buttons...</div>
       </div>
     </div>
@@ -156,26 +208,43 @@
 
   <h2>Recommendations</h2>
 
-  <div hx-on:mouseenter="this.style.transform = 'scale(1.02)'" 
-       hx-on:mouseleave="this.style.transform = 'scale(1)'"
-       style="transition: transform 0.2s ease;">
-    <img style="width: 250px;" src="/static/img/TempleOS_logo.jpg" alt="TempleOS Logo" /><br />
-    Use <a href="https://templeos.org" target="_blank" rel="noopener noreferrer">Temple OS</a><br />
-    <p style="margin-top: 40px; font-style: italic; font-size: 14px;">
-      "An idiot admires complexity, a genius admires simplicity"<br />— Terry A Davis
+  <div
+    hx-on:mouseenter="this.style.transform = 'scale(1.02)'"
+    hx-on:mouseleave="this.style.transform = 'scale(1)'"
+    style="transition: transform 0.2s ease"
+  >
+    <img style="width: 250px" src="/static/img/TempleOS_logo.jpg" alt="TempleOS Logo" />
+    <br />
+    Use
+    <a href="https://templeos.org" target="_blank" rel="noopener noreferrer">Temple OS</a>
+    <br />
+    <p style="margin-top: 40px; font-style: italic; font-size: 14px">
+      "An idiot admires complexity, a genius admires simplicity"
+      <br />
+      — Terry A Davis
     </p>
   </div>
 
-  <div hx-on:mouseenter="this.style.transform = 'scale(1.02)'" 
-       hx-on:mouseleave="this.style.transform = 'scale(1)'"
-       style="transition: transform 0.2s ease;">
-    <img style="width: 250px;" src="/static/img/lilychouchou.jpg" alt="All About Lily Chou-Chou" /><br />
-    Watch <a href="https://www.imdb.com/title/tt0297721" target="_blank" rel="noopener noreferrer">All About Lily Chou-Chou</a><br />
-    <p style="margin-top: 20px; font-style: italic; font-size: 14px;">
-      "Dear blue cat, talk to me. Tell me about Lily. Or about the Ether. Or about her, a girl who likes Lily and Debussy."
+  <div
+    hx-on:mouseenter="this.style.transform = 'scale(1.02)'"
+    hx-on:mouseleave="this.style.transform = 'scale(1)'"
+    style="transition: transform 0.2s ease"
+  >
+    <img style="width: 250px" src="/static/img/lilychouchou.jpg" alt="All About Lily Chou-Chou" />
+    <br />
+    Watch
+    <a href="https://www.imdb.com/title/tt0297721" target="_blank" rel="noopener noreferrer">
+      All About Lily Chou-Chou
+    </a>
+    <br />
+    <p style="margin-top: 20px; font-style: italic; font-size: 14px">
+      "Dear blue cat, talk to me. Tell me about Lily. Or about the Ether. Or about her, a girl who likes Lily and
+      Debussy."
     </p>
-    <p style="margin-top: 10px; font-style: italic; font-size: 14px;">
-      "The ether is there. It exists. It just can't be seen."<br />— Shunji Iwai
+    <p style="margin-top: 10px; font-style: italic; font-size: 14px">
+      "The ether is there. It exists. It just can't be seen."
+      <br />
+      — Shunji Iwai
     </p>
   </div>
 </div>
@@ -183,21 +252,21 @@
 <script>
   // Category filtering function for blog
   function filterCategory(category, event) {
-    const posts = document.querySelectorAll('#blog-posts li');
-    const buttons = document.querySelectorAll('.category-btn');
-    
+    const posts = document.querySelectorAll("#blog-posts li");
+    const buttons = document.querySelectorAll(".category-btn");
+
     // Update active button
-    buttons.forEach(btn => btn.classList.remove('active'));
+    buttons.forEach(btn => btn.classList.remove("active"));
     if (event && event.target) {
-      event.target.classList.add('active');
+      event.target.classList.add("active");
     }
-    
+
     // Filter posts
     posts.forEach(post => {
-      if (category === 'all' || post.dataset.category === category) {
-        post.style.display = 'block';
+      if (category === "all" || post.dataset.category === category) {
+        post.style.display = "block";
       } else {
-        post.style.display = 'none';
+        post.style.display = "none";
       }
     });
   }

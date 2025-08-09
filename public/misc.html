@@ -1,7 +1,6 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" hx-boost="true">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Misc | 0xjah.me</title>
@@ -10,119 +9,125 @@
     <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
     <script defer>
-        // Mobile navigation toggle
-        function toggleMobileNav() {
-            const nav = document.getElementById('mobile-nav');
-            if (nav) {
-                nav.classList.toggle('active');
-            }
+      // Mobile navigation toggle
+      function toggleMobileNav() {
+        const nav = document.getElementById("mobile-nav");
+        if (nav) {
+          nav.classList.toggle("active");
         }
+      }
 
-        // Close mobile nav when clicking outside
-        function closeMobileNavOnOutsideClick(event) {
-            const nav = document.getElementById('mobile-nav');
-            const trigger = document.querySelector('.kec-nav-trigger');
-            
-            if (nav && trigger && !nav.contains(event.target) && !trigger.contains(event.target)) {
-                nav.classList.remove('active');
-            }
+      // Close mobile nav when clicking outside
+      function closeMobileNavOnOutsideClick(event) {
+        const nav = document.getElementById("mobile-nav");
+        const trigger = document.querySelector(".kec-nav-trigger");
+
+        if (nav && trigger && !nav.contains(event.target) && !trigger.contains(event.target)) {
+          nav.classList.remove("active");
         }
+      }
 
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add click outside listener for navigation
-            document.addEventListener('click', closeMobileNavOnOutsideClick);
-        });
+      // Event listeners
+      document.addEventListener("DOMContentLoaded", function () {
+        // Add click outside listener for navigation
+        document.addEventListener("click", closeMobileNavOnOutsideClick);
+      });
 
-        // Prevent navigation to current page
-        document.addEventListener('htmx:beforeRequest', function(evt) {
-            // Check if trying to navigate to current page
-            if (evt.detail.requestConfig.verb === 'get') {
-                const currentPath = window.location.pathname;
-                const targetPath = evt.detail.requestConfig.path;
-                
-                // If navigating to the same page, prevent the request
-                if (currentPath === targetPath) {
-                    evt.preventDefault();
-                }
-            }
-        });
+      // Prevent navigation to current page
+      document.addEventListener("htmx:beforeRequest", function (evt) {
+        // Check if trying to navigate to current page
+        if (evt.detail.requestConfig.verb === "get") {
+          const currentPath = window.location.pathname;
+          const targetPath = evt.detail.requestConfig.path;
+
+          // If navigating to the same page, prevent the request
+          if (currentPath === targetPath) {
+            evt.preventDefault();
+          }
+        }
+      });
     </script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="site-container">
-        <main class="about-me">
-            <h1 style="display: flex; justify-content: space-between; align-items: center;">
-                <a style="border-bottom: none;" href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">0xjah.me | Misc</a>
-                <div class="kec-nav-container">
-                    <img src="/static/img/kec.png" 
-                         style="width: 40px;" 
-                         alt="Kec Group Logo" 
-                         class="kec-nav-trigger"
-                         onclick="toggleMobileNav()"
-                         title="Click for navigation" />
-                    <div class="mobile-nav-overlay" id="mobile-nav">
-                        <ul>
-                            <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
-                            <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
-                            <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
-                            <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
-                            <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px;">
-                                <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer">lainon.life</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </h1>
-
-            <p>Public deployments, writeups, and experimental projects—fragments scattered across the Wired.</p>
-
-            <h2>Projects</h2>
-            <ul id="misc-projects">
-                <li>Lain ChatBot - <span class="status-wip">WIP</span></li>
-                <li>CTF Writeups - <span class="status-coming">Coming Soon</span></li>
-                <li>Hardware Hacking Demos - <span class="status-coming">Coming Soon</span></li>
-            </ul>
-
-            <p>&gt; more experiments loading...</p>
-        </main>
-
-        <aside class="status">
-            <div id="status-header" 
-                 hx-get="/partials/ui/status_header.html" 
-                 hx-trigger="load"
-                 hx-swap="innerHTML">
+      <main class="about-me">
+        <h1 style="display: flex; justify-content: space-between; align-items: center">
+          <a style="border-bottom: none" href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">
+            0xjah.me | Misc
+          </a>
+          <div class="kec-nav-container">
+            <img
+              src="/static/img/kec.png"
+              style="width: 40px"
+              alt="Kec Group Logo"
+              class="kec-nav-trigger"
+              onclick="toggleMobileNav()"
+              title="Click for navigation"
+            />
+            <div class="mobile-nav-overlay" id="mobile-nav">
+              <ul>
+                <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
+                <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
+                <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+                <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
+                <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px">
+                  <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer">lainon.life</a>
+                </li>
+              </ul>
             </div>
+          </div>
+        </h1>
 
-            <h2>Site navigation</h2>
-            <div class="nav-links">                
-                <ul>
-                    <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
-                    <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
-                    <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
-                    <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
-                </ul>
-            </div>
+        <p>Public deployments, writeups, and experimental projects—fragments scattered across the Wired.</p>
 
-            <h2>Buttons</h2>
-            <p>Random but cool.</p>
-            <div class="cool-sites">
-                <div class="marquee-container">
-                    <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html" hx-trigger="load">
-                        <p>Loading buttons...</p>
-                    </div>
-                </div>
-            </div>
+        <h2>Projects</h2>
+        <ul id="misc-projects">
+          <li>
+            Lain ChatBot -
+            <span class="status-wip">WIP</span>
+          </li>
+          <li>
+            CTF Writeups -
+            <span class="status-coming">Coming Soon</span>
+          </li>
+          <li>
+            Hardware Hacking Demos -
+            <span class="status-coming">Coming Soon</span>
+          </li>
+        </ul>
 
-            <h2>Recommendations</h2>
-            <div hx-get="/partials/ui/recommendations.html" 
-                 hx-trigger="load"
-                 hx-swap="innerHTML">
-                <p>Loading recommendations...</p>
+        <p>&gt; more experiments loading...</p>
+      </main>
+
+      <aside class="status">
+        <div id="status-header" hx-get="/partials/ui/status_header.html" hx-trigger="load" hx-swap="innerHTML"></div>
+
+        <h2>Site navigation</h2>
+        <div class="nav-links">
+          <ul>
+            <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
+            <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
+            <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+            <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
+          </ul>
+        </div>
+
+        <h2>Buttons</h2>
+        <p>Random but cool.</p>
+        <div class="cool-sites">
+          <div class="marquee-container">
+            <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html" hx-trigger="load">
+              <p>Loading buttons...</p>
             </div>
-        </aside>
+          </div>
+        </div>
+
+        <h2>Recommendations</h2>
+        <div hx-get="/partials/ui/recommendations.html" hx-trigger="load" hx-swap="innerHTML">
+          <p>Loading recommendations...</p>
+        </div>
+      </aside>
     </div>
-</body>
-
+  </body>
 </html>

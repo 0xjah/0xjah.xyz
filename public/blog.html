@@ -1,7 +1,6 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" hx-boost="true">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Blog | 0xjah.me</title>
@@ -10,308 +9,312 @@
     <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
     <style>
-        #end-button-container {
-            display: none;
-            margin-top: 20px;
-            text-align: center;
-        }
+      #end-button-container {
+        display: none;
+        margin-top: 20px;
+        text-align: center;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="site-container">
-        <div class="about-me">
-            <h1 style="display: flex; justify-content: space-between; align-items: center;">
-                <a style="border-bottom: none;" href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">0xjah.me | Blog</a>
-                <div class="kec-nav-container">
-                    <img src="/static/img/kec.png" 
-                         style="width: 40px;" 
-                         alt="Kec Group Logo" 
-                         class="kec-nav-trigger"
-                         onclick="toggleMobileNav()"
-                         title="Click for navigation" />
-                    <div class="mobile-nav-overlay" id="mobile-nav">
-                        <ul>
-                            <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
-                            <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
-                            <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
-                            <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
-                            <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px;">
-                                <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer">lainon.life</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </h1>
-            <p>A space in the Wired where I vent, log fixes for glitches in life, and leave fragments—just like Lain.
-            </p>
-
-            <h2>Categories</h2>
-            <div class="category-selector">
-                <button type="button" onclick="filterCategory('all')" class="category-btn active">All</button>
-                <button type="button" onclick="filterCategory('tech')" class="category-btn">Tech</button>
-                <button type="button" onclick="filterCategory('religion')" class="category-btn">Religion</button>
-                <button type="button" onclick="filterCategory('anime')" class="category-btn">Anime/Manga</button>
-                <button type="button" onclick="filterCategory('movie')" class="category-btn">Movie</button>
-                <button type="button" onclick="filterCategory('philosophy')" class="category-btn">Philosophy</button>
+      <div class="about-me">
+        <h1 style="display: flex; justify-content: space-between; align-items: center">
+          <a style="border-bottom: none" href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">
+            0xjah.me | Blog
+          </a>
+          <div class="kec-nav-container">
+            <img
+              src="/static/img/kec.png"
+              style="width: 40px"
+              alt="Kec Group Logo"
+              class="kec-nav-trigger"
+              onclick="toggleMobileNav()"
+              title="Click for navigation"
+            />
+            <div class="mobile-nav-overlay" id="mobile-nav">
+              <ul>
+                <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
+                <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
+                <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+                <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
+                <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px">
+                  <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer">lainon.life</a>
+                </li>
+              </ul>
             </div>
+          </div>
+        </h1>
+        <p>A space in the Wired where I vent, log fixes for glitches in life, and leave fragments—just like Lain.</p>
 
-            <ul id="blog-posts">
-                <li data-category="tech">
-                    <a href="/blog?post=post_htmx_revolution" 
-                       hx-get="/blog?post=post_htmx_revolution"
-                       hx-target="#blog-post-content"
-                       hx-push-url="true"
-                       hx-swap="innerHTML"
-                       class="post-link">
-                        The HTMX Revolution: Simplicity Over Complexity - Jul 27, 2025
-                    </a>
-                </li>
-                <li data-category="tech">
-                    <a href="/blog?post=post_ai_is_trash" 
-                       hx-get="/blog?post=post_ai_is_trash"
-                       hx-target="#blog-post-content"
-                       hx-push-url="true"
-                       hx-swap="innerHTML"
-                       class="post-link">
-                        Ai is trash unless locally - Jun 07, 2025
-                    </a>
-                </li>
-                <li data-category="anime">
-                    <a href="/blog?post=post_lain"
-                       hx-get="/blog?post=post_lain"
-                       hx-target="#blog-post-content"
-                       hx-push-url="true"
-                       hx-swap="innerHTML"
-                       class="post-link">
-                        Why Serial Experiments Lain is the best anime ever - Jan 27, 2023
-                    </a>
-                </li>
-                <li data-category="movie">
-                    <a href="/blog?post=post_lily_chou_chou"
-                       hx-get="/blog?post=post_lily_chou_chou"
-                       hx-target="#blog-post-content"
-                       hx-push-url="true"
-                       hx-swap="innerHTML"
-                       class="post-link">
-                        Whispers in the Ether: All About Lily Chou-Chou - Jun 07, 2023
-                    </a>
-                </li>
-                <li data-category="philosophy">
-                    <a href="/blog?post=post_privacy"
-                       hx-get="/blog?post=post_privacy"
-                       hx-target="#blog-post-content"
-                       hx-push-url="true"
-                       hx-swap="innerHTML"
-                       class="post-link">
-                        Why You Should Care About Your Privacy in This Era - Jun 09, 2025
-                    </a>
-                </li>
-            </ul>
-
-            <div id="blog-post-content" style="margin-top: 20px;"></div>
-
-            <div id="end-button-container">
-                <button hx-get="/blog" 
-                        hx-target=".site-container" 
-                        hx-push-url="true"
-                        id="back-to-top-btn">
-                    ↑ Back to Top
-                </button>
-            </div>
+        <h2>Categories</h2>
+        <div class="category-selector">
+          <button type="button" onclick="filterCategory('all')" class="category-btn active">All</button>
+          <button type="button" onclick="filterCategory('tech')" class="category-btn">Tech</button>
+          <button type="button" onclick="filterCategory('religion')" class="category-btn">Religion</button>
+          <button type="button" onclick="filterCategory('anime')" class="category-btn">Anime/Manga</button>
+          <button type="button" onclick="filterCategory('movie')" class="category-btn">Movie</button>
+          <button type="button" onclick="filterCategory('philosophy')" class="category-btn">Philosophy</button>
         </div>
 
-        <div class="status">
-            <div id="status-header" 
-                 hx-get="/partials/ui/status_header.html" 
-                 hx-trigger="load"
-                 hx-swap="innerHTML">
-            </div>
+        <ul id="blog-posts">
+          <li data-category="tech">
+            <a
+              href="/blog?post=post_htmx_revolution"
+              hx-get="/blog?post=post_htmx_revolution"
+              hx-target="#blog-post-content"
+              hx-push-url="true"
+              hx-swap="innerHTML"
+              class="post-link"
+            >
+              The HTMX Revolution: Simplicity Over Complexity - Jul 27, 2025
+            </a>
+          </li>
+          <li data-category="tech">
+            <a
+              href="/blog?post=post_ai_is_trash"
+              hx-get="/blog?post=post_ai_is_trash"
+              hx-target="#blog-post-content"
+              hx-push-url="true"
+              hx-swap="innerHTML"
+              class="post-link"
+            >
+              Ai is trash unless locally - Jun 07, 2025
+            </a>
+          </li>
+          <li data-category="anime">
+            <a
+              href="/blog?post=post_lain"
+              hx-get="/blog?post=post_lain"
+              hx-target="#blog-post-content"
+              hx-push-url="true"
+              hx-swap="innerHTML"
+              class="post-link"
+            >
+              Why Serial Experiments Lain is the best anime ever - Jan 27, 2023
+            </a>
+          </li>
+          <li data-category="movie">
+            <a
+              href="/blog?post=post_lily_chou_chou"
+              hx-get="/blog?post=post_lily_chou_chou"
+              hx-target="#blog-post-content"
+              hx-push-url="true"
+              hx-swap="innerHTML"
+              class="post-link"
+            >
+              Whispers in the Ether: All About Lily Chou-Chou - Jun 07, 2023
+            </a>
+          </li>
+          <li data-category="philosophy">
+            <a
+              href="/blog?post=post_privacy"
+              hx-get="/blog?post=post_privacy"
+              hx-target="#blog-post-content"
+              hx-push-url="true"
+              hx-swap="innerHTML"
+              class="post-link"
+            >
+              Why You Should Care About Your Privacy in This Era - Jun 09, 2025
+            </a>
+          </li>
+        </ul>
 
-            <h2>Site navigation</h2>
-            <div class="nav-links">
-                <ul>
-                    <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
-                    <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
-                    <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
-                    <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
-                </ul>
-            </div>
+        <div id="blog-post-content" style="margin-top: 20px"></div>
 
-            <h2>Buttons</h2>
-            <p>Random but cool.</p>
-            <div class="cool-sites">
-                <div class="marquee-container">
-                    <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html"
-                        hx-trigger="load">
-                        <p>Loading buttons...</p>
-                    </div>
-                </div>
-            </div>
-
-            <h2>Recommendations</h2>
-            <div hx-get="/partials/ui/recommendations.html" 
-                 hx-trigger="load"
-                 hx-swap="innerHTML">
-                <p>Loading recommendations...</p>
-            </div>
+        <div id="end-button-container">
+          <button hx-get="/blog" hx-target=".site-container" hx-push-url="true" id="back-to-top-btn">
+            ↑ Back to Top
+          </button>
         </div>
+      </div>
+
+      <div class="status">
+        <div id="status-header" hx-get="/partials/ui/status_header.html" hx-trigger="load" hx-swap="innerHTML"></div>
+
+        <h2>Site navigation</h2>
+        <div class="nav-links">
+          <ul>
+            <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
+            <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
+            <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+            <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
+          </ul>
+        </div>
+
+        <h2>Buttons</h2>
+        <p>Random but cool.</p>
+        <div class="cool-sites">
+          <div class="marquee-container">
+            <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html" hx-trigger="load">
+              <p>Loading buttons...</p>
+            </div>
+          </div>
+        </div>
+
+        <h2>Recommendations</h2>
+        <div hx-get="/partials/ui/recommendations.html" hx-trigger="load" hx-swap="innerHTML">
+          <p>Loading recommendations...</p>
+        </div>
+      </div>
     </div>
 
     <script>
-        // Mobile navigation toggle
-        function toggleMobileNav() {
-            const nav = document.getElementById('mobile-nav');
-            if (nav) {
-                nav.classList.toggle('active');
-            }
+      // Mobile navigation toggle
+      function toggleMobileNav() {
+        const nav = document.getElementById("mobile-nav");
+        if (nav) {
+          nav.classList.toggle("active");
         }
+      }
 
-        // Close mobile nav when clicking outside
-        function closeMobileNavOnOutsideClick(event) {
-            const nav = document.getElementById('mobile-nav');
-            const trigger = document.querySelector('.kec-nav-trigger');
-            
-            if (nav && trigger && !nav.contains(event.target) && !trigger.contains(event.target)) {
-                nav.classList.remove('active');
-            }
+      // Close mobile nav when clicking outside
+      function closeMobileNavOnOutsideClick(event) {
+        const nav = document.getElementById("mobile-nav");
+        const trigger = document.querySelector(".kec-nav-trigger");
+
+        if (nav && trigger && !nav.contains(event.target) && !trigger.contains(event.target)) {
+          nav.classList.remove("active");
         }
+      }
 
-        // Add click outside listener for navigation
-        document.addEventListener('DOMContentLoaded', function() {
-            document.addEventListener('click', closeMobileNavOnOutsideClick);
-            
-            // Add click handlers for post links to ensure button shows
-            const postLinks = document.querySelectorAll('.post-link');
-            postLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    // Ensure the button shows for any post link click
-                    setTimeout(() => {
-                        const endButtonContainer = document.getElementById("end-button-container");
-                        if (endButtonContainer) {
-                            endButtonContainer.style.display = "block";
-                        }
-                    }, 200);
-                });
-            });
-        });
+      // Add click outside listener for navigation
+      document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("click", closeMobileNavOnOutsideClick);
 
-        // Utility function for smooth scroll to top
-        function scrollToTop(delay = 100) {
+        // Add click handlers for post links to ensure button shows
+        const postLinks = document.querySelectorAll(".post-link");
+        postLinks.forEach(link => {
+          link.addEventListener("click", function (e) {
+            // Ensure the button shows for any post link click
             setTimeout(() => {
-                const h1Element = document.querySelector('h1');
-                if (h1Element) {
-                    h1Element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                } else {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            }, delay);
+              const endButtonContainer = document.getElementById("end-button-container");
+              if (endButtonContainer) {
+                endButtonContainer.style.display = "block";
+              }
+            }, 200);
+          });
+        });
+      });
+
+      // Utility function for smooth scroll to top
+      function scrollToTop(delay = 100) {
+        setTimeout(() => {
+          const h1Element = document.querySelector("h1");
+          if (h1Element) {
+            h1Element.scrollIntoView({ behavior: "smooth", block: "start" });
+          } else {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+        }, delay);
+      }
+
+      // Category filter function
+      function filterCategory(category) {
+        const posts = document.querySelectorAll("#blog-posts li");
+        const buttons = document.querySelectorAll(".category-btn");
+
+        posts.forEach(post => {
+          post.style.display = category === "all" || post.dataset.category === category ? "" : "none";
+        });
+
+        buttons.forEach(btn => btn.classList.remove("active"));
+        document.querySelector(`.category-btn[onclick*="${category}"]`).classList.add("active");
+      }
+
+      // HTMX event handlers
+      htmx.on("htmx:afterSwap", e => {
+        const target = e.detail.target;
+
+        // Handle blog post loading
+        if (target.id === "blog-post-content") {
+          const endButtonContainer = document.getElementById("end-button-container");
+          if (endButtonContainer) {
+            endButtonContainer.style.display = "block";
+          }
+          scrollToTop();
         }
 
-        // Category filter function
-        function filterCategory(category) {
-            const posts = document.querySelectorAll('#blog-posts li');
-            const buttons = document.querySelectorAll('.category-btn');
+        // Handle "Back to Top" button (blog page reload)
+        if (target.classList && target.classList.contains("site-container")) {
+          const endButtonContainer = document.getElementById("end-button-container");
+          if (endButtonContainer) {
+            endButtonContainer.style.display = "none";
+          }
+          document.getElementById("blog-post-content").innerHTML = "";
+          scrollToTop();
+        }
+      });
 
-            posts.forEach(post => {
-                post.style.display = (category === 'all' || post.dataset.category === category) ? '' : 'none';
+      // Load post on page load if URL has post parameter
+      window.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        const post = params.get("post");
+
+        if (post) {
+          htmx
+            .ajax("GET", `/blog?post=${post}`, {
+              target: "#blog-post-content",
+              swap: "innerHTML",
+            })
+            .then(() => {
+              const endButtonContainer = document.getElementById("end-button-container");
+              if (endButtonContainer) {
+                endButtonContainer.style.display = "block";
+              }
+              scrollToTop(300);
+            })
+            .catch(() => {
+              console.error("Failed to load blog post");
             });
-
-            buttons.forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.category-btn[onclick*="${category}"]`).classList.add('active');
         }
+      });
 
-        // HTMX event handlers
-        htmx.on("htmx:afterSwap", (e) => {
-            const target = e.detail.target;
-            
-            // Handle blog post loading
-            if (target.id === "blog-post-content") {
-                const endButtonContainer = document.getElementById("end-button-container");
-                if (endButtonContainer) {
-                    endButtonContainer.style.display = "block";
-                }
-                scrollToTop();
-            }
-            
-            // Handle "Back to Top" button (blog page reload)
-            if (target.classList && target.classList.contains("site-container")) {
-                const endButtonContainer = document.getElementById("end-button-container");
-                if (endButtonContainer) {
-                    endButtonContainer.style.display = "none";
-                }
-                document.getElementById("blog-post-content").innerHTML = "";
-                scrollToTop();
-            }
-        });
+      // Prevent navigation to current page
+      document.addEventListener("htmx:beforeRequest", function (evt) {
+        console.log("HTMX Request:", evt.detail.requestConfig.path);
 
-        // Load post on page load if URL has post parameter
-        window.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            const post = params.get('post');
-            
-            if (post) {
-                htmx.ajax('GET', `/blog?post=${post}`, {
-                    target: '#blog-post-content',
-                    swap: 'innerHTML'
-                }).then(() => {
-                    const endButtonContainer = document.getElementById("end-button-container");
-                    if (endButtonContainer) {
-                        endButtonContainer.style.display = "block";
-                    }
-                    scrollToTop(300);
-                }).catch(() => {
-                    console.error('Failed to load blog post');
-                });
-            }
-        });
+        // Check if trying to navigate to current page
+        if (evt.detail.requestConfig.verb === "get") {
+          const currentPath = window.location.pathname + window.location.search;
+          const targetPath = evt.detail.requestConfig.path;
 
-        // Prevent navigation to current page
-        document.addEventListener('htmx:beforeRequest', function(evt) {
-            console.log('HTMX Request:', evt.detail.requestConfig.path);
-            
-            // Check if trying to navigate to current page
-            if (evt.detail.requestConfig.verb === 'get') {
-                const currentPath = window.location.pathname + window.location.search;
-                const targetPath = evt.detail.requestConfig.path;
-                
-                // If navigating to the same page, prevent the request
-                if (currentPath === targetPath) {
-                    evt.preventDefault();
-                }
-            }
-        });
+          // If navigating to the same page, prevent the request
+          if (currentPath === targetPath) {
+            evt.preventDefault();
+          }
+        }
+      });
 
-        // Handle browser back/forward navigation
-        htmx.on("htmx:beforeTransition", (e) => {
-            if (!e.detail.path.includes('?post=')) {
-                const endButtonContainer = document.getElementById("end-button-container");
-                if (endButtonContainer) {
-                    endButtonContainer.style.display = "none";
-                }
-                document.getElementById("blog-post-content").innerHTML = "";
-            }
-        });
+      // Handle browser back/forward navigation
+      htmx.on("htmx:beforeTransition", e => {
+        if (!e.detail.path.includes("?post=")) {
+          const endButtonContainer = document.getElementById("end-button-container");
+          if (endButtonContainer) {
+            endButtonContainer.style.display = "none";
+          }
+          document.getElementById("blog-post-content").innerHTML = "";
+        }
+      });
 
-        // Additional event handler to ensure button shows when content is loaded
-        htmx.on("htmx:afterRequest", (e) => {
-            const url = e.detail.requestConfig.path;
-            if (url && url.includes('/blog?post=')) {
-                setTimeout(() => {
-                    const endButtonContainer = document.getElementById("end-button-container");
-                    if (endButtonContainer) {
-                        endButtonContainer.style.display = "block";
-                    }
-                }, 100);
+      // Additional event handler to ensure button shows when content is loaded
+      htmx.on("htmx:afterRequest", e => {
+        const url = e.detail.requestConfig.path;
+        if (url && url.includes("/blog?post=")) {
+          setTimeout(() => {
+            const endButtonContainer = document.getElementById("end-button-container");
+            if (endButtonContainer) {
+              endButtonContainer.style.display = "block";
             }
-        });
+          }, 100);
+        }
+      });
 
-        // Handle URL push after successful request
-        htmx.on("htmx:pushedIntoHistory", (e) => {
-            console.log('URL pushed:', e.detail.path);
-        });
+      // Handle URL push after successful request
+      htmx.on("htmx:pushedIntoHistory", e => {
+        console.log("URL pushed:", e.detail.path);
+      });
     </script>
-
-</body>
-
+  </body>
 </html>

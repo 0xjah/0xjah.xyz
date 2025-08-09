@@ -1,23 +1,73 @@
 <main class="about-me">
-  <h1 style="display: flex; justify-content: space-between; align-items: center;">
-    <a style="border-bottom: none;" href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">0xjah.me</a>
+  <h1 style="display: flex; justify-content: space-between; align-items: center">
+    <a style="border-bottom: none" href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">0xjah.me</a>
     <div class="kec-nav-container">
-      <img src="/static/img/kec.png" 
-           style="width: 40px;" 
-           alt="Kec Group Logo" 
-           class="kec-nav-trigger"
-           onclick="toggleMobileNav()"
-           title="Click for navigation" />
-      <div class="mobile-nav-overlay" 
-           id="mobile-nav"
-           onclick="if (!event.target.closest('a') && !event.target.closest('.kec-nav-trigger')) this.classList.remove('active')">
+      <img
+        src="/static/img/kec.png"
+        style="width: 40px"
+        alt="Kec Group Logo"
+        class="kec-nav-trigger"
+        onclick="toggleMobileNav()"
+        title="Click for navigation"
+      />
+      <div
+        class="mobile-nav-overlay"
+        id="mobile-nav"
+        onclick="if (!event.target.closest('a') && !event.target.closest('.kec-nav-trigger')) this.classList.remove('active')"
+      >
         <ul>
-          <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true" onclick="document.getElementById('mobile-nav').classList.remove('active')">/me/</a></li>
-          <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true" onclick="document.getElementById('mobile-nav').classList.remove('active')">/log/</a></li>
-          <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer" onclick="document.getElementById('mobile-nav').classList.remove('active')">/proj/</a></li>
-          <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true" onclick="document.getElementById('mobile-nav').classList.remove('active')">/msc/</a></li>
-          <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px;">
-            <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer" onclick="document.getElementById('mobile-nav').classList.remove('active')">lainon.life</a>
+          <li>
+            <a
+              href="/"
+              hx-get="/"
+              hx-target=".site-container"
+              hx-push-url="true"
+              onclick="document.getElementById('mobile-nav').classList.remove('active')"
+            >
+              /me/
+            </a>
+          </li>
+          <li>
+            <a
+              href="/blog"
+              hx-get="/blog"
+              hx-target=".site-container"
+              hx-push-url="true"
+              onclick="document.getElementById('mobile-nav').classList.remove('active')"
+            >
+              /log/
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/0xjah"
+              target="_blank"
+              rel="noopener noreferrer"
+              onclick="document.getElementById('mobile-nav').classList.remove('active')"
+            >
+              /proj/
+            </a>
+          </li>
+          <li>
+            <a
+              href="/misc"
+              hx-get="/misc"
+              hx-target=".site-container"
+              hx-push-url="true"
+              onclick="document.getElementById('mobile-nav').classList.remove('active')"
+            >
+              /msc/
+            </a>
+          </li>
+          <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px">
+            <a
+              href="https://lainon.life/"
+              target="_blank"
+              rel="noopener noreferrer"
+              onclick="document.getElementById('mobile-nav').classList.remove('active')"
+            >
+              lainon.life
+            </a>
           </li>
         </ul>
       </div>
@@ -29,10 +79,9 @@
 
   <p>
     It didn't start with programming. There were other signals first—history, philosophy, anime, manga... language
-    systems, art forms. They're all networks. All connected.
-    I began coding at 18. Python felt... soft. C was colder, more direct. Now, I'm tuning into Rust and Go—different
-    protocols, clearer transmissions.
-    They're not just languages. They're how I interface. Between this world and the Wired.
+    systems, art forms. They're all networks. All connected. I began coding at 18. Python felt... soft. C was colder,
+    more direct. Now, I'm tuning into Rust and Go—different protocols, clearer transmissions. They're not just
+    languages. They're how I interface. Between this world and the Wired.
   </p>
 
   <p>This site aims to be both my personal portfolio and a corner on the internet for me to express myself.</p>
@@ -41,26 +90,36 @@
   <ul>
     <li>
       I'm currently part of the Google Developer Group @ gdgasu.
-      <a href="https://gdg.community.dev/gdg-on-campus-applied-science-private-university-amman-jordan/"
-        target="_blank" rel="noopener noreferrer">Read more</a>
+      <a
+        href="https://gdg.community.dev/gdg-on-campus-applied-science-private-university-amman-jordan/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Read more
+      </a>
     </li>
     <li>
       I conducted a Linux introduction workshop on campus in collaboration with GDG ASU.
-      <a href="https://gdg.community.dev/events/details/google-gdg-on-campus-applied-science-private-university-amman-jordan-presents-intro-to-linux-workshop/"
-        target="_blank" rel="noopener noreferrer">See here</a>
+      <a
+        href="https://gdg.community.dev/events/details/google-gdg-on-campus-applied-science-private-university-amman-jordan-presents-intro-to-linux-workshop/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        See here
+      </a>
     </li>
     <li>I will never learn a Javascript framework!! (it's bloated)</li>
-    <li>My interests lie in Hardware Hacking, software debloating, and optimizing applications to make them lighter and more efficient.</li>
+    <li>
+      My interests lie in Hardware Hacking, software debloating, and optimizing applications to make them lighter and
+      more efficient.
+    </li>
     <li>My first Linux distro was Arch.</li>
   </ul>
 
   <p>&gt; can you hear it?</p>
 
   <h2>Projects</h2>
-  <div id="projects-list" 
-       hx-get="/partials/ui/projects.html" 
-       hx-trigger="load"
-       hx-indicator="#projects-loading">
+  <div id="projects-list" hx-get="/partials/ui/projects.html" hx-trigger="load" hx-indicator="#projects-loading">
     <div id="projects-loading" class="htmx-indicator">Loading projects...</div>
   </div>
 
@@ -77,38 +136,52 @@
   <h2>Connect</h2>
   <div class="social-links">
     <i class="fab fa-github"></i>
-    <a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">github.com/0xjah</a><br />
+    <a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">github.com/0xjah</a>
+    <br />
 
     <i class="fab fa-x-twitter"></i>
-    <a href="https://x.com/0x_jah" target="_blank" rel="noopener noreferrer">x.com/0x_jah</a><br />
+    <a href="https://x.com/0x_jah" target="_blank" rel="noopener noreferrer">x.com/0x_jah</a>
+    <br />
 
     <i class="fa-solid fa-envelope"></i>
-    <span id="email" 
-          hx-get="/partials/ui/email.html" 
-          hx-trigger="load"
-          hx-swap="innerHTML"
-          hx-indicator="#email-loading">
+    <span
+      id="email"
+      hx-get="/partials/ui/email.html"
+      hx-trigger="load"
+      hx-swap="innerHTML"
+      hx-indicator="#email-loading"
+    >
       <span id="email-loading" class="htmx-indicator">Loading email...</span>
-    </span><br />
+    </span>
+    <br />
 
     <i class="fa-brands fa-bitcoin"></i>
-    BTC: bc1q3fuzzq5avauzjsf4yka8p83jvt93rzdgxfyvzp5wwz<br />kt97dhea3qhy7j27<br />
+    BTC: bc1q3fuzzq5avauzjsf4yka8p83jvt93rzdgxfyvzp5wwz
+    <br />
+    kt97dhea3qhy7j27
+    <br />
 
     <i class="fab fa-monero"></i>
-    XMR: 49FAkwTHXeVZsaHouMBJ1r4sqyiNXKDbZU5zBmK9on4j6<br />
+    XMR: 49FAkwTHXeVZsaHouMBJ1r4sqyiNXKDbZU5zBmK9on4j6
+    <br />
     6EivJELwWuHFbdSUuV4Uk9U5MWfqHNrvAvpUyXDpGkzAJbE5Gh
   </div>
 
-  <h5>Built with <a href="https://htmx.org" target="_blank" rel="noopener noreferrer">htmx</a></h5>
+  <h5>
+    Built with
+    <a href="https://htmx.org" target="_blank" rel="noopener noreferrer">htmx</a>
+  </h5>
   &copy; 2025 0xjah | 0xjah.me
 </main>
 
 <aside class="status">
-  <div id="status-header" 
-       hx-get="/partials/ui/status_header.html" 
-       hx-trigger="load, every 30s"
-       hx-swap="innerHTML"
-       hx-indicator="#status-loading">
+  <div
+    id="status-header"
+    hx-get="/partials/ui/status_header.html"
+    hx-trigger="load, every 30s"
+    hx-swap="innerHTML"
+    hx-indicator="#status-loading"
+  >
     <div id="status-loading" class="htmx-indicator">Loading status...</div>
   </div>
 
@@ -126,33 +199,51 @@
   <p>Random but cool.</p>
   <div class="cool-sites">
     <div class="marquee-container">
-      <div class="buttons-container" id="buttons-container" 
-           hx-get="/partials/ui/buttons.html" 
-           hx-trigger="load"
-           hx-indicator="#buttons-loading">
+      <div
+        class="buttons-container"
+        id="buttons-container"
+        hx-get="/partials/ui/buttons.html"
+        hx-trigger="load"
+        hx-indicator="#buttons-loading"
+      >
         <div id="buttons-loading" class="htmx-indicator">Loading buttons...</div>
       </div>
     </div>
   </div>
   <h2>Recommendations</h2>
 
-  <div hx-on:mouseenter="this.style.transform = 'scale(1.02)'" 
-       hx-on:mouseleave="this.style.transform = 'scale(1)'"
-       style="transition: transform 0.2s ease;">
-    <img style="width: 250px;" src="/static/img/TempleOS_logo.jpg" alt="TempleOS Logo" /><br />
-    Use <a href="https://templeos.org" target="_blank" rel="noopener noreferrer">Temple OS</a><br />
-    <p style="margin-top: 40px; font-style: italic; font-size: 14px;">
-      "An idiot admires complexity, a genius admires simplicity"<br />— Terry A Davis
+  <div
+    hx-on:mouseenter="this.style.transform = 'scale(1.02)'"
+    hx-on:mouseleave="this.style.transform = 'scale(1)'"
+    style="transition: transform 0.2s ease"
+  >
+    <img style="width: 250px" src="/static/img/TempleOS_logo.jpg" alt="TempleOS Logo" />
+    <br />
+    Use
+    <a href="https://templeos.org" target="_blank" rel="noopener noreferrer">Temple OS</a>
+    <br />
+    <p style="margin-top: 40px; font-style: italic; font-size: 14px">
+      "An idiot admires complexity, a genius admires simplicity"
+      <br />
+      — Terry A Davis
     </p>
   </div>
 
-  <div hx-on:mouseenter="this.style.transform = 'scale(1.02)'" 
-       hx-on:mouseleave="this.style.transform = 'scale(1)'"
-       style="transition: transform 0.2s ease;">
-    <img style="width: 250px;" src="/static/img/lilychouchou.jpg" alt="All About Lily Chou-Chou" /><br />
-    Watch <a href="https://www.imdb.com/title/tt0297721" target="_blank" rel="noopener noreferrer">All About Lily Chou-Chou</a><br />
-    <p style="margin-top: 20px; font-style: italic; font-size: 14px;">
-      "Dear blue cat, talk to me. Tell me about Lily. Or about the Ether. Or about her, a girl who likes Lily and Debussy."
+  <div
+    hx-on:mouseenter="this.style.transform = 'scale(1.02)'"
+    hx-on:mouseleave="this.style.transform = 'scale(1)'"
+    style="transition: transform 0.2s ease"
+  >
+    <img style="width: 250px" src="/static/img/lilychouchou.jpg" alt="All About Lily Chou-Chou" />
+    <br />
+    Watch
+    <a href="https://www.imdb.com/title/tt0297721" target="_blank" rel="noopener noreferrer">
+      All About Lily Chou-Chou
+    </a>
+    <br />
+    <p style="margin-top: 20px; font-style: italic; font-size: 14px">
+      "Dear blue cat, talk to me. Tell me about Lily. Or about the Ether. Or about her, a girl who likes Lily and
+      Debussy."
     </p>
   </div>
 </aside>

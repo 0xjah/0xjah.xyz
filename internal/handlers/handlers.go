@@ -20,50 +20,22 @@ func New(cfg *config.Config) *Handlers {
 	return &Handlers{cfg: cfg}
 }
 
-// Routes serves main application routes
+// Routes serves main application routes - only full pages
 func (h *Handlers) Routes(w http.ResponseWriter, r *http.Request) {
-	// Add HTMX-specific headers
-	w.Header().Set("Vary", "HX-Request")
-
-	if r.Header.Get("HX-Request") == "true" {
-		w.Header().Set("Cache-Control", "no-cache")
-	}
-
-	isHTMXRequest := r.Header.Get("HX-Request") == "true"
-
 	switch r.URL.Path {
 	case "/":
-		if isHTMXRequest {
-			// Return only the content for HTMX requests
-			http.ServeFile(w, r, "public/partials/pages/index_content.html")
-		} else {
-			http.ServeFile(w, r, "public/index.html")
-		}
+		http.ServeFile(w, r, "public/index.html")
 	case "/blog":
-		// Check if there's a post query parameter
 		postParam := r.URL.Query().Get("post")
-		log.Printf("Blog request - Path: %s, Post param: %s, HTMX: %t", r.URL.Path, postParam, isHTMXRequest)
-
-		if postParam != "" && isHTMXRequest {
+		if postParam != "" {
 			// Serve the specific blog post partial
 			postFile := fmt.Sprintf("public/partials/blog/%s.html", postParam)
-			log.Printf("Serving blog post file: %s", postFile)
 			http.ServeFile(w, r, postFile)
-		} else if isHTMXRequest {
-			// Return only the content for HTMX requests
-			log.Printf("Serving blog content partial")
-			http.ServeFile(w, r, "public/partials/pages/blog_content.html")
 		} else {
-			log.Printf("Serving full blog page")
 			http.ServeFile(w, r, "public/blog.html")
 		}
 	case "/misc":
-		if isHTMXRequest {
-			// Return only the content for HTMX requests
-			http.ServeFile(w, r, "public/partials/pages/misc_content.html")
-		} else {
-			http.ServeFile(w, r, "public/misc.html")
-		}
+		http.ServeFile(w, r, "public/misc.html")
 	default:
 		http.NotFound(w, r)
 	}
@@ -76,21 +48,21 @@ func (h *Handlers) Splash(w http.ResponseWriter, r *http.Request) {
 
 // LastUpdated returns the current timestamp for the last-updated API
 func (h *Handlers) LastUpdated(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-cache, must-revalidate")
 
 	if err := json.NewEncoder(w).Encode(map[string]string{
 		"timestamp": time.Now().Format(time.RFC3339),
 	}); err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		log.Printf("Error encoding JSON: %v", err)
-		return
 	}
 }
 
 // HealthCheck provides a simple health check endpoint
 func (h *Handlers) HealthCheck(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-cache")
 	w.WriteHeader(http.StatusOK)
 
 	response := map[string]interface{}{
@@ -99,21 +71,23 @@ func (h *Handlers) HealthCheck(w http.ResponseWriter, r *http.Request) {
 		"environment": h.cfg.Environment,
 	}
 
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding JSON: %v", err)
+	}
 }
 
 // GitHubRepoLastUpdatedHTML returns the last update time from GitHub repository as HTML
 func (h *Handlers) GitHubRepoLastUpdatedHTML(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	w.Header().Set("Cache-Control", "max-age=300") // Cache for 5 minutes
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Cache-Control", "public, max-age=300, stale-while-revalidate=600") // Optimized caching
+
+	// Create HTTP client with optimized settings
+	client := &http.Client{
+		Timeout: 8 * time.Second, // Reduced timeout for better responsiveness
+	}
 
 	// GitHub API endpoint for repository information
 	apiURL := fmt.Sprintf("https://api.github.com/repos/%s", h.cfg.GitHubRepo)
-
-	// Create HTTP client with timeout
-	client := &http.Client{
-		Timeout: 10 * time.Second,
-	}
 
 	// Create request
 	req, err := http.NewRequest("GET", apiURL, nil)
@@ -123,11 +97,12 @@ func (h *Handlers) GitHubRepoLastUpdatedHTML(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	// Add GitHub token if available
+	// Add optimized headers
 	if h.cfg.GitHubToken != "" {
 		req.Header.Set("Authorization", "token "+h.cfg.GitHubToken)
 	}
 	req.Header.Set("Accept", "application/vnd.github.v3+json")
+	req.Header.Set("User-Agent", "0xjah-website/1.0")
 
 	// Make request
 	resp, err := client.Do(req)
@@ -173,49 +148,50 @@ func (h *Handlers) GitHubRepoLastUpdatedHTML(w http.ResponseWriter, r *http.Requ
 	// Return formatted HTML
 	relativeTime := getRelativeTime(parsedTime)
 	formattedTime := parsedTime.Format("2006-01-02 15:04:05 MST")
-
 	html := fmt.Sprintf(`<span title="%s">%s</span>`, formattedTime, relativeTime)
+
 	w.Write([]byte(html))
 }
 
 // GitHubRepoLastUpdated returns the last update time from GitHub repository
 func (h *Handlers) GitHubRepoLastUpdated(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Cache-Control", "max-age=300") // Cache for 5 minutes
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Cache-Control", "public, max-age=300, stale-while-revalidate=600") // Optimized caching
+
+	// Create HTTP client with optimized settings
+	client := &http.Client{
+		Timeout: 8 * time.Second, // Reduced timeout
+	}
 
 	// GitHub API endpoint for repository information
 	apiURL := fmt.Sprintf("https://api.github.com/repos/%s", h.cfg.GitHubRepo)
 
-	// Create HTTP client with timeout
-	client := &http.Client{
-		Timeout: 10 * time.Second,
-	}
-
 	// Create request
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
-		http.Error(w, "Failed to create request", http.StatusInternalServerError)
+		http.Error(w, `{"error":"Failed to create request"}`, http.StatusInternalServerError)
 		log.Printf("Error creating GitHub API request: %v", err)
 		return
 	}
 
-	// Add GitHub token if available
+	// Add optimized headers
 	if h.cfg.GitHubToken != "" {
 		req.Header.Set("Authorization", "token "+h.cfg.GitHubToken)
 	}
 	req.Header.Set("Accept", "application/vnd.github.v3+json")
+	req.Header.Set("User-Agent", "0xjah-website/1.0")
 
 	// Make request
 	resp, err := client.Do(req)
 	if err != nil {
-		http.Error(w, "Failed to fetch repository data", http.StatusInternalServerError)
+		http.Error(w, `{"error":"Failed to fetch repository data"}`, http.StatusInternalServerError)
 		log.Printf("Error fetching GitHub repository data: %v", err)
 		return
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		http.Error(w, "GitHub API request failed", http.StatusInternalServerError)
+		http.Error(w, `{"error":"GitHub API request failed"}`, http.StatusInternalServerError)
 		log.Printf("GitHub API returned status: %d", resp.StatusCode)
 		return
 	}
@@ -227,7 +203,7 @@ func (h *Handlers) GitHubRepoLastUpdated(w http.ResponseWriter, r *http.Request)
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&repoData); err != nil {
-		http.Error(w, "Failed to parse response", http.StatusInternalServerError)
+		http.Error(w, `{"error":"Failed to parse response"}`, http.StatusInternalServerError)
 		log.Printf("Error parsing GitHub API response: %v", err)
 		return
 	}
@@ -241,7 +217,7 @@ func (h *Handlers) GitHubRepoLastUpdated(w http.ResponseWriter, r *http.Request)
 	// Parse and format the timestamp
 	parsedTime, err := time.Parse(time.RFC3339, lastUpdate)
 	if err != nil {
-		http.Error(w, "Failed to parse timestamp", http.StatusInternalServerError)
+		http.Error(w, `{"error":"Failed to parse timestamp"}`, http.StatusInternalServerError)
 		log.Printf("Error parsing GitHub timestamp: %v", err)
 		return
 	}
@@ -256,7 +232,6 @@ func (h *Handlers) GitHubRepoLastUpdated(w http.ResponseWriter, r *http.Request)
 	if err := json.NewEncoder(w).Encode(response); err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		log.Printf("Error encoding JSON: %v", err)
-		return
 	}
 }
 

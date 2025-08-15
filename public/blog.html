@@ -21,7 +21,7 @@
     <div class="site-container">
       <div class="about-me">
         <h1 style="display: flex; justify-content: space-between; align-items: center">
-          <a style="border-bottom: none" href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">
+          <a style="border-bottom: none" href="/">
             0xjah.me | Blog
           </a>
           <div class="kec-nav-container">
@@ -35,10 +35,10 @@
             />
             <div class="mobile-nav-overlay" id="mobile-nav">
               <ul>
-                <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
-                <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
+                <li><a href="/">/me/</a></li>
+                <li><a href="/blog">/log/</a></li>
                 <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
-                <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
+                <li><a href="/misc">/msc/</a></li>
                 <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px">
                   <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer">lainon.life</a>
                 </li>
@@ -107,6 +107,18 @@
               Whispers in the Ether: All About Lily Chou-Chou - Jun 07, 2023
             </a>
           </li>
+          <li data-category="religion">
+            <a
+              href="/blog?post=post_muslim_support"
+              hx-get="/blog?post=post_muslim_support"
+              hx-target="#blog-post-content"
+              hx-push-url="true"
+              hx-swap="innerHTML"
+              class="post-link"
+            >
+              The Obligation to Support Muslims - Jul 30, 2025
+            </a>
+          </li>
           <li data-category="philosophy">
             <a
               href="/blog?post=post_privacy"
@@ -124,7 +136,7 @@
         <div id="blog-post-content" style="margin-top: 20px"></div>
 
         <div id="end-button-container">
-          <button hx-get="/blog" hx-target=".site-container" hx-push-url="true" id="back-to-top-btn">
+          <button onclick="window.location.href='/blog'" id="back-to-top-btn">
             ↑ Back to Top
           </button>
         </div>
@@ -136,10 +148,10 @@
         <h2>Site navigation</h2>
         <div class="nav-links">
           <ul>
-            <li><a href="/" hx-get="/" hx-target=".site-container" hx-push-url="true">/me/</a></li>
-            <li><a href="/blog" hx-get="/blog" hx-target=".site-container" hx-push-url="true">/log/</a></li>
+            <li><a href="/">/me/</a></li>
+            <li><a href="/blog">/log/</a></li>
             <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
-            <li><a href="/misc" hx-get="/misc" hx-target=".site-container" hx-push-url="true">/msc/</a></li>
+            <li><a href="/misc">/msc/</a></li>
           </ul>
         </div>
 
@@ -254,7 +266,7 @@
 
         if (post) {
           htmx
-            .ajax("GET", `/blog?post=${post}`, {
+            .ajax("GET", `/partials/blog/${post}.html`, {
               target: "#blog-post-content",
               swap: "innerHTML",
             })
@@ -301,7 +313,7 @@
       // Additional event handler to ensure button shows when content is loaded
       htmx.on("htmx:afterRequest", e => {
         const url = e.detail.requestConfig.path;
-        if (url && url.includes("/blog?post=")) {
+        if (url && url.includes("/partials/blog/")) {
           setTimeout(() => {
             const endButtonContainer = document.getElementById("end-button-container");
             if (endButtonContainer) {
@@ -314,6 +326,14 @@
       // Handle URL push after successful request
       htmx.on("htmx:pushedIntoHistory", e => {
         console.log("URL pushed:", e.detail.path);
+      });
+
+      // Handle Ctrl+R reload to redirect to /blog
+      document.addEventListener("keydown", function(event) {
+        if ((event.ctrlKey || event.metaKey) && event.key === "r") {
+          event.preventDefault();
+          window.location.href = "/blog";
+        }
       });
     </script>
   </body>

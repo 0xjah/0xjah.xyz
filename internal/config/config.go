@@ -17,6 +17,8 @@ type Config struct {
 	CORSOrigins    string
 	GitHubToken    string
 	GitHubRepo     string
+	MaxConnections int
+	EnableGzip     bool
 }
 
 // Load loads configuration from environment variables
@@ -27,13 +29,22 @@ func Load() *Config {
 		Environment:    getEnv("ENV", "development"),
 		LogLevel:       getEnv("LOG_LEVEL", "info"),
 		StaticCacheTTL: getEnvAsInt("STATIC_CACHE_TTL", 31536000), // 1 year
-		HTMLCacheTTL:   getEnvAsInt("HTML_CACHE_TTL", 0),          // no cache
+		HTMLCacheTTL:   getEnvAsInt("HTML_CACHE_TTL", 3600),       // 1 hour in production
 		CORSOrigins:    getEnv("CORS_ORIGINS", "*"),
 		GitHubToken:    getEnv("GITHUB_TOKEN", ""),
 		GitHubRepo:     getEnv("GITHUB_REPO", "0xjah/0xjah.xyz"),
+		MaxConnections: getEnvAsInt("MAX_CONNECTIONS", 1000),
+		EnableGzip:     getEnvAsBool("ENABLE_GZIP", true),
 	}
 
-	log.Printf("Server configuration loaded - Port: %s, Environment: %s", cfg.Port, cfg.Environment)
+	// Optimize cache settings for production
+	if cfg.IsProduction() {
+		cfg.HTMLCacheTTL = getEnvAsInt("HTML_CACHE_TTL", 3600) // 1 hour cache for HTML in production
+	} else {
+		cfg.HTMLCacheTTL = 0 // No cache in development
+	}
+
+	log.Printf("Server configuration loaded - Port: %s, Environment: %s, Gzip: %t", cfg.Port, cfg.Environment, cfg.EnableGzip)
 	return cfg
 }
 
@@ -60,6 +71,16 @@ func getEnvAsInt(key string, fallback int) int {
 	if value := os.Getenv(key); value != "" {
 		if intVal, err := strconv.Atoi(value); err == nil {
 			return intVal
+		}
+	}
+	return fallback
+}
+
+// getEnvAsBool gets an environment variable as boolean with a fallback value
+func getEnvAsBool(key string, fallback bool) bool {
+	if value := os.Getenv(key); value != "" {
+		if boolVal, err := strconv.ParseBool(value); err == nil {
+			return boolVal
 		}
 	}
 	return fallback

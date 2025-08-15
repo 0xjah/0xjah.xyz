@@ -1,12 +1,55 @@
 package middleware
 
 import (
+	"compress/gzip"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 
 	"0xjah.me/internal/config"
 )
+
+// Compression middleware for gzip compression
+type gzipResponseWriter struct {
+	http.ResponseWriter
+	Writer io.Writer
+}
+
+func (w gzipResponseWriter) Write(b []byte) (int, error) {
+	return w.Writer.Write(b)
+}
+
+// Compression adds gzip compression for responses
+func Compression(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Check if client supports gzip
+		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// Skip compression for small files or already compressed content
+		if strings.HasSuffix(r.URL.Path, ".gz") ||
+			strings.HasSuffix(r.URL.Path, ".zip") ||
+			strings.HasSuffix(r.URL.Path, ".png") ||
+			strings.HasSuffix(r.URL.Path, ".jpg") ||
+			strings.HasSuffix(r.URL.Path, ".gif") ||
+			strings.HasSuffix(r.URL.Path, ".webp") {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		w.Header().Set("Content-Encoding", "gzip")
+		w.Header().Set("Vary", "Accept-Encoding")
+
+		gz := gzip.NewWriter(w)
+		defer gz.Close()
+
+		gzw := gzipResponseWriter{ResponseWriter: w, Writer: gz}
+		next.ServeHTTP(gzw, r)
+	})
+}
 
 // SecurityHeaders adds security headers to all responses
 func SecurityHeaders(next http.Handler) http.Handler {

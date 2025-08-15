@@ -203,7 +203,7 @@ button:hover {
   display: flex;
   position: absolute;
   white-space: nowrap;
-  animation: marquee 40s linear infinite;
+  animation: marquee 60s linear infinite;
 }
 
 .marquee-container {
@@ -213,8 +213,8 @@ button:hover {
 }
 
 .marquee {
-  display: inline-block;
-  animation: marquee 5s linear infinite;
+  display: inline-flex;
+  white-space: nowrap;
 }
 
 @keyframes marquee {

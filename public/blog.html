@@ -21,9 +21,7 @@
     <div class="site-container">
       <div class="about-me">
         <h1 style="display: flex; justify-content: space-between; align-items: center">
-          <a style="border-bottom: none" href="/">
-            0xjah.me | Blog
-          </a>
+          <a style="border-bottom: none" href="/">0xjah.me | Blog</a>
           <div class="kec-nav-container">
             <img
               src="/static/img/kec.png"
@@ -136,9 +134,7 @@
         <div id="blog-post-content" style="margin-top: 20px"></div>
 
         <div id="end-button-container">
-          <button onclick="window.location.href='/blog'" id="back-to-top-btn">
-            ↑ Back to Top
-          </button>
+          <button onclick="window.location.href='/blog'" id="back-to-top-btn">↑ Back to Top</button>
         </div>
       </div>
 
@@ -329,7 +325,7 @@
       });
 
       // Handle Ctrl+R reload to redirect to /blog
-      document.addEventListener("keydown", function(event) {
+      document.addEventListener("keydown", function (event) {
         if ((event.ctrlKey || event.metaKey) && event.key === "r") {
           event.preventDefault();
           window.location.href = "/blog";

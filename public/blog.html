@@ -139,8 +139,15 @@
       </div>
 
       <div class="status">
-        <div id="status-header" hx-get="/partials/ui/status_header.html" hx-trigger="load" hx-swap="innerHTML"></div>
-
+        <div
+          id="status-header"
+          hx-get="/api/discord-status"
+          hx-trigger="load, every 30s"
+          hx-swap="innerHTML"
+          hx-indicator="#status-loading"
+        >
+          <div id="status-loading" class="htmx-indicator">Loading status...</div>
+        </div>
         <h2>Site navigation</h2>
         <div class="nav-links">
           <ul>

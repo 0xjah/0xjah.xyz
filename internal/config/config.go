@@ -17,6 +17,8 @@ type Config struct {
 	CORSOrigins    string
 	GitHubToken    string
 	GitHubRepo     string
+	DiscordID      string
+	FallbackStatus string
 	MaxConnections int
 	EnableGzip     bool
 }
@@ -33,6 +35,8 @@ func Load() *Config {
 		CORSOrigins:    getEnv("CORS_ORIGINS", "*"),
 		GitHubToken:    getEnv("GITHUB_TOKEN", ""),
 		GitHubRepo:     getEnv("GITHUB_REPO", "0xjah/0xjah.xyz"),
+		DiscordID:      getEnv("DISCORD_ID", "763769303681335316"),
+		FallbackStatus: getEnv("FALLBACK_STATUS", "online • coding"),
 		MaxConnections: getEnvAsInt("MAX_CONNECTIONS", 1000),
 		EnableGzip:     getEnvAsBool("ENABLE_GZIP", true),
 	}

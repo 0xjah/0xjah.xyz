@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -274,4 +275,189 @@ func getRelativeTime(t time.Time) string {
 		}
 		return fmt.Sprintf("%d months ago", months)
 	}
+}
+
+// DiscordStatus fetches Discord status from Lanyard API and returns as HTML
+func (h *Handlers) DiscordStatus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Lanyard API endpoint
+	apiURL := fmt.Sprintf("https://api.lanyard.rest/v1/users/%s", h.cfg.DiscordID)
+
+	// Create HTTP client with timeout
+	client := &http.Client{Timeout: 5 * time.Second}
+
+	req, err := http.NewRequest("GET", apiURL, nil)
+	if err != nil {
+		log.Printf("Error creating Discord API request: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(w, `<div class="status-header"><h2>Status</h2><p class="quote error">Status unavailable</p></div>`)
+		return
+	}
+
+	req.Header.Set("User-Agent", "0xjah.xyz/1.0")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Printf("Error fetching Discord status: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(w, `<div class="status-header"><h2>Status</h2><p class="quote error">Status unavailable</p></div>`)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("Error reading Discord API response: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(w, `<div class="status-header"><h2>Status</h2><p class="quote error">Status unavailable</p></div>`)
+		return
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("Discord API returned status: %d", resp.StatusCode)
+
+		// Try to parse the error response for better debugging
+		var errorResp struct {
+			Success bool `json:"success"`
+			Error   struct {
+				Code    string `json:"code"`
+				Message string `json:"message"`
+			} `json:"error"`
+		}
+
+		if err := json.Unmarshal(body, &errorResp); err == nil {
+			log.Printf("Discord API error: %s - %s", errorResp.Error.Code, errorResp.Error.Message)
+
+			// If user is not monitored, show a fallback status
+			if errorResp.Error.Code == "user_not_monitored" {
+				html := fmt.Sprintf(`<div class="status-header" hx-classes="add fade-in:200ms">
+					<h2>Status</h2>
+					<p class="quote" 
+					   hx-on:click="htmx.trigger(this.parentElement, 'hx:refresh'); htmx.trigger('#repo-timestamp', 'refresh')"
+					   style="cursor: pointer"
+					   title="Click to refresh">
+						%s
+					</p>
+					<small style="opacity: 0.6; font-size: 0.75em; display: block; margin-top: 4px">
+						Last updated:
+						<span id="repo-timestamp"
+							  hx-get="/api/github-last-updated-html"
+							  hx-trigger="load, every 5m, refresh"
+							  hx-swap="innerHTML"
+							  title="Last GitHub repository update">
+							loading...
+						</span>
+					</small>
+				</div>`, h.cfg.FallbackStatus)
+				fmt.Fprint(w, html)
+				return
+			}
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(w, `<div class="status-header"><h2>Status</h2><p class="quote error">Status unavailable</p></div>`)
+		return
+	}
+
+	// Parse Lanyard API response
+	var lanyardResp struct {
+		Success bool `json:"success"`
+		Data    struct {
+			DiscordUser struct {
+				Username string `json:"username"`
+			} `json:"discord_user"`
+			DiscordStatus string `json:"discord_status"`
+			Activities    []struct {
+				Name    string `json:"name"`
+				Type    int    `json:"type"`
+				Details string `json:"details,omitempty"`
+				State   string `json:"state,omitempty"`
+			} `json:"activities"`
+			Listening struct {
+				Song   string `json:"song"`
+				Artist string `json:"artist"`
+				Album  string `json:"album"`
+			} `json:"spotify,omitempty"`
+		} `json:"data"`
+	}
+
+	if err := json.Unmarshal(body, &lanyardResp); err != nil {
+		log.Printf("Error parsing Discord status response: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(w, `<div class="status-header"><h2>Status</h2><p class="quote error">Status unavailable</p></div>`)
+		return
+	}
+
+	if !lanyardResp.Success {
+		log.Println("Discord API response was not successful")
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(w, `<div class="status-header"><h2>Status</h2><p class="quote error">Status unavailable</p></div>`)
+		return
+	}
+
+	// Determine status info
+	status := lanyardResp.Data.DiscordStatus
+	if status == "" {
+		status = "offline"
+	}
+
+	// Check for Spotify activity
+	var activity string
+	var listening string
+
+	if lanyardResp.Data.Listening.Song != "" {
+		listening = fmt.Sprintf("listening to %s by %s", lanyardResp.Data.Listening.Song, lanyardResp.Data.Listening.Artist)
+	} else {
+		// Check other activities
+		for _, act := range lanyardResp.Data.Activities {
+			if act.Type == 0 { // Playing
+				activity = fmt.Sprintf("playing %s", act.Name)
+				break
+			} else if act.Type == 2 { // Listening (Spotify should be caught above)
+				activity = fmt.Sprintf("listening to %s", act.Name)
+				break
+			} else if act.Type == 3 { // Watching
+				activity = fmt.Sprintf("watching %s", act.Name)
+				break
+			}
+		}
+	}
+
+	// Build status text
+	statusText := status
+	if listening != "" {
+		statusText = fmt.Sprintf("%s • %s", status, listening)
+	} else if activity != "" {
+		statusText = fmt.Sprintf("%s • %s", status, activity)
+	}
+
+	// Return HTML response with Discord status
+	html := fmt.Sprintf(`<div class="status-header" hx-classes="add fade-in:200ms">
+		<h2>Status</h2>
+		<p class="quote" 
+		   hx-on:click="htmx.trigger(this.parentElement, 'hx:refresh'); htmx.trigger('#repo-timestamp', 'refresh')"
+		   style="cursor: pointer"
+		   title="Click to refresh">
+			%s
+		</p>
+		<small style="opacity: 0.6; font-size: 0.75em; display: block; margin-top: 4px">
+			Last updated:
+			<span id="repo-timestamp"
+				  hx-get="/api/github-last-updated-html"
+				  hx-trigger="load, every 5m, refresh"
+				  hx-swap="innerHTML"
+				  title="Last GitHub repository update">
+				loading...
+			</span>
+		</small>
+	</div>`, statusText)
+
+	fmt.Fprint(w, html)
 }

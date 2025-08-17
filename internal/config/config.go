@@ -21,6 +21,11 @@ type Config struct {
 	FallbackStatus string
 	MaxConnections int
 	EnableGzip     bool
+	R2Endpoint     string
+	R2AccessKey    string
+	R2SecretKey    string
+	R2Bucket       string
+	R2PublicURL    string
 }
 
 // Load loads configuration from environment variables
@@ -39,6 +44,11 @@ func Load() *Config {
 		FallbackStatus: getEnv("FALLBACK_STATUS", "online • coding"),
 		MaxConnections: getEnvAsInt("MAX_CONNECTIONS", 1000),
 		EnableGzip:     getEnvAsBool("ENABLE_GZIP", true),
+		R2Endpoint:     getEnv("R2_ENDPOINT", ""),
+		R2AccessKey:    getEnv("R2_ACCESS_KEY", ""),
+		R2SecretKey:    getEnv("R2_SECRET_KEY", ""),
+		R2Bucket:       getEnv("R2_BUCKET", ""),
+		R2PublicURL:    getEnv("R2_PUBLIC_URL", ""),
 	}
 
 	// Optimize cache settings for production

@@ -6,7 +6,13 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"time"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 
 	"0xjah.me/internal/config"
 )
@@ -37,6 +43,8 @@ func (h *Handlers) Routes(w http.ResponseWriter, r *http.Request) {
 		}
 	case "/misc":
 		http.ServeFile(w, r, "public/misc.html")
+	case "/gallery":
+		http.ServeFile(w, r, "public/gallery.html")
 	default:
 		http.NotFound(w, r)
 	}
@@ -460,4 +468,75 @@ func (h *Handlers) DiscordStatus(w http.ResponseWriter, r *http.Request) {
 	</div>`, statusText)
 
 	fmt.Fprint(w, html)
+}
+
+// Gallery serves gallery images from Cloudflare R2
+func (h *Handlers) Gallery(w http.ResponseWriter, r *http.Request) {
+	// Set CORS headers for API
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
+	// Check if R2 is configured
+	if h.cfg.R2AccessKey == "" || h.cfg.R2SecretKey == "" || h.cfg.R2Bucket == "" {
+		http.Error(w, `{"error": "R2 not configured"}`, http.StatusServiceUnavailable)
+		return
+	}
+
+	// Create AWS session for R2
+	sess, err := session.NewSession(&aws.Config{
+		Region:           aws.String("auto"), // R2 uses 'auto' as region
+		Endpoint:         aws.String(h.cfg.R2Endpoint),
+		Credentials:      credentials.NewStaticCredentials(h.cfg.R2AccessKey, h.cfg.R2SecretKey, ""),
+		S3ForcePathStyle: aws.Bool(true),
+		DisableSSL:       aws.Bool(false),
+	})
+	if err != nil {
+		log.Printf("Failed to create R2 session: %v", err)
+		http.Error(w, `{"error": "Failed to connect to R2"}`, http.StatusInternalServerError)
+		return
+	}
+
+	// Create S3 service client
+	svc := s3.New(sess)
+
+	// List objects in the bucket
+	result, err := svc.ListObjects(&s3.ListObjectsInput{
+		Bucket: aws.String(h.cfg.R2Bucket),
+	})
+	if err != nil {
+		log.Printf("Failed to list R2 objects: %v", err)
+		http.Error(w, `{"error": "Failed to fetch images"}`, http.StatusInternalServerError)
+		return
+	}
+
+	// Filter image files and build response
+	var images []map[string]string
+	for _, item := range result.Contents {
+		if item.Key == nil {
+			continue
+		}
+
+		key := *item.Key
+		// Check if it's an image file
+		if strings.HasSuffix(strings.ToLower(key), ".jpg") ||
+			strings.HasSuffix(strings.ToLower(key), ".jpeg") ||
+			strings.HasSuffix(strings.ToLower(key), ".png") ||
+			strings.HasSuffix(strings.ToLower(key), ".gif") ||
+			strings.HasSuffix(strings.ToLower(key), ".webp") {
+
+			imageURL := fmt.Sprintf("%s/%s", strings.TrimRight(h.cfg.R2PublicURL, "/"), key)
+			images = append(images, map[string]string{
+				"key":  key,
+				"url":  imageURL,
+				"name": strings.TrimSuffix(key, fmt.Sprintf(".%s", strings.Split(key, ".")[len(strings.Split(key, "."))-1])),
+			})
+		}
+	}
+
+	// Return JSON response
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"images": images,
+		"count":  len(images),
+	})
 }

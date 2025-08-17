@@ -62,11 +62,11 @@
           transform: none;
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
-        
+
         .gallery-item:hover img {
           transform: none;
         }
-        
+
         .gallery-item:hover .gallery-item-overlay {
           opacity: 0;
         }
@@ -94,7 +94,7 @@
         .gallery-item img {
           transition: none; /* Disable transitions on mobile for better performance */
         }
-        
+
         .gallery-item:hover img {
           transform: none;
         }
@@ -165,7 +165,7 @@
         html {
           scroll-behavior: smooth;
         }
-        
+
         body {
           -webkit-overflow-scrolling: touch;
         }
@@ -421,12 +421,12 @@
         let touchStartY = 0;
         let touchStartX = 0;
 
-        const handleTouchStart = (e) => {
+        const handleTouchStart = e => {
           touchStartY = e.touches[0].clientY;
           touchStartX = e.touches[0].clientX;
         };
 
-        const handleTouchEnd = (e) => {
+        const handleTouchEnd = e => {
           if (!touchStartY || !touchStartX) return;
 
           const touchEndY = e.changedTouches[0].clientY;
@@ -444,8 +444,8 @@
         };
 
         // Add event listeners for touch gestures
-        modal.addEventListener('touchstart', handleTouchStart, { passive: true });
-        modal.addEventListener('touchend', handleTouchEnd, { passive: true });
+        modal.addEventListener("touchstart", handleTouchStart, { passive: true });
+        modal.addEventListener("touchend", handleTouchEnd, { passive: true });
       }
 
       function closeModal() {
@@ -456,11 +456,11 @@
         // Clean up touch event listeners
         const newModal = modal.cloneNode(true);
         modal.parentNode.replaceChild(newModal, modal);
-        
+
         // Re-add click listener to new modal
-        newModal.addEventListener('click', closeModal);
-        const newModalImg = newModal.querySelector('#modalImage');
-        newModalImg.addEventListener('click', (e) => e.stopPropagation());
+        newModal.addEventListener("click", closeModal);
+        const newModalImg = newModal.querySelector("#modalImage");
+        newModalImg.addEventListener("click", e => e.stopPropagation());
       }
 
       // Event listeners
@@ -496,12 +496,12 @@
   <body>
     <div class="site-container">
       <main class="gallery-container">
-        <h1 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-          <a style="border-bottom: none; flex: 1; min-width: 200px;" href="/">0xjah.me | Gallery</a>
+        <h1 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px">
+          <a style="border-bottom: none; flex: 1; min-width: 200px" href="/">0xjah.me | Gallery</a>
           <div class="kec-nav-container">
             <img
               src="/static/img/kec.png"
-              style="width: 40px; height: 40px; object-fit: contain;"
+              style="width: 40px; height: 40px; object-fit: contain"
               alt="Kec Group Logo"
               class="kec-nav-trigger"
               onclick="toggleMobileNav()"

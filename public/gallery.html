@@ -19,6 +19,14 @@
         columns: 4;
         column-gap: 20px;
         margin-top: 20px;
+        will-change: scroll-position; /* Optimize for scrolling performance */
+      }
+
+      /* Use CSS containment for better performance on mobile */
+      @supports (contain: layout) {
+        .gallery-item {
+          contain: layout style;
+        }
       }
 
       .gallery-item {
@@ -34,6 +42,34 @@
         margin-bottom: 20px;
         width: 100%;
         display: inline-block;
+        background: oklch(12% 0 0);
+      }
+
+      .gallery-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Touch-friendly interactions for mobile */
+      .gallery-item:active {
+        transform: translateY(-2px) scale(0.98);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+      }
+
+      @media (hover: none) and (pointer: coarse) {
+        /* Mobile devices - disable hover effects and use tap animations */
+        .gallery-item:hover {
+          transform: none;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .gallery-item:hover img {
+          transform: none;
+        }
+        
+        .gallery-item:hover .gallery-item-overlay {
+          opacity: 0;
+        }
       }
 
       .gallery-item:hover {
@@ -46,10 +82,22 @@
         height: auto;
         display: block;
         transition: transform 0.3s ease;
+        border-radius: inherit;
       }
 
       .gallery-item:hover img {
         transform: scale(1.05);
+      }
+
+      /* Optimize images for mobile */
+      @media (max-width: 768px) {
+        .gallery-item img {
+          transition: none; /* Disable transitions on mobile for better performance */
+        }
+        
+        .gallery-item:hover img {
+          transform: none;
+        }
       }
 
       .gallery-item-overlay {
@@ -96,6 +144,33 @@
         font-size: 0.9rem;
       }
 
+      /* Skeleton loading animation for images */
+      .gallery-item img:not([src]) {
+        background: linear-gradient(90deg, oklch(15% 0 0) 25%, oklch(20% 0 0) 50%, oklch(15% 0 0) 75%);
+        background-size: 200% 100%;
+        animation: skeleton 2s infinite;
+      }
+
+      @keyframes skeleton {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      /* Smooth scroll for mobile */
+      @media (max-width: 768px) {
+        html {
+          scroll-behavior: smooth;
+        }
+        
+        body {
+          -webkit-overflow-scrolling: touch;
+        }
+      }
+
       /* Modal styles for fullscreen view */
       .modal {
         display: none;
@@ -107,12 +182,24 @@
         height: 100%;
         background-color: rgba(0, 0, 0, 0.9);
         cursor: pointer;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
       }
 
       .modal.active {
         display: flex;
         align-items: center;
         justify-content: center;
+        animation: modalFadeIn 0.3s ease;
+      }
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
 
       .modal-content {
@@ -120,6 +207,7 @@
         max-height: 90%;
         object-fit: contain;
         border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       }
 
       .modal-close {
@@ -131,36 +219,105 @@
         font-weight: bold;
         cursor: pointer;
         transition: color 0.3s ease;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
       }
 
       .modal-close:hover {
         color: #ff6b6b;
+        background: rgba(0, 0, 0, 0.7);
       }
 
       @media (max-width: 1200px) {
         .gallery-grid {
           columns: 3;
+          column-gap: 16px;
         }
       }
 
       @media (max-width: 768px) {
         .gallery-grid {
           columns: 2;
-          column-gap: 15px;
+          column-gap: 12px;
         }
 
         .gallery-item {
-          margin-bottom: 15px;
+          margin-bottom: 12px;
+          border-radius: 6px;
         }
 
         .gallery-container {
+          padding: 12px;
+        }
+
+        .gallery-item-overlay {
           padding: 10px;
+        }
+
+        .gallery-item-title {
+          font-size: 0.8rem;
+        }
+
+        .modal-close {
+          top: 15px;
+          right: 25px;
+          font-size: 32px;
         }
       }
 
       @media (max-width: 480px) {
         .gallery-grid {
+          columns: 2;
+          column-gap: 8px;
+        }
+
+        .gallery-item {
+          margin-bottom: 8px;
+          border-radius: 4px;
+        }
+
+        .gallery-container {
+          padding: 8px;
+        }
+
+        .gallery-item-overlay {
+          padding: 8px;
+        }
+
+        .gallery-item-title {
+          font-size: 0.7rem;
+        }
+
+        .modal-close {
+          top: 10px;
+          right: 15px;
+          font-size: 28px;
+        }
+
+        .modal-content {
+          max-width: 95%;
+          max-height: 85%;
+        }
+      }
+
+      @media (max-width: 320px) {
+        .gallery-grid {
           columns: 1;
+          column-gap: 0;
+        }
+
+        .gallery-item {
+          margin-bottom: 10px;
+        }
+
+        .gallery-container {
+          padding: 6px;
         }
       }
     </style>
@@ -221,7 +378,7 @@
             .map(
               image => `
             <div class="gallery-item" onclick="openModal('${image.url}')">
-              <img src="${image.url}" alt="${image.name}" loading="lazy" />
+              <img src="${image.url}" alt="${image.name}" loading="lazy" decoding="async" />
               <div class="gallery-item-overlay">
                 <p class="gallery-item-title">${image.name}</p>
               </div>
@@ -259,12 +416,51 @@
 
         // Prevent body scroll
         document.body.style.overflow = "hidden";
+
+        // Add touch gesture support for mobile
+        let touchStartY = 0;
+        let touchStartX = 0;
+
+        const handleTouchStart = (e) => {
+          touchStartY = e.touches[0].clientY;
+          touchStartX = e.touches[0].clientX;
+        };
+
+        const handleTouchEnd = (e) => {
+          if (!touchStartY || !touchStartX) return;
+
+          const touchEndY = e.changedTouches[0].clientY;
+          const touchEndX = e.changedTouches[0].clientX;
+          const deltaY = touchStartY - touchEndY;
+          const deltaX = touchStartX - touchEndX;
+
+          // If swipe down or up with sufficient distance, close modal
+          if (Math.abs(deltaY) > 50 && Math.abs(deltaX) < 100) {
+            closeModal();
+          }
+
+          touchStartY = 0;
+          touchStartX = 0;
+        };
+
+        // Add event listeners for touch gestures
+        modal.addEventListener('touchstart', handleTouchStart, { passive: true });
+        modal.addEventListener('touchend', handleTouchEnd, { passive: true });
       }
 
       function closeModal() {
         const modal = document.getElementById("imageModal");
         modal.classList.remove("active");
         document.body.style.overflow = "auto";
+
+        // Clean up touch event listeners
+        const newModal = modal.cloneNode(true);
+        modal.parentNode.replaceChild(newModal, modal);
+        
+        // Re-add click listener to new modal
+        newModal.addEventListener('click', closeModal);
+        const newModalImg = newModal.querySelector('#modalImage');
+        newModalImg.addEventListener('click', (e) => e.stopPropagation());
       }
 
       // Event listeners
@@ -300,12 +496,12 @@
   <body>
     <div class="site-container">
       <main class="gallery-container">
-        <h1 style="display: flex; justify-content: space-between; align-items: center">
-          <a style="border-bottom: none" href="/">0xjah.me | Gallery</a>
+        <h1 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <a style="border-bottom: none; flex: 1; min-width: 200px;" href="/">0xjah.me | Gallery</a>
           <div class="kec-nav-container">
             <img
               src="/static/img/kec.png"
-              style="width: 40px"
+              style="width: 40px; height: 40px; object-fit: contain;"
               alt="Kec Group Logo"
               class="kec-nav-trigger"
               onclick="toggleMobileNav()"

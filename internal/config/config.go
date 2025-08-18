@@ -26,6 +26,8 @@ type Config struct {
 	R2SecretKey    string
 	R2Bucket       string
 	R2PublicURL    string
+	OllamaHost     string
+	OllamaModel    string
 }
 
 // Load loads configuration from environment variables
@@ -49,6 +51,8 @@ func Load() *Config {
 		R2SecretKey:    getEnv("R2_SECRET_KEY", ""),
 		R2Bucket:       getEnv("R2_BUCKET", ""),
 		R2PublicURL:    getEnv("R2_PUBLIC_URL", ""),
+		OllamaHost:     getEnv("OLLAMA_HOST", "http://localhost:11434"),
+		OllamaModel:    getEnv("OLLAMA_MODEL", "llama3.2:1b"),
 	}
 
 	// Optimize cache settings for production

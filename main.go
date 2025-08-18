@@ -30,6 +30,7 @@ func main() {
 	mux.HandleFunc("/api/github-last-updated-html", h.GitHubRepoLastUpdatedHTML)
 	mux.HandleFunc("/api/discord-status", h.DiscordStatus)
 	mux.HandleFunc("/api/gallery", h.Gallery)
+	mux.HandleFunc("/api/lain-chat", h.LainChat)
 	mux.HandleFunc("/health", h.HealthCheck)
 
 	// Static files with aggressive caching

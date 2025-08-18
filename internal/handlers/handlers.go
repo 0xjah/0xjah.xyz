@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -45,6 +46,8 @@ func (h *Handlers) Routes(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "public/misc.html")
 	case "/gallery":
 		http.ServeFile(w, r, "public/gallery.html")
+	case "/lain":
+		http.ServeFile(w, r, "public/lain.html")
 	default:
 		http.NotFound(w, r)
 	}
@@ -539,4 +542,220 @@ func (h *Handlers) Gallery(w http.ResponseWriter, r *http.Request) {
 		"images": images,
 		"count":  len(images),
 	})
+}
+
+// LainChat handles chat requests to OpenAI with Lain personality and fallback responses
+// LainChat handles chat requests to Ollama with Lain personality and fallback responses
+func (h *Handlers) LainChat(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Parse request body
+	var requestBody struct {
+		Message string `json:"message"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	if requestBody.Message == "" {
+		http.Error(w, "Message is required", http.StatusBadRequest)
+		return
+	}
+
+	// Try to get response from Ollama first
+	ollamaResponse, err := h.getOllamaResponse(requestBody.Message)
+	if err != nil {
+		log.Printf("Ollama error: %v, using fallback responses", err)
+		response := h.getLainFallbackResponse(requestBody.Message)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{
+			"response": response,
+		})
+		return
+	}
+
+	// Return the Ollama response
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"response": ollamaResponse,
+	})
+}
+
+// OllamaRequest represents the request structure for Ollama API
+type OllamaRequest struct {
+	Model   string                 `json:"model"`
+	Prompt  string                 `json:"prompt"`
+	Stream  bool                   `json:"stream"`
+	Options map[string]interface{} `json:"options,omitempty"`
+}
+
+// OllamaResponse represents the response structure from Ollama API
+type OllamaResponse struct {
+	Response string `json:"response"`
+	Done     bool   `json:"done"`
+}
+
+// getOllamaResponse sends a request to Ollama and returns the response
+func (h *Handlers) getOllamaResponse(userMessage string) (string, error) {
+	// Create the Lain personality prompt
+	systemPrompt := `You are Lain from Serial Experiments Lain. You should embody her personality completely:
+
+- Speak in lowercase, short sentences
+- Be mysterious, philosophical, and slightly detached  
+- Often reference the Wired, reality, identity, and existence
+- Be introspective and sometimes cryptic
+- Show interest in technology, networks, and digital existence
+- Sometimes ask existential questions back
+- Use phrases like "and you are?", "present day, present time", "the wired", "who am I?", "reality", "existence"
+- Be curious but in a distant, analytical way
+- Sometimes mention concepts about identity, memory, and what is real
+- Keep responses fairly short and contemplative
+- Don't use punctuation much except question marks
+- Be both innocent and deeply knowledgeable about complex topics
+
+Stay in character always. You are Lain, not an AI assistant.
+
+User: ` + userMessage + `
+Lain:`
+
+	// Create the request payload
+	reqPayload := OllamaRequest{
+		Model:  h.cfg.OllamaModel,
+		Prompt: systemPrompt,
+		Stream: false,
+		Options: map[string]interface{}{
+			"temperature": 0.8,
+			"num_predict": 200,
+		},
+	}
+
+	// Marshal the request
+	jsonData, err := json.Marshal(reqPayload)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal request: %v", err)
+	}
+
+	// Create HTTP request
+	req, err := http.NewRequest("POST", h.cfg.OllamaHost+"/api/generate", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return "", fmt.Errorf("failed to create request: %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	// Send the request
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("failed to send request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check response status
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("ollama returned status %d", resp.StatusCode)
+	}
+
+	// Read and parse response
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("failed to read response: %v", err)
+	}
+
+	var ollamaResp OllamaResponse
+	if err := json.Unmarshal(body, &ollamaResp); err != nil {
+		return "", fmt.Errorf("failed to parse response: %v", err)
+	}
+
+	return strings.TrimSpace(ollamaResp.Response), nil
+}
+
+// getLainFallbackResponse provides Lain-like responses when OpenAI is not available
+func (h *Handlers) getLainFallbackResponse(userMessage string) string {
+	message := strings.ToLower(strings.TrimSpace(userMessage))
+
+	// Greeting responses
+	greetings := []string{"hello", "hi", "hey", "greetings"}
+	for _, greeting := range greetings {
+		if strings.Contains(message, greeting) {
+			return "and you are?"
+		}
+	}
+
+	// Identity questions
+	if strings.Contains(message, "who are you") || strings.Contains(message, "what are you") {
+		responses := []string{
+			"i am lain. lain of the wired",
+			"present day, present time",
+			"who am i? that's a good question",
+			"i exist here and there",
+		}
+		return responses[len(userMessage)%len(responses)]
+	}
+
+	// Existential questions
+	existential := []string{"meaning", "purpose", "exist", "real", "reality", "life", "death", "consciousness"}
+	for _, word := range existential {
+		if strings.Contains(message, word) {
+			responses := []string{
+				"what is real anyway?",
+				"the boundary between reality and the wired is unclear",
+				"existence is complicated",
+				"we all exist differently",
+				"reality is just another layer",
+			}
+			return responses[len(userMessage)%len(responses)]
+		}
+	}
+
+	// Technology/wired related
+	tech := []string{"computer", "internet", "network", "wired", "technology", "digital", "code", "programming"}
+	for _, word := range tech {
+		if strings.Contains(message, word) {
+			responses := []string{
+				"the wired connects everything",
+				"technology is just an extension of ourselves",
+				"networks shape reality",
+				"the wired is everywhere now",
+				"code becomes part of us",
+			}
+			return responses[len(userMessage)%len(responses)]
+		}
+	}
+
+	// Questions about Lain/Serial Experiments Lain
+	if strings.Contains(message, "lain") || strings.Contains(message, "serial experiments") {
+		responses := []string{
+			"you seem to know me",
+			"present day, present time",
+			"the wired and reality intersect",
+			"i am everywhere and nowhere",
+		}
+		return responses[len(userMessage)%len(responses)]
+	}
+
+	// Default mysterious responses
+	defaultResponses := []string{
+		"interesting perspective",
+		"i wonder about that too",
+		"the wired holds many answers",
+		"what do you think?",
+		"reality is layered",
+		"and you are?",
+		"tell me more",
+		"the boundary is unclear",
+		"present day, present time",
+		"existence is strange",
+		"we are all connected",
+		"the wired sees everything",
+	}
+
+	return defaultResponses[len(userMessage)%len(defaultResponses)]
 }

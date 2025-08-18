@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: lain-chatbot
+    env: docker
+    plan: starter # Use starter plan or higher for Docker support
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: HOST
+        value: 0.0.0.0
+      - key: ENV
+        value: production
+      - key: OLLAMA_HOST
+        value: http://localhost:11434
+      - key: OLLAMA_MODEL
+        value: llama3.2:1b
+      - key: LOG_LEVEL
+        value: info
+      - key: STATIC_CACHE_TTL
+        value: 31536000
+      - key: HTML_CACHE_TTL
+        value: 3600
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: ENABLE_GZIP
+        value: true
+    # Render needs at least 1GB RAM for Ollama
+    # Recommend Standard plan (2GB RAM) or higher
+    healthCheckPath: /health

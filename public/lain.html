@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" hx-boost="true">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lain Chat | 0xjah.me</title>
-    <link rel="icon" type="image/x-icon" href="/static/img/lain-head.jpg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="stylesheet" href="/static/css/lain-chat.css">
+    <link rel="icon" type="image/x-icon" href="/static/img/lain-head.jpg" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="stylesheet" href="/static/css/lain-chat.css" />
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
     <script defer>
       // Mobile navigation toggle
@@ -48,233 +48,258 @@
         }
       });
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="site-container">
-        <main class="about-me">
-            <h1 style="display: flex; justify-content: space-between; align-items: center">
-                <a style="border-bottom: none" href="/">0xjah.me</a>
-                <div class="kec-nav-container">
-                    <img
-                        src="/static/img/kec.png"
-                        style="width: 40px"
-                        alt="Kec Group Logo"
-                        class="kec-nav-trigger"
-                        onclick="toggleMobileNav()"
-                        title="Click for navigation"
-                    />
-                    <div
-                        class="mobile-nav-overlay"
-                        id="mobile-nav"
-                        onclick="if (!event.target.closest('a') && !event.target.closest('.kec-nav-trigger')) this.classList.remove('active')"
-                    >
-                        <ul>
-                            <li>
-                                <a href="/" onclick="document.getElementById('mobile-nav').classList.remove('active')">/me/</a>
-                            </li>
-                            <li>
-                                <a href="/blog" onclick="document.getElementById('mobile-nav').classList.remove('active')">/log/</a>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://github.com/0xjah"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onclick="document.getElementById('mobile-nav').classList.remove('active')"
-                                >
-                                    /proj/
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/misc" onclick="document.getElementById('mobile-nav').classList.remove('active')">/msc/</a>
-                            </li>
-                            <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px">
-                                <a
-                                    href="https://lainon.life/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onclick="document.getElementById('mobile-nav').classList.remove('active')"
-                                >
-                                    lainon.life
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </h1>
-
-            <div class="lain-chat-header">
-                <img src="/static/img/lain-head.jpg" alt="Lain" class="lain-profile-img">
-                <div class="lain-header-text">
-                    <h2><i class="fas fa-comments"></i> Chat with Lain</h2>
-                    <p class="lain-status"><i class="fas fa-wifi"></i> present day, present time • connected to the wired</p>
-                    <p style="font-size: 12px; opacity: 0.7; margin-top: 5px;">
-                        <i class="fas fa-microchip"></i> Powered by local AI (Ollama) - completely free and private
-                    </p>
-                </div>
-            </div>
-            
-            <div class="lain-chat-container">
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message lain-message">
-                        <div class="message-avatar">
-                            <img src="/static/img/lain-head.jpg" alt="Lain">
-                        </div>
-                        <div class="message-content">
-                            <div class="message-text">
-                                and you are?
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="chat-input-container">
-                    <div class="chat-input-wrapper">
-                        <textarea 
-                            id="messageInput" 
-                            placeholder="type your message..."
-                            rows="1"
-                            autocomplete="off"
-                            spellcheck="false"
-                        ></textarea>
-                        <button id="sendButton" type="button">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lain-info">
-                <h2><i class="fas fa-robot"></i> About this chatbot</h2>
-                <p>This is a local AI chatbot that embodies Lain's personality from Serial Experiments Lain. It runs completely on your machine using Ollama and the Llama 3.2 model - no data is sent to external servers.</p>
-                <ul>
-                    <li><i class="fas fa-lock"></i> <strong>Private</strong> - All processing happens locally</li>
-                    <li><i class="fas fa-dollar-sign"></i> <strong>Free</strong> - No API costs or usage limits</li>
-                    <li><i class="fas fa-bolt"></i> <strong>Fast</strong> - Lightweight 1B parameter model</li>
-                    <li><i class="fas fa-theater-masks"></i> <strong>In-character</strong> - Authentic Lain personality</li>
-                </ul>
-            </div>
-        </main>
-
-        <aside class="status">
+      <main class="about-me">
+        <h1 style="display: flex; justify-content: space-between; align-items: center">
+          <a style="border-bottom: none" href="/">0xjah.me</a>
+          <div class="kec-nav-container">
+            <img
+              src="/static/img/kec.png"
+              style="width: 40px"
+              alt="Kec Group Logo"
+              class="kec-nav-trigger"
+              onclick="toggleMobileNav()"
+              title="Click for navigation"
+            />
             <div
-                id="status-header"
-                hx-get="/api/discord-status"
-                hx-trigger="load, every 30s"
-                hx-swap="innerHTML"
-                hx-indicator="#status-loading"
+              class="mobile-nav-overlay"
+              id="mobile-nav"
+              onclick="if (!event.target.closest('a') && !event.target.closest('.kec-nav-trigger')) this.classList.remove('active')"
             >
-                <div id="status-loading" class="htmx-indicator">Loading status...</div>
+              <ul>
+                <li>
+                  <a href="/" onclick="document.getElementById('mobile-nav').classList.remove('active')">/me/</a>
+                </li>
+                <li>
+                  <a href="/blog" onclick="document.getElementById('mobile-nav').classList.remove('active')">/log/</a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/0xjah"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onclick="document.getElementById('mobile-nav').classList.remove('active')"
+                  >
+                    /proj/
+                  </a>
+                </li>
+                <li>
+                  <a href="/misc" onclick="document.getElementById('mobile-nav').classList.remove('active')">/msc/</a>
+                </li>
+                <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px">
+                  <a
+                    href="https://lainon.life/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onclick="document.getElementById('mobile-nav').classList.remove('active')"
+                  >
+                    lainon.life
+                  </a>
+                </li>
+              </ul>
             </div>
-            
-            <h2>Site navigation</h2>
-            <div class="nav-links">
-                <ul>
-                    <li><a href="/">/me/</a></li>
-                    <li><a href="/blog">/log/</a></li>
-                    <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
-                    <li><a href="/misc">/msc/</a></li>
-                    <li><a href="/lain" style="color: oklch(85% var(--accent-color-c) var(--accent-color-h));">/lain/</a></li>
-                </ul>
-            </div>
+          </div>
+        </h1>
 
-            <h2><i class="fas fa-quote-right"></i> Lain Quotes</h2>
-            <p style="font-size: 12px; font-style: italic; opacity: 0.8;">
-                "No matter where you go, everyone's connected."
+        <div class="lain-chat-header">
+          <img src="/static/img/lain-head.jpg" alt="Lain" class="lain-profile-img" />
+          <div class="lain-header-text">
+            <h2>
+              <i class="fas fa-comments"></i>
+              Chat with Lain
+            </h2>
+            <p class="lain-status">
+              <i class="fas fa-wifi"></i>
+              present day, present time • connected to the wired
             </p>
-            <p style="font-size: 12px; font-style: italic; opacity: 0.8;">
-                "The border between the two isn't all that clear."
+            <p style="font-size: 12px; opacity: 0.7; margin-top: 5px">
+              <i class="fas fa-microchip"></i>
+              Powered by local AI (Ollama) - completely free and private
             </p>
-            <p style="font-size: 12px; font-style: italic; opacity: 0.8;">
-                "I'm right here."
-            </p>
+          </div>
+        </div>
 
-            <h2>Buttons</h2>
-            <p>Random but cool.</p>
-            <div class="cool-sites">
-                <div class="marquee-container">
-                    <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html" hx-trigger="load">
-                        <p>Loading buttons...</p>
-                    </div>
-                </div>
+        <div class="lain-chat-container">
+          <div class="chat-messages" id="chatMessages">
+            <div class="message lain-message">
+              <div class="message-avatar">
+                <img src="/static/img/lain-head.jpg" alt="Lain" />
+              </div>
+              <div class="message-content">
+                <div class="message-text">and you are?</div>
+              </div>
             </div>
+          </div>
 
-            <h2>Recommendations</h2>
-            <div hx-get="/partials/ui/recommendations.html" hx-trigger="load" hx-swap="innerHTML">
-                <p>Loading recommendations...</p>
+          <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+              <textarea
+                id="messageInput"
+                placeholder="type your message..."
+                rows="1"
+                autocomplete="off"
+                spellcheck="false"
+              ></textarea>
+              <button id="sendButton" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                </svg>
+              </button>
             </div>
-        </aside>
+          </div>
+        </div>
+
+        <div class="lain-info">
+          <h2>
+            <i class="fas fa-robot"></i>
+            About this chatbot
+          </h2>
+          <p>
+            This is a local AI chatbot that embodies Lain's personality from Serial Experiments Lain. It runs completely
+            on your machine using Ollama and the Llama 3.2 model - no data is sent to external servers.
+          </p>
+          <ul>
+            <li>
+              <i class="fas fa-lock"></i>
+              <strong>Private</strong>
+              - All processing happens locally
+            </li>
+            <li>
+              <i class="fas fa-dollar-sign"></i>
+              <strong>Free</strong>
+              - No API costs or usage limits
+            </li>
+            <li>
+              <i class="fas fa-bolt"></i>
+              <strong>Fast</strong>
+              - Lightweight 1B parameter model
+            </li>
+            <li>
+              <i class="fas fa-theater-masks"></i>
+              <strong>In-character</strong>
+              - Authentic Lain personality
+            </li>
+          </ul>
+        </div>
+      </main>
+
+      <aside class="status">
+        <div
+          id="status-header"
+          hx-get="/api/discord-status"
+          hx-trigger="load, every 30s"
+          hx-swap="innerHTML"
+          hx-indicator="#status-loading"
+        >
+          <div id="status-loading" class="htmx-indicator">Loading status...</div>
+        </div>
+
+        <h2>Site navigation</h2>
+        <div class="nav-links">
+          <ul>
+            <li><a href="/">/me/</a></li>
+            <li><a href="/blog">/log/</a></li>
+            <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+            <li><a href="/misc">/msc/</a></li>
+            <li><a href="/lain" style="color: oklch(85% var(--accent-color-c) var(--accent-color-h))">/lain/</a></li>
+          </ul>
+        </div>
+
+        <h2>
+          <i class="fas fa-quote-right"></i>
+          Lain Quotes
+        </h2>
+        <p style="font-size: 12px; font-style: italic; opacity: 0.8">"No matter where you go, everyone's connected."</p>
+        <p style="font-size: 12px; font-style: italic; opacity: 0.8">
+          "The border between the two isn't all that clear."
+        </p>
+        <p style="font-size: 12px; font-style: italic; opacity: 0.8">"I'm right here."</p>
+
+        <h2>Buttons</h2>
+        <p>Random but cool.</p>
+        <div class="cool-sites">
+          <div class="marquee-container">
+            <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html" hx-trigger="load">
+              <p>Loading buttons...</p>
+            </div>
+          </div>
+        </div>
+
+        <h2>Recommendations</h2>
+        <div hx-get="/partials/ui/recommendations.html" hx-trigger="load" hx-swap="innerHTML">
+          <p>Loading recommendations...</p>
+        </div>
+      </aside>
     </div>
 
     <script>
-        const chatMessages = document.getElementById('chatMessages');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
+      const chatMessages = document.getElementById("chatMessages");
+      const messageInput = document.getElementById("messageInput");
+      const sendButton = document.getElementById("sendButton");
 
-        // Auto-resize textarea
-        messageInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
-        });
+      // Auto-resize textarea
+      messageInput.addEventListener("input", function () {
+        this.style.height = "auto";
+        this.style.height = Math.min(this.scrollHeight, 100) + "px";
+      });
 
-        // Send message on Enter (but allow Shift+Enter for new lines)
-        messageInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-
-        sendButton.addEventListener('click', sendMessage);
-
-        async function sendMessage() {
-            const message = messageInput.value.trim();
-            if (!message) return;
-
-            // Add user message to chat
-            addMessage(message, 'user');
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
-
-            // Show typing indicator
-            const typingDiv = addTypingIndicator();
-
-            try {
-                const response = await fetch('/api/lain-chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: message })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const data = await response.json();
-                
-                // Remove typing indicator
-                typingDiv.remove();
-                
-                // Add Lain's response
-                addMessage(data.response, 'lain');
-
-            } catch (error) {
-                console.error('Error:', error);
-                typingDiv.remove();
-                addMessage('connection failed. try again?', 'lain');
-            }
+      // Send message on Enter (but allow Shift+Enter for new lines)
+      messageInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
         }
+      });
 
-        function addMessage(text, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}-message`;
+      sendButton.addEventListener("click", sendMessage);
 
-            if (sender === 'lain') {
-                messageDiv.innerHTML = `
+      async function sendMessage() {
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        // Add user message to chat
+        addMessage(message, "user");
+        messageInput.value = "";
+        messageInput.style.height = "auto";
+
+        // Show typing indicator
+        const typingDiv = addTypingIndicator();
+
+        try {
+          const response = await fetch("/api/lain-chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ message: message }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          const data = await response.json();
+
+          // Remove typing indicator
+          typingDiv.remove();
+
+          // Add Lain's response
+          addMessage(data.response, "lain");
+        } catch (error) {
+          console.error("Error:", error);
+          typingDiv.remove();
+          addMessage("connection failed. try again?", "lain");
+        }
+      }
+
+      function addMessage(text, sender) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${sender}-message`;
+
+        if (sender === "lain") {
+          messageDiv.innerHTML = `
                     <div class="message-avatar">
                         <img src="/static/img/lain-head.jpg" alt="Lain">
                     </div>
@@ -282,22 +307,22 @@
                         <div class="message-text">${text}</div>
                     </div>
                 `;
-            } else {
-                messageDiv.innerHTML = `
+        } else {
+          messageDiv.innerHTML = `
                     <div class="message-content">
                         <div class="message-text">${text}</div>
                     </div>
                 `;
-            }
-
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        function addTypingIndicator() {
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message lain-message typing';
-            typingDiv.innerHTML = `
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function addTypingIndicator() {
+        const typingDiv = document.createElement("div");
+        typingDiv.className = "message lain-message typing";
+        typingDiv.innerHTML = `
                 <div class="message-avatar">
                     <img src="/static/img/lain-head.jpg" alt="Lain">
                 </div>
@@ -309,10 +334,10 @@
                     </div>
                 </div>
             `;
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            return typingDiv;
-        }
+        chatMessages.appendChild(typingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return typingDiv;
+      }
     </script>
-</body>
+  </body>
 </html>

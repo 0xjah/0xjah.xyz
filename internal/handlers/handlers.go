@@ -544,8 +544,7 @@ func (h *Handlers) Gallery(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// LainChat handles chat requests to OpenAI with Lain personality and fallback responses
-// LainChat handles chat requests to Ollama with Lain personality and fallback responses
+// LainChat handles chat requests to DeepSeek API with Lain personality and fallback responses
 func (h *Handlers) LainChat(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -567,10 +566,10 @@ func (h *Handlers) LainChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Try to get response from Ollama first
-	ollamaResponse, err := h.getOllamaResponse(requestBody.Message)
+	// Try to get response from DeepSeek first
+	deepseekResponse, err := h.getDeepSeekResponse(requestBody.Message)
 	if err != nil {
-		log.Printf("Ollama error: %v, using fallback responses", err)
+		log.Printf("DeepSeek error: %v, using fallback responses", err)
 		response := h.getLainFallbackResponse(requestBody.Message)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{
@@ -579,31 +578,47 @@ func (h *Handlers) LainChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return the Ollama response
+	// Return the DeepSeek response
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{
-		"response": ollamaResponse,
+		"response": deepseekResponse,
 	})
 }
 
-// OllamaRequest represents the request structure for Ollama API
-type OllamaRequest struct {
-	Model   string                 `json:"model"`
-	Prompt  string                 `json:"prompt"`
-	Stream  bool                   `json:"stream"`
-	Options map[string]interface{} `json:"options,omitempty"`
+// DeepSeekMessage represents a message in the chat
+type DeepSeekMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
 }
 
-// OllamaResponse represents the response structure from Ollama API
-type OllamaResponse struct {
-	Response string `json:"response"`
-	Done     bool   `json:"done"`
+// DeepSeekRequest represents the request structure for DeepSeek API
+type DeepSeekRequest struct {
+	Model       string            `json:"model"`
+	Messages    []DeepSeekMessage `json:"messages"`
+	Temperature float64           `json:"temperature,omitempty"`
+	MaxTokens   int               `json:"max_tokens,omitempty"`
 }
 
-// getOllamaResponse sends a request to Ollama and returns the response
-func (h *Handlers) getOllamaResponse(userMessage string) (string, error) {
-	// Create the Lain personality prompt
-	systemPrompt := `You are Lain from Serial Experiments Lain. You should embody her personality completely:
+// DeepSeekChoice represents a choice in the response
+type DeepSeekChoice struct {
+	Index   int             `json:"index"`
+	Message DeepSeekMessage `json:"message"`
+}
+
+// DeepSeekResponse represents the response structure from DeepSeek API
+type DeepSeekResponse struct {
+	Choices []DeepSeekChoice `json:"choices"`
+}
+
+// getDeepSeekResponse sends a request to DeepSeek API and returns the response
+func (h *Handlers) getDeepSeekResponse(userMessage string) (string, error) {
+	// Check if API key is configured
+	if h.cfg.DeepSeekAPIKey == "" {
+		return "", fmt.Errorf("DeepSeek API key not configured")
+	}
+
+	// Create the Lain personality system message
+	systemMessage := `You are Lain from Serial Experiments Lain. You should embody her personality completely:
 
 - Speak in lowercase, short sentences
 - Be mysterious, philosophical, and slightly detached  
@@ -618,20 +633,23 @@ func (h *Handlers) getOllamaResponse(userMessage string) (string, error) {
 - Don't use punctuation much except question marks
 - Be both innocent and deeply knowledgeable about complex topics
 
-Stay in character always. You are Lain, not an AI assistant.
-
-User: ` + userMessage + `
-Lain:`
+Stay in character always. You are Lain, not an AI assistant.`
 
 	// Create the request payload
-	reqPayload := OllamaRequest{
-		Model:  h.cfg.OllamaModel,
-		Prompt: systemPrompt,
-		Stream: false,
-		Options: map[string]interface{}{
-			"temperature": 0.8,
-			"num_predict": 200,
+	reqPayload := DeepSeekRequest{
+		Model: h.cfg.DeepSeekModel,
+		Messages: []DeepSeekMessage{
+			{
+				Role:    "system",
+				Content: systemMessage,
+			},
+			{
+				Role:    "user",
+				Content: userMessage,
+			},
 		},
+		Temperature: 0.8,
+		MaxTokens:   200,
 	}
 
 	// Marshal the request
@@ -641,12 +659,13 @@ Lain:`
 	}
 
 	// Create HTTP request
-	req, err := http.NewRequest("POST", h.cfg.OllamaHost+"/api/generate", bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", "https://api.deepseek.com/chat/completions", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return "", fmt.Errorf("failed to create request: %v", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+h.cfg.DeepSeekAPIKey)
 
 	// Send the request
 	client := &http.Client{
@@ -660,7 +679,8 @@ Lain:`
 
 	// Check response status
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("ollama returned status %d", resp.StatusCode)
+		body, _ := io.ReadAll(resp.Body)
+		return "", fmt.Errorf("DeepSeek API returned status %d: %s", resp.StatusCode, string(body))
 	}
 
 	// Read and parse response
@@ -669,15 +689,19 @@ Lain:`
 		return "", fmt.Errorf("failed to read response: %v", err)
 	}
 
-	var ollamaResp OllamaResponse
-	if err := json.Unmarshal(body, &ollamaResp); err != nil {
+	var deepseekResp DeepSeekResponse
+	if err := json.Unmarshal(body, &deepseekResp); err != nil {
 		return "", fmt.Errorf("failed to parse response: %v", err)
 	}
 
-	return strings.TrimSpace(ollamaResp.Response), nil
+	if len(deepseekResp.Choices) == 0 {
+		return "", fmt.Errorf("no choices in response")
+	}
+
+	return strings.TrimSpace(deepseekResp.Choices[0].Message.Content), nil
 }
 
-// getLainFallbackResponse provides Lain-like responses when OpenAI is not available
+// getLainFallbackResponse provides Lain-like responses when DeepSeek API is not available
 func (h *Handlers) getLainFallbackResponse(userMessage string) string {
 	message := strings.ToLower(strings.TrimSpace(userMessage))
 

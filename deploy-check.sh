@@ -6,7 +6,7 @@ echo "🚀 Preparing deployment to Render..."
 # Check if required files exist
 echo "📋 Checking deployment files..."
 
-required_files=("Dockerfile" "start.sh" "render.yaml" "go.mod" "main.go")
+required_files=("Dockerfile" "render.yaml" "go.mod" "main.go")
 missing_files=()
 
 for file in "${required_files[@]}"; do
@@ -25,19 +25,11 @@ fi
 
 echo "✅ All required files present"
 
-# Check Docker file permissions
-if [ ! -x "start.sh" ]; then
-    echo "🔧 Making start.sh executable..."
-    chmod +x start.sh
-fi
-
-echo "✅ File permissions set correctly"
-
 # Build and test locally (optional)
 if command -v docker &> /dev/null; then
     echo "🐳 Docker detected - you can test locally with:"
-    echo "   docker build -t lain-chatbot ."
-    echo "   docker run -p 3000:3000 lain-chatbot"
+    echo "   docker build -t deepseek-chatbot ."
+    echo "   docker run -p 3000:3000 -e DEEPSEEK_API_KEY=your_key deepseek-chatbot"
     echo ""
 else
     echo "ℹ️  Docker not found - skipping local test recommendation"

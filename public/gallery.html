@@ -340,12 +340,34 @@
         }
       }
 
-      // Gallery functionality
+      // Gallery functionality with retry mechanism
       async function loadGallery() {
         const container = document.getElementById("gallery-content");
 
+        // Check if container exists
+        if (!container) {
+          console.warn("Gallery container not found");
+          return;
+        }
+
+        // Show loading state
+        container.innerHTML = `
+          <div class="gallery-loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading gallery...</p>
+          </div>
+        `;
+
         try {
-          const response = await fetch("/api/gallery");
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
+          const response = await fetch("/api/gallery", {
+            signal: controller.signal,
+          });
+
+          clearTimeout(timeoutId);
+
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
@@ -395,10 +417,20 @@
           `;
         } catch (error) {
           console.error("Gallery load error:", error);
+
+          let errorMessage = "Failed to load gallery";
+          if (error.name === "AbortError") {
+            errorMessage = "Request timed out. Please check your connection and try again.";
+          } else if (error.message.includes("Failed to fetch")) {
+            errorMessage = "Network error. Please check your connection and try again.";
+          } else {
+            errorMessage = `Failed to load gallery: ${error.message}`;
+          }
+
           container.innerHTML = `
             <div class="gallery-error">
               <i class="fas fa-exclamation-triangle"></i>
-              <p>Failed to load gallery: ${error.message}</p>
+              <p>${errorMessage}</p>
               <button onclick="loadGallery()" style="margin-top: 10px; padding: 8px 16px; background: #ff6b6b; color: white; border: none; border-radius: 4px; cursor: pointer;">
                 <i class="fas fa-redo"></i> Retry
               </button>
@@ -478,6 +510,34 @@
           }
         });
       });
+
+      // HTMX event listener for when content is swapped in
+      document.addEventListener("htmx:afterSwap", function (evt) {
+        // Only load gallery if we're on the gallery page
+        if (window.location.pathname === "/gallery" && document.getElementById("gallery-content")) {
+          // Small delay to ensure DOM is ready
+          setTimeout(loadGallery, 100);
+        }
+      });
+
+      // HTMX event listener for when the page is loaded via navigation
+      document.addEventListener("htmx:load", function (evt) {
+        // Only load gallery if we're on the gallery page
+        if (window.location.pathname === "/gallery" && document.getElementById("gallery-content")) {
+          loadGallery();
+        }
+      });
+
+      // Fallback: Load gallery immediately if the page is already loaded
+      if (document.readyState === "loading") {
+        // Document is still loading, wait for DOMContentLoaded
+        document.addEventListener("DOMContentLoaded", loadGallery);
+      } else {
+        // Document has already loaded, call loadGallery immediately
+        if (document.getElementById("gallery-content")) {
+          loadGallery();
+        }
+      }
 
       // Prevent navigation to current page
       document.addEventListener("htmx:beforeRequest", function (evt) {

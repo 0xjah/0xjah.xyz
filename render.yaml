@@ -11,10 +11,10 @@ services:
         value: 0.0.0.0
       - key: ENV
         value: production
-      - key: DEEPSEEK_API_KEY
+      - key: OPENROUTER_API_KEY
         sync: false # Secret - set manually in Render dashboard
-      - key: DEEPSEEK_MODEL
-        value: deepseek-chat
+      - key: OPENROUTER_MODEL
+        value: deepseek/deepseek-chat
       - key: LOG_LEVEL
         value: info
       - key: STATIC_CACHE_TTL

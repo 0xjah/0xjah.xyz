@@ -8,51 +8,51 @@ import (
 
 // Config holds all application configuration
 type Config struct {
-	Port           string
-	Host           string
-	Environment    string
-	LogLevel       string
-	StaticCacheTTL int
-	HTMLCacheTTL   int
-	CORSOrigins    string
-	GitHubToken    string
-	GitHubRepo     string
-	DiscordID      string
-	FallbackStatus string
-	MaxConnections int
-	EnableGzip     bool
-	R2Endpoint     string
-	R2AccessKey    string
-	R2SecretKey    string
-	R2Bucket       string
-	R2PublicURL    string
-	DeepSeekAPIKey string
-	DeepSeekModel  string
+	Port             string
+	Host             string
+	Environment      string
+	LogLevel         string
+	StaticCacheTTL   int
+	HTMLCacheTTL     int
+	CORSOrigins      string
+	GitHubToken      string
+	GitHubRepo       string
+	DiscordID        string
+	FallbackStatus   string
+	MaxConnections   int
+	EnableGzip       bool
+	R2Endpoint       string
+	R2AccessKey      string
+	R2SecretKey      string
+	R2Bucket         string
+	R2PublicURL      string
+	OpenRouterAPIKey string
+	OpenRouterModel  string
 }
 
 // Load loads configuration from environment variables
 func Load() *Config {
 	cfg := &Config{
-		Port:           getEnv("PORT", "3000"),
-		Host:           getEnv("HOST", "0.0.0.0"),
-		Environment:    getEnv("ENV", "development"),
-		LogLevel:       getEnv("LOG_LEVEL", "info"),
-		StaticCacheTTL: getEnvAsInt("STATIC_CACHE_TTL", 31536000), // 1 year
-		HTMLCacheTTL:   getEnvAsInt("HTML_CACHE_TTL", 3600),       // 1 hour in production
-		CORSOrigins:    getEnv("CORS_ORIGINS", "*"),
-		GitHubToken:    getEnv("GITHUB_TOKEN", ""),
-		GitHubRepo:     getEnv("GITHUB_REPO", "0xjah/0xjah.xyz"),
-		DiscordID:      getEnv("DISCORD_ID", "763769303681335316"),
-		FallbackStatus: getEnv("FALLBACK_STATUS", "online • coding"),
-		MaxConnections: getEnvAsInt("MAX_CONNECTIONS", 1000),
-		EnableGzip:     getEnvAsBool("ENABLE_GZIP", true),
-		R2Endpoint:     getEnv("R2_ENDPOINT", ""),
-		R2AccessKey:    getEnv("R2_ACCESS_KEY", ""),
-		R2SecretKey:    getEnv("R2_SECRET_KEY", ""),
-		R2Bucket:       getEnv("R2_BUCKET", ""),
-		R2PublicURL:    getEnv("R2_PUBLIC_URL", ""),
-		DeepSeekAPIKey: getEnv("DEEPSEEK_API_KEY", ""),
-		DeepSeekModel:  getEnv("DEEPSEEK_MODEL", "deepseek-chat"),
+		Port:             getEnv("PORT", "3000"),
+		Host:             getEnv("HOST", "0.0.0.0"),
+		Environment:      getEnv("ENV", "development"),
+		LogLevel:         getEnv("LOG_LEVEL", "info"),
+		StaticCacheTTL:   getEnvAsInt("STATIC_CACHE_TTL", 31536000), // 1 year
+		HTMLCacheTTL:     getEnvAsInt("HTML_CACHE_TTL", 3600),       // 1 hour in production
+		CORSOrigins:      getEnv("CORS_ORIGINS", "*"),
+		GitHubToken:      getEnv("GITHUB_TOKEN", ""),
+		GitHubRepo:       getEnv("GITHUB_REPO", "0xjah/0xjah.xyz"),
+		DiscordID:        getEnv("DISCORD_ID", "763769303681335316"),
+		FallbackStatus:   getEnv("FALLBACK_STATUS", "online • coding"),
+		MaxConnections:   getEnvAsInt("MAX_CONNECTIONS", 1000),
+		EnableGzip:       getEnvAsBool("ENABLE_GZIP", true),
+		R2Endpoint:       getEnv("R2_ENDPOINT", ""),
+		R2AccessKey:      getEnv("R2_ACCESS_KEY", ""),
+		R2SecretKey:      getEnv("R2_SECRET_KEY", ""),
+		R2Bucket:         getEnv("R2_BUCKET", ""),
+		R2PublicURL:      getEnv("R2_PUBLIC_URL", ""),
+		OpenRouterAPIKey: getEnv("OPENROUTER_API_KEY", ""),
+		OpenRouterModel:  getEnv("OPENROUTER_MODEL", "deepseek/deepseek-chat"),
 	}
 
 	// Optimize cache settings for production

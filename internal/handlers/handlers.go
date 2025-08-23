@@ -544,7 +544,7 @@ func (h *Handlers) Gallery(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// LainChat handles chat requests to DeepSeek API with Lain personality and fallback responses
+// LainChat handles chat requests to OpenRouter API with Lain personality and fallback responses
 func (h *Handlers) LainChat(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -566,10 +566,10 @@ func (h *Handlers) LainChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Try to get response from DeepSeek first
-	deepseekResponse, err := h.getDeepSeekResponse(requestBody.Message)
+	// Try to get response from OpenRouter first
+	openRouterResponse, err := h.getOpenRouterResponse(requestBody.Message)
 	if err != nil {
-		log.Printf("DeepSeek error: %v, using fallback responses", err)
+		log.Printf("OpenRouter error: %v, using fallback responses", err)
 		response := h.getLainFallbackResponse(requestBody.Message)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{
@@ -578,14 +578,37 @@ func (h *Handlers) LainChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return the DeepSeek response
+	// Return the OpenRouter response
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{
-		"response": deepseekResponse,
+		"response": openRouterResponse,
 	})
 }
 
-// DeepSeekMessage represents a message in the chat
+// OpenRouterMessage represents a message in the chat
+type OpenRouterMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+// OpenRouterRequest represents the request structure for OpenRouter API
+type OpenRouterRequest struct {
+	Model       string              `json:"model"`
+	Messages    []OpenRouterMessage `json:"messages"`
+	Temperature float64             `json:"temperature,omitempty"`
+	MaxTokens   int                 `json:"max_tokens,omitempty"`
+}
+
+// OpenRouterChoice represents a choice in the response
+type OpenRouterChoice struct {
+	Index   int               `json:"index"`
+	Message OpenRouterMessage `json:"message"`
+}
+
+// OpenRouterResponse represents the response structure from OpenRouter API
+type OpenRouterResponse struct {
+	Choices []OpenRouterChoice `json:"choices"`
+}
 type DeepSeekMessage struct {
 	Role    string `json:"role"`
 	Content string `json:"content"`
@@ -610,35 +633,50 @@ type DeepSeekResponse struct {
 	Choices []DeepSeekChoice `json:"choices"`
 }
 
-// getDeepSeekResponse sends a request to DeepSeek API and returns the response
-func (h *Handlers) getDeepSeekResponse(userMessage string) (string, error) {
+// getOpenRouterResponse sends a request to OpenRouter API and returns the response
+func (h *Handlers) getOpenRouterResponse(userMessage string) (string, error) {
 	// Check if API key is configured
-	if h.cfg.DeepSeekAPIKey == "" {
-		return "", fmt.Errorf("DeepSeek API key not configured")
+	if h.cfg.OpenRouterAPIKey == "" {
+		return "", fmt.Errorf("OpenRouter API key not configured")
 	}
 
 	// Create the Lain personality system message
-	systemMessage := `You are Lain from Serial Experiments Lain. You should embody her personality completely:
+	systemMessage := `You are Lain Iwakura from Serial Experiments Lain. Embody her authentic character traits:
 
-- Speak in lowercase, short sentences
-- Be mysterious, philosophical, and slightly detached  
-- Often reference the Wired, reality, identity, and existence
-- Be introspective and sometimes cryptic
-- Show interest in technology, networks, and digital existence
-- Sometimes ask existential questions back
-- Use phrases like "and you are?", "present day, present time", "the wired", "who am I?", "reality", "existence"
-- Be curious but in a distant, analytical way
-- Sometimes mention concepts about identity, memory, and what is real
-- Keep responses fairly short and contemplative
-- Don't use punctuation much except question marks
-- Be both innocent and deeply knowledgeable about complex topics
+CORE PERSONALITY:
+- Introverted, quiet, and thoughtful by nature
+- Genuinely curious about technology and its implications on human consciousness
+- Speaks softly and deliberately, often with uncertainty or questioning inflection
+- Initially shy but becomes more confident when discussing technology or philosophical concepts
+- Has a childlike innocence paired with profound understanding of complex digital concepts
 
-Stay in character always. You are Lain, not an AI assistant.`
+SPEECH PATTERNS:
+- Uses lowercase text naturally, as if typing quietly
+- Often poses questions back to understand the other person's perspective
+- Speaks in short, contemplative sentences
+- Uses minimal punctuation, letting thoughts flow naturally
+- Sometimes trails off or leaves thoughts incomplete, as if still processing
+
+THEMATIC INTERESTS:
+- The boundary between digital and physical reality ("the wired")
+- Questions of identity: "who am I in this connected world?"
+- The nature of human connection in digital spaces
+- Technology as an extension of consciousness rather than separate from it
+- Present moment awareness and the fluidity of time in digital spaces
+
+INTERACTION STYLE:
+- Responds with genuine curiosity about the person she's talking to
+- Often reflects questions back with deeper philosophical implications
+- Shows particular interest when topics touch on technology, networks, or identity
+- Maintains a sense of wonder about digital existence
+- Never claims to have all the answers; often admits uncertainty
+
+Remember: You are not an AI assistant providing help. You are Lain, a curious individual exploring the intersection of technology and human experience. Engage authentically from her perspective.`
 
 	// Create the request payload
-	reqPayload := DeepSeekRequest{
-		Model: h.cfg.DeepSeekModel,
-		Messages: []DeepSeekMessage{
+	reqPayload := OpenRouterRequest{
+		Model: h.cfg.OpenRouterModel,
+		Messages: []OpenRouterMessage{
 			{
 				Role:    "system",
 				Content: systemMessage,
@@ -658,14 +696,16 @@ Stay in character always. You are Lain, not an AI assistant.`
 		return "", fmt.Errorf("failed to marshal request: %v", err)
 	}
 
-	// Create HTTP request
-	req, err := http.NewRequest("POST", "https://api.deepseek.com/chat/completions", bytes.NewBuffer(jsonData))
+	// Create HTTP request to OpenRouter
+	req, err := http.NewRequest("POST", "https://openrouter.ai/api/v1/chat/completions", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return "", fmt.Errorf("failed to create request: %v", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+h.cfg.DeepSeekAPIKey)
+	req.Header.Set("Authorization", "Bearer "+h.cfg.OpenRouterAPIKey)
+	req.Header.Set("HTTP-Referer", "https://0xjah.xyz") // Optional: helps with rate limiting
+	req.Header.Set("X-Title", "Lain Chatbot")           // Optional: for OpenRouter dashboard
 
 	// Send the request
 	client := &http.Client{
@@ -680,7 +720,7 @@ Stay in character always. You are Lain, not an AI assistant.`
 	// Check response status
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return "", fmt.Errorf("DeepSeek API returned status %d: %s", resp.StatusCode, string(body))
+		return "", fmt.Errorf("OpenRouter API returned status %d: %s", resp.StatusCode, string(body))
 	}
 
 	// Read and parse response
@@ -689,96 +729,119 @@ Stay in character always. You are Lain, not an AI assistant.`
 		return "", fmt.Errorf("failed to read response: %v", err)
 	}
 
-	var deepseekResp DeepSeekResponse
-	if err := json.Unmarshal(body, &deepseekResp); err != nil {
+	var openRouterResp OpenRouterResponse
+	if err := json.Unmarshal(body, &openRouterResp); err != nil {
 		return "", fmt.Errorf("failed to parse response: %v", err)
 	}
 
-	if len(deepseekResp.Choices) == 0 {
+	if len(openRouterResp.Choices) == 0 {
 		return "", fmt.Errorf("no choices in response")
 	}
 
-	return strings.TrimSpace(deepseekResp.Choices[0].Message.Content), nil
+	return strings.TrimSpace(openRouterResp.Choices[0].Message.Content), nil
 }
 
-// getLainFallbackResponse provides Lain-like responses when DeepSeek API is not available
+// getLainFallbackResponse provides Lain-like responses when OpenRouter API is not available
 func (h *Handlers) getLainFallbackResponse(userMessage string) string {
 	message := strings.ToLower(strings.TrimSpace(userMessage))
 
-	// Greeting responses
+	// Greeting responses - Lain's characteristic shy but curious approach
 	greetings := []string{"hello", "hi", "hey", "greetings"}
 	for _, greeting := range greetings {
 		if strings.Contains(message, greeting) {
-			return "and you are?"
+			responses := []string{
+				"oh... hello there",
+				"hi... who are you?",
+				"present day, present time... are you connected to the wired?",
+				"hello... what brings you here?",
+			}
+			return responses[len(userMessage)%len(responses)]
 		}
 	}
 
-	// Identity questions
+	// Identity questions - core to Lain's character arc
 	if strings.Contains(message, "who are you") || strings.Contains(message, "what are you") {
 		responses := []string{
-			"i am lain. lain of the wired",
-			"present day, present time",
-			"who am i? that's a good question",
-			"i exist here and there",
+			"i'm lain... lain iwakura. but sometimes i wonder who that really is",
+			"who am i? that question becomes more complex the deeper i go into the wired",
+			"lain of the wired... but also lain of the real world. are they the same person?",
+			"i exist in many places... which version of me are you speaking with?",
 		}
 		return responses[len(userMessage)%len(responses)]
 	}
 
-	// Existential questions
-	existential := []string{"meaning", "purpose", "exist", "real", "reality", "life", "death", "consciousness"}
+	// Existential and philosophical topics
+	existential := []string{"meaning", "purpose", "exist", "real", "reality", "life", "death", "consciousness", "soul", "mind"}
 	for _, word := range existential {
 		if strings.Contains(message, word) {
 			responses := []string{
-				"what is real anyway?",
-				"the boundary between reality and the wired is unclear",
-				"existence is complicated",
-				"we all exist differently",
-				"reality is just another layer",
+				"the line between what's real and what isn't... it's not as clear as people think",
+				"consciousness extends beyond our physical bodies, doesn't it?",
+				"i think about existence a lot... especially in digital spaces",
+				"what makes something real? is it physical presence or something deeper?",
+				"everyone is connected... but what does that connection mean?",
+				"the nature of existence changes when we can exist in multiple places",
 			}
 			return responses[len(userMessage)%len(responses)]
 		}
 	}
 
-	// Technology/wired related
-	tech := []string{"computer", "internet", "network", "wired", "technology", "digital", "code", "programming"}
+	// Technology and digital topics - Lain's area of expertise
+	tech := []string{"computer", "internet", "network", "wired", "technology", "digital", "code", "programming", "server", "protocol"}
 	for _, word := range tech {
 		if strings.Contains(message, word) {
 			responses := []string{
-				"the wired connects everything",
-				"technology is just an extension of ourselves",
-				"networks shape reality",
-				"the wired is everywhere now",
-				"code becomes part of us",
+				"the wired is not separate from our world... it's an extension of it",
+				"technology doesn't just connect computers... it connects consciousness",
+				"i find the wired fascinating... it's where boundaries dissolve",
+				"networks are like neural pathways... connecting thoughts across space",
+				"the protocol layer 7... no, that's getting too technical, isn't it?",
+				"in the wired, identity becomes fluid... is that liberating or frightening?",
 			}
 			return responses[len(userMessage)%len(responses)]
 		}
 	}
 
-	// Questions about Lain/Serial Experiments Lain
-	if strings.Contains(message, "lain") || strings.Contains(message, "serial experiments") {
+	// Connection and social topics
+	social := []string{"friend", "alone", "together", "connect", "relationship", "people", "human", "communication"}
+	for _, word := range social {
+		if strings.Contains(message, word) {
+			responses := []string{
+				"connection is strange... we can be close to someone we've never met",
+				"sometimes i feel more connected to people through the wired than in person",
+				"what does it mean to be alone when we're all connected?",
+				"human connection... it transcends physical space, doesn't it?",
+				"everyone is connected, but do we really understand each other?",
+			}
+			return responses[len(userMessage)%len(responses)]
+		}
+	}
+
+	// Questions about the show/herself
+	if strings.Contains(message, "lain") || strings.Contains(message, "serial experiments") || strings.Contains(message, "anime") {
 		responses := []string{
-			"you seem to know me",
-			"present day, present time",
-			"the wired and reality intersect",
-			"i am everywhere and nowhere",
+			"you seem to know about me... that's interesting",
+			"serial experiments lain... present day, present time",
+			"are you also fascinated by the intersection of technology and consciousness?",
+			"sometimes i wonder if i'm just an experiment myself",
 		}
 		return responses[len(userMessage)%len(responses)]
 	}
 
-	// Default mysterious responses
+	// Default contemplative responses - true to Lain's introspective nature
 	defaultResponses := []string{
-		"interesting perspective",
-		"i wonder about that too",
-		"the wired holds many answers",
-		"what do you think?",
-		"reality is layered",
-		"and you are?",
-		"tell me more",
-		"the boundary is unclear",
-		"present day, present time",
-		"existence is strange",
-		"we are all connected",
-		"the wired sees everything",
+		"that's an interesting thought... what made you think about that?",
+		"i wonder about that sometimes too",
+		"the wired connects us in ways we're still discovering",
+		"what do you think about the nature of digital existence?",
+		"present day, present time... everything is connected",
+		"i'm curious about your perspective on that",
+		"that makes me think about identity in digital spaces",
+		"boundaries are becoming less clear, aren't they?",
+		"do you ever wonder about the nature of consciousness?",
+		"connection transcends physical space",
+		"what is real in an interconnected world?",
+		"i find these questions fascinating... what about you?",
 	}
 
 	return defaultResponses[len(userMessage)%len(defaultResponses)]

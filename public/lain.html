@@ -104,19 +104,19 @@
         </h1>
 
         <div class="lain-chat-header">
-          <img src="/static/img/lain-head.jpg" alt="Lain" class="lain-profile-img" />
+          <img src="/static/img/lain-head.jpg" alt="Lain Iwakura" class="lain-profile-img" />
           <div class="lain-header-text">
             <h2>
-              <i class="fas fa-comments"></i>
-              Chat with Lain
+              <i class="fas fa-user-circle"></i>
+              Lain Iwakura
             </h2>
             <p class="lain-status">
-              <i class="fas fa-wifi"></i>
-              present day, present time • connected to the wired
+              <i class="fas fa-circle" style="color: #4ade80"></i>
+              Online • Connected to the Wired
             </p>
             <p style="font-size: 12px; opacity: 0.7; margin-top: 5px">
-              <i class="fas fa-microchip"></i>
-              Powered by DeepSeek API - completely free to use
+              <i class="fas fa-brain"></i>
+              AI-Powered Conversational Interface via OpenRouter
             </p>
           </div>
         </div>
@@ -125,10 +125,10 @@
           <div class="chat-messages" id="chatMessages">
             <div class="message lain-message">
               <div class="message-avatar">
-                <img src="/static/img/lain-head.jpg" alt="Lain" />
+                <img src="/static/img/lain-head.jpg" alt="Lain Iwakura" />
               </div>
               <div class="message-content">
-                <div class="message-text">and you are?</div>
+                <div class="message-text">hello... who are you? what brings you to this space between worlds?</div>
               </div>
             </div>
           </div>
@@ -137,7 +137,7 @@
             <div class="chat-input-wrapper">
               <textarea
                 id="messageInput"
-                placeholder="type your message..."
+                placeholder="Enter your message to begin the conversation..."
                 rows="1"
                 autocomplete="off"
                 spellcheck="false"
@@ -153,32 +153,34 @@
 
         <div class="lain-info">
           <h2>
-            <i class="fas fa-robot"></i>
-            About this chatbot
+            <i class="fas fa-info-circle"></i>
+            System Overview
           </h2>
           <p>
-            This is an AI chatbot that embodies Lain's personality from Serial Experiments Lain. It uses DeepSeek's free API to provide intelligent responses while maintaining Lain's unique character.
+            An advanced conversational AI system designed to embody the personality and philosophical perspectives of
+            Lain Iwakura from Serial Experiments Lain. This implementation explores themes of digital consciousness,
+            identity, and the intersection of technology with human experience.
           </p>
           <ul>
             <li>
-              <i class="fas fa-globe"></i>
-              <strong>Free API</strong>
-              - Powered by DeepSeek's free tier
+              <i class="fas fa-network-wired"></i>
+              <strong>Multi-Model Access</strong>
+              - Utilizes OpenRouter's unified API for diverse AI capabilities
             </li>
             <li>
-              <i class="fas fa-dollar-sign"></i>
-              <strong>No Cost</strong>
-              - Free to use with generous limits
+              <i class="fas fa-chart-line"></i>
+              <strong>Scalable Architecture</strong>
+              - Efficient resource allocation with usage-based pricing
             </li>
             <li>
-              <i class="fas fa-bolt"></i>
-              <strong>Fast</strong>
-              - Quick response times via cloud API
+              <i class="fas fa-tachometer-alt"></i>
+              <strong>Optimized Performance</strong>
+              - Low-latency responses through intelligent routing
             </li>
             <li>
-              <i class="fas fa-theater-masks"></i>
-              <strong>In-character</strong>
-              - Authentic Lain personality
+              <i class="fas fa-mask"></i>
+              <strong>Character Consistency</strong>
+              - Maintains authentic personality traits and speech patterns
             </li>
           </ul>
         </div>
@@ -207,14 +209,17 @@
         </div>
 
         <h2>
-          <i class="fas fa-quote-right"></i>
-          Lain Quotes
+          <i class="fas fa-quote-left"></i>
+          Notable Excerpts
         </h2>
-        <p style="font-size: 12px; font-style: italic; opacity: 0.8">"No matter where you go, everyone's connected."</p>
-        <p style="font-size: 12px; font-style: italic; opacity: 0.8">
+        <p style="font-size: 12px; font-style: italic; opacity: 0.8; margin-bottom: 8px">
+          "No matter where you go, everyone's connected."
+        </p>
+        <p style="font-size: 12px; font-style: italic; opacity: 0.8; margin-bottom: 8px">
           "The border between the two isn't all that clear."
         </p>
-        <p style="font-size: 12px; font-style: italic; opacity: 0.8">"I'm right here."</p>
+        <p style="font-size: 12px; font-style: italic; opacity: 0.8; margin-bottom: 8px">"I'm right here."</p>
+        <p style="font-size: 12px; font-style: italic; opacity: 0.8">"Everyone is connected."</p>
 
         <h2>Buttons</h2>
         <p>Random but cool.</p>
@@ -289,7 +294,7 @@
         } catch (error) {
           console.error("Error:", error);
           typingDiv.remove();
-          addMessage("connection failed. try again?", "lain");
+          addMessage("connection interrupted... the wired seems unstable right now", "lain");
         }
       }
 
@@ -300,7 +305,7 @@
         if (sender === "lain") {
           messageDiv.innerHTML = `
                     <div class="message-avatar">
-                        <img src="/static/img/lain-head.jpg" alt="Lain">
+                        <img src="/static/img/lain-head.jpg" alt="Lain Iwakura">
                     </div>
                     <div class="message-content">
                         <div class="message-text">${text}</div>
@@ -323,7 +328,7 @@
         typingDiv.className = "message lain-message typing";
         typingDiv.innerHTML = `
                 <div class="message-avatar">
-                    <img src="/static/img/lain-head.jpg" alt="Lain">
+                    <img src="/static/img/lain-head.jpg" alt="Lain Iwakura">
                 </div>
                 <div class="message-content">
                     <div class="typing-indicator">

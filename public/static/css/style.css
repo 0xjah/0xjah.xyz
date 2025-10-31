@@ -455,6 +455,42 @@ button:hover {
   background: oklch(15% 0 0);
 }
 
+/* Responsive styling for crypto addresses (BTC/XMR) */
+.social-links {
+  /* make base social text slightly responsive */
+  font-size: clamp(14px, 1.6vw, 16px);
+}
+
+.crypto {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.crypto-label {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.crypto-addr {
+  display: inline-block;
+  max-width: 100%;
+  /* allow long addresses to break and wrap nicely */
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  font-family: monospace;
+  font-size: clamp(13px, 1.8vw, 15px);
+}
+
+.crypto-secondary {
+  /* force secondary line (if present) to appear on its own row */
+  width: 100%;
+  margin-left: 28px; /* align under the address area */
+}
+
 @media (max-width: 768px) {
   .site-container {
     flex-direction: column;
@@ -467,6 +503,13 @@ button:hover {
 
   .status {
     width: 100%;
+  }
+  /* make crypto addresses easier to read on small screens */
+  .crypto {
+    gap: 6px;
+  }
+  .crypto-addr {
+    font-size: 14px;
   }
 }
 

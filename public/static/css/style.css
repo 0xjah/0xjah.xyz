@@ -1,8 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Fira+Code&display=swap");
 
 :root {
-  --accent-color-h: 225;
-  --accent-color-c: 0.05;
+  --accent-color-h: 0;
+  --accent-color-c: 0.0;
 }
 html,
 body {
@@ -62,10 +62,6 @@ ul {
 
 li {
   margin-bottom: 8px;
-}
-
-li:hover {
-  color: oklch(90% var(--accent-color-c) var(--accent-color-h));
 }
 
 li:before {

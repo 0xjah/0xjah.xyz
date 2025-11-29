@@ -3,15 +3,6 @@
   "version": "1.0.0",
   "description": "Personal website and portfolio",
   "private": true,
-  "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "format:html": "prettier --write \"public/**/*.html\"",
-    "format:css": "prettier --write \"public/**/*.css\"",
-    "format:js": "prettier --write \"public/**/*.js\""
-  },
-  "devDependencies": {
-    "prettier": "^3.0.0"
   },
   "keywords": [
     "personal-website",

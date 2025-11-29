@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Blog | 0xjah.me</title>
     <link rel="icon" type="image/x-icon" href="/static/img/lain-head.jpg" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
     <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
     <style>
@@ -20,7 +23,13 @@
   <body>
     <div class="site-container">
       <div class="about-me">
-        <h1 style="display: flex; justify-content: space-between; align-items: center">
+        <h1
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
           <a style="border-bottom: none" href="/">0xjah.me | Blog</a>
           <div class="kec-nav-container">
             <img
@@ -35,10 +44,28 @@
               <ul>
                 <li><a href="/">/usr/</a></li>
                 <li><a href="/blog">/log/</a></li>
-                <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+                <li>
+                  <a
+                    href="https://github.com/0xjah"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >/proj/</a
+                  >
+                </li>
                 <li><a href="/misc">/msc/</a></li>
-                <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px">
-                  <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer">lainon.life</a>
+                <li
+                  style="
+                    border-top: 1px solid oklch(25% 0 0);
+                    margin-top: 10px;
+                    padding-top: 10px;
+                  "
+                >
+                  <a
+                    href="https://lainon.life/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >lainon.life</a
+                  >
                 </li>
               </ul>
             </div>
@@ -48,12 +75,48 @@
 
         <h2>Categories</h2>
         <div class="category-selector">
-          <button type="button" onclick="filterCategory('all')" class="category-btn active">All</button>
-          <button type="button" onclick="filterCategory('tech')" class="category-btn">Tech</button>
-          <button type="button" onclick="filterCategory('religion')" class="category-btn">Religion</button>
-          <button type="button" onclick="filterCategory('anime')" class="category-btn">Anime/Manga</button>
-          <button type="button" onclick="filterCategory('movie')" class="category-btn">Movie</button>
-          <button type="button" onclick="filterCategory('philosophy')" class="category-btn">Philosophy</button>
+          <button
+            type="button"
+            onclick="filterCategory('all')"
+            class="category-btn active"
+          >
+            All
+          </button>
+          <button
+            type="button"
+            onclick="filterCategory('tech')"
+            class="category-btn"
+          >
+            Tech
+          </button>
+          <button
+            type="button"
+            onclick="filterCategory('religion')"
+            class="category-btn"
+          >
+            Religion
+          </button>
+          <button
+            type="button"
+            onclick="filterCategory('anime')"
+            class="category-btn"
+          >
+            Anime/Manga
+          </button>
+          <button
+            type="button"
+            onclick="filterCategory('movie')"
+            class="category-btn"
+          >
+            Movie
+          </button>
+          <button
+            type="button"
+            onclick="filterCategory('philosophy')"
+            class="category-btn"
+          >
+            Philosophy
+          </button>
         </div>
 
         <ul id="blog-posts">
@@ -134,7 +197,9 @@
         <div id="blog-post-content" style="margin-top: 20px"></div>
 
         <div id="end-button-container">
-          <button onclick="window.location.href = '/blog'" id="back-to-top-btn">↑ Back to Top</button>
+          <button onclick="window.location.href = '/blog'" id="back-to-top-btn">
+            ↑ Back to Top
+          </button>
         </div>
       </div>
 
@@ -146,14 +211,23 @@
           hx-swap="innerHTML"
           hx-indicator="#status-loading"
         >
-          <div id="status-loading" class="htmx-indicator">Loading status...</div>
+          <div id="status-loading" class="htmx-indicator">
+            Loading status...
+          </div>
         </div>
         <h2>Site navigation</h2>
         <div class="nav-links">
           <ul>
             <li><a href="/">/me/</a></li>
             <li><a href="/blog">/log/</a></li>
-            <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+            <li>
+              <a
+                href="https://github.com/0xjah"
+                target="_blank"
+                rel="noopener noreferrer"
+                >/proj/</a
+              >
+            </li>
             <li><a href="/misc">/msc/</a></li>
           </ul>
         </div>
@@ -162,14 +236,23 @@
         <p>Random but cool.</p>
         <div class="cool-sites">
           <div class="marquee-container">
-            <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html" hx-trigger="load">
+            <div
+              class="buttons-container"
+              id="buttons-container"
+              hx-get="/partials/ui/buttons.html"
+              hx-trigger="load"
+            >
               <p>Loading buttons...</p>
             </div>
           </div>
         </div>
 
         <h2>Recommendations</h2>
-        <div hx-get="/partials/ui/recommendations.html" hx-trigger="load" hx-swap="innerHTML">
+        <div
+          hx-get="/partials/ui/recommendations.html"
+          hx-trigger="load"
+          hx-swap="innerHTML"
+        >
           <p>Loading recommendations...</p>
         </div>
       </div>
@@ -189,7 +272,12 @@
         const nav = document.getElementById("mobile-nav");
         const trigger = document.querySelector(".kec-nav-trigger");
 
-        if (nav && trigger && !nav.contains(event.target) && !trigger.contains(event.target)) {
+        if (
+          nav &&
+          trigger &&
+          !nav.contains(event.target) &&
+          !trigger.contains(event.target)
+        ) {
           nav.classList.remove("active");
         }
       }
@@ -200,11 +288,13 @@
 
         // Add click handlers for post links to ensure button shows
         const postLinks = document.querySelectorAll(".post-link");
-        postLinks.forEach(link => {
+        postLinks.forEach((link) => {
           link.addEventListener("click", function (e) {
             // Ensure the button shows for any post link click
             setTimeout(() => {
-              const endButtonContainer = document.getElementById("end-button-container");
+              const endButtonContainer = document.getElementById(
+                "end-button-container",
+              );
               if (endButtonContainer) {
                 endButtonContainer.style.display = "block";
               }
@@ -230,21 +320,28 @@
         const posts = document.querySelectorAll("#blog-posts li");
         const buttons = document.querySelectorAll(".category-btn");
 
-        posts.forEach(post => {
-          post.style.display = category === "all" || post.dataset.category === category ? "" : "none";
+        posts.forEach((post) => {
+          post.style.display =
+            category === "all" || post.dataset.category === category
+              ? ""
+              : "none";
         });
 
-        buttons.forEach(btn => btn.classList.remove("active"));
-        document.querySelector(`.category-btn[onclick*="${category}"]`).classList.add("active");
+        buttons.forEach((btn) => btn.classList.remove("active"));
+        document
+          .querySelector(`.category-btn[onclick*="${category}"]`)
+          .classList.add("active");
       }
 
       // HTMX event handlers
-      htmx.on("htmx:afterSwap", e => {
+      htmx.on("htmx:afterSwap", (e) => {
         const target = e.detail.target;
 
         // Handle blog post loading
         if (target.id === "blog-post-content") {
-          const endButtonContainer = document.getElementById("end-button-container");
+          const endButtonContainer = document.getElementById(
+            "end-button-container",
+          );
           if (endButtonContainer) {
             endButtonContainer.style.display = "block";
           }
@@ -253,7 +350,9 @@
 
         // Handle "Back to Top" button (blog page reload)
         if (target.classList && target.classList.contains("site-container")) {
-          const endButtonContainer = document.getElementById("end-button-container");
+          const endButtonContainer = document.getElementById(
+            "end-button-container",
+          );
           if (endButtonContainer) {
             endButtonContainer.style.display = "none";
           }
@@ -274,7 +373,9 @@
               swap: "innerHTML",
             })
             .then(() => {
-              const endButtonContainer = document.getElementById("end-button-container");
+              const endButtonContainer = document.getElementById(
+                "end-button-container",
+              );
               if (endButtonContainer) {
                 endButtonContainer.style.display = "block";
               }
@@ -303,9 +404,11 @@
       });
 
       // Handle browser back/forward navigation
-      htmx.on("htmx:beforeTransition", e => {
+      htmx.on("htmx:beforeTransition", (e) => {
         if (!e.detail.path.includes("?post=")) {
-          const endButtonContainer = document.getElementById("end-button-container");
+          const endButtonContainer = document.getElementById(
+            "end-button-container",
+          );
           if (endButtonContainer) {
             endButtonContainer.style.display = "none";
           }
@@ -314,11 +417,13 @@
       });
 
       // Additional event handler to ensure button shows when content is loaded
-      htmx.on("htmx:afterRequest", e => {
+      htmx.on("htmx:afterRequest", (e) => {
         const url = e.detail.requestConfig.path;
         if (url && url.includes("/partials/blog/")) {
           setTimeout(() => {
-            const endButtonContainer = document.getElementById("end-button-container");
+            const endButtonContainer = document.getElementById(
+              "end-button-container",
+            );
             if (endButtonContainer) {
               endButtonContainer.style.display = "block";
             }
@@ -327,7 +432,7 @@
       });
 
       // Handle URL push after successful request
-      htmx.on("htmx:pushedIntoHistory", e => {
+      htmx.on("htmx:pushedIntoHistory", (e) => {
         console.log("URL pushed:", e.detail.path);
       });
 

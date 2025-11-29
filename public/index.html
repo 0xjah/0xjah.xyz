@@ -5,10 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Home | 0xjah.me</title>
     <link rel="icon" type="image/x-icon" href="/static/img/lain-head.jpg" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
     <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/head-support.js" defer></script>
+    <script
+      src="https://unpkg.com/htmx.org/dist/ext/head-support.js"
+      defer
+    ></script>
     <script defer>
       // HTMX-powered splash manager
       window.splashManager = {
@@ -54,7 +60,10 @@
           const currentPath = window.location.pathname;
           const targetPath = evt.detail.requestConfig.path;
 
-          if (currentPath === targetPath || (currentPath === "/" && targetPath === "/")) {
+          if (
+            currentPath === targetPath ||
+            (currentPath === "/" && targetPath === "/")
+          ) {
             evt.preventDefault();
           }
         }
@@ -82,7 +91,8 @@
         if (evt.target.id === "status-header") {
           evt.target.innerHTML = '<div class="error">Status unavailable</div>';
         } else if (evt.target.id === "projects-list") {
-          evt.target.innerHTML = '<div class="error">Projects unavailable</div>';
+          evt.target.innerHTML =
+            '<div class="error">Projects unavailable</div>';
         } else if (evt.target.id === "buttons-container") {
           evt.target.innerHTML = '<div class="error">Buttons unavailable</div>';
         } else if (evt.target.id === "email") {
@@ -112,7 +122,13 @@
     ></div>
     <div class="site-container">
       <main class="about-me">
-        <h1 style="display: flex; justify-content: space-between; align-items: center">
+        <h1
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
           <a style="border-bottom: none" href="/">0xjah.me</a>
           <div class="kec-nav-container">
             <img
@@ -127,36 +143,77 @@
               class="mobile-nav-overlay"
               id="mobile-nav"
               onclick="
-                if (!event.target.closest('a') && !event.target.closest('.kec-nav-trigger'))
+                if (
+                  !event.target.closest('a') &&
+                  !event.target.closest('.kec-nav-trigger')
+                )
                   this.classList.remove('active');
               "
             >
               <ul>
                 <li>
-                  <a href="/" onclick="document.getElementById('mobile-nav').classList.remove('active')">/me/</a>
+                  <a
+                    href="/"
+                    onclick="
+                      document
+                        .getElementById('mobile-nav')
+                        .classList.remove('active')
+                    "
+                    >/me/</a
+                  >
                 </li>
                 <li>
-                  <a href="/blog" onclick="document.getElementById('mobile-nav').classList.remove('active')">/log/</a>
+                  <a
+                    href="/blog"
+                    onclick="
+                      document
+                        .getElementById('mobile-nav')
+                        .classList.remove('active')
+                    "
+                    >/log/</a
+                  >
                 </li>
                 <li>
                   <a
                     href="https://github.com/0xjah"
                     target="_blank"
                     rel="noopener noreferrer"
-                    onclick="document.getElementById('mobile-nav').classList.remove('active')"
+                    onclick="
+                      document
+                        .getElementById('mobile-nav')
+                        .classList.remove('active')
+                    "
                   >
                     /proj/
                   </a>
                 </li>
                 <li>
-                  <a href="/misc" onclick="document.getElementById('mobile-nav').classList.remove('active')">/msc/</a>
+                  <a
+                    href="/misc"
+                    onclick="
+                      document
+                        .getElementById('mobile-nav')
+                        .classList.remove('active')
+                    "
+                    >/msc/</a
+                  >
                 </li>
-                <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px">
+                <li
+                  style="
+                    border-top: 1px solid oklch(25% 0 0);
+                    margin-top: 10px;
+                    padding-top: 10px;
+                  "
+                >
                   <a
                     href="https://lainon.life/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    onclick="document.getElementById('mobile-nav').classList.remove('active')"
+                    onclick="
+                      document
+                        .getElementById('mobile-nav')
+                        .classList.remove('active')
+                    "
                   >
                     lainon.life
                   </a>
@@ -166,18 +223,30 @@
           </div>
         </h1>
 
-        <img class="profile-img" src="https://github.com/0xjah.png" alt="0xjah Avatar" />
-        <p>Hi, I'm 0xjah, a 20 year old self-taught programmer and pentester with an interest in C and electronics.</p>
-
+        <img
+          class="profile-img"
+          src="https://github.com/0xjah.png"
+          alt="0xjah Avatar"
+        />
         <p>
-          My introduction to technology began through broader interests—history, philosophy, art, and language. These
-          disciplines shaped my understanding of systems and connections, eventually leading me to programming at 18. I
-          started with Python, progressed to C, and now focus on Rust and Go for their clarity, reliability, and
-          performance. For me, programming is not only a technical practice but a structured way to understand and build
-          within an interconnected world.
+          Hi, I'm 0xjah, a 20 year old self-taught programmer and pentester with
+          an interest in C and electronics.
         </p>
 
-        <p>This site aims to be both my personal portfolio and a corner on the internet for me to express myself.</p>
+        <p>
+          My introduction to technology began through broader interests—history,
+          philosophy, art, and language. These disciplines shaped my
+          understanding of systems and connections, eventually leading me to
+          programming at 18. I started with Python, progressed to C, and now
+          focus on Rust and Go for their clarity, reliability, and performance.
+          For me, programming is not only a technical practice but a structured
+          way to understand and build within an interconnected world.
+        </p>
+
+        <p>
+          This site aims to be both my personal portfolio and a corner on the
+          internet for me to express myself.
+        </p>
 
         <p>Some more stuff about me:</p>
         <ul>
@@ -192,7 +261,8 @@
             </a>
           </li>
           <li>
-            I conducted a Linux introduction workshop on campus in collaboration with GDG ASU.
+            I conducted a Linux introduction workshop on campus in collaboration
+            with GDG ASU.
             <a
               href="https://gdg.community.dev/events/details/google-gdg-on-campus-applied-science-private-university-amman-jordan-presents-intro-to-linux-workshop/"
               target="_blank"
@@ -203,15 +273,22 @@
           </li>
           <li>I will never learn a Javascript framework!! (it's bloated)</li>
           <li>
-            My interests lie in Hardware Hacking, software debloating, and optimizing applications to make them lighter
-            and more efficient.
+            My interests lie in Hardware Hacking, software debloating, and
+            optimizing applications to make them lighter and more efficient.
           </li>
           <li>My first Linux distro was Arch.</li>
         </ul>
 
         <h2>Projects</h2>
-        <div id="projects-list" hx-get="/partials/ui/projects.html" hx-trigger="load" hx-indicator="#projects-loading">
-          <div id="projects-loading" class="htmx-indicator">Loading projects...</div>
+        <div
+          id="projects-list"
+          hx-get="/partials/ui/projects.html"
+          hx-trigger="load"
+          hx-indicator="#projects-loading"
+        >
+          <div id="projects-loading" class="htmx-indicator">
+            Loading projects...
+          </div>
         </div>
 
         <h2>Publications/Press</h2>
@@ -223,11 +300,21 @@
         <h2>Connect</h2>
         <div class="social-links">
           <i class="fab fa-github"></i>
-          <a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">github.com/0xjah</a>
+          <a
+            href="https://github.com/0xjah"
+            target="_blank"
+            rel="noopener noreferrer"
+            >github.com/0xjah</a
+          >
           <br />
 
           <i class="fab fa-x-twitter"></i>
-          <a href="https://x.com/0x_jah" target="_blank" rel="noopener noreferrer">x.com/0x_jah</a>
+          <a
+            href="https://x.com/0x_jah"
+            target="_blank"
+            rel="noopener noreferrer"
+            >x.com/0x_jah</a
+          >
           <br />
 
           <i class="fa-solid fa-envelope"></i>
@@ -238,28 +325,38 @@
             hx-swap="innerHTML"
             hx-indicator="#email-loading"
           >
-            <span id="email-loading" class="htmx-indicator">Loading email...</span>
+            <span id="email-loading" class="htmx-indicator"
+              >Loading email...</span
+            >
           </span>
           <br />
 
           <div class="crypto">
             <i class="fa-brands fa-bitcoin"></i>
             <span class="crypto-label">BTC:</span>
-            <span class="crypto-addr">bc1q3fuzzq5avauzjsf4yka8p83jvt93rzdgxfyvzp5wwz</span>
+            <span class="crypto-addr"
+              >bc1q3fuzzq5avauzjsf4yka8p83jvt93rzdgxfyvzp5wwz</span
+            >
             <div class="crypto-addr crypto-secondary">kt97dhea3qhy7j27</div>
           </div>
 
           <div class="crypto">
             <i class="fab fa-monero"></i>
             <span class="crypto-label">XMR:</span>
-            <span class="crypto-addr">49FAkwTHXeVZsaHouMBJ1r4sqyiNXKDbZU5zBmK9on4j6</span>
-            <div class="crypto-addr crypto-secondary">6EivJELwWuHFbdSUuV4Uk9U5MWfqHNrvAvpUyXDpGkzAJbE5Gh</div>
+            <span class="crypto-addr"
+              >49FAkwTHXeVZsaHouMBJ1r4sqyiNXKDbZU5zBmK9on4j6</span
+            >
+            <div class="crypto-addr crypto-secondary">
+              6EivJELwWuHFbdSUuV4Uk9U5MWfqHNrvAvpUyXDpGkzAJbE5Gh
+            </div>
           </div>
         </div>
 
         <h5>
           Built with
-          <a href="https://htmx.org" target="_blank" rel="noopener noreferrer">htmx</a>
+          <a href="https://htmx.org" target="_blank" rel="noopener noreferrer"
+            >htmx</a
+          >
         </h5>
         &copy; 2025 0xjah | 0xjah.me
       </main>
@@ -272,7 +369,9 @@
           hx-swap="innerHTML"
           hx-indicator="#status-loading"
         >
-          <div id="status-loading" class="htmx-indicator">Loading status...</div>
+          <div id="status-loading" class="htmx-indicator">
+            Loading status...
+          </div>
         </div>
 
         <h2>Site navigation</h2>
@@ -280,7 +379,14 @@
           <ul>
             <li><a href="/">/usr/</a></li>
             <li><a href="/blog">/log/</a></li>
-            <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+            <li>
+              <a
+                href="https://github.com/0xjah"
+                target="_blank"
+                rel="noopener noreferrer"
+                >/proj/</a
+              >
+            </li>
             <li><a href="/misc">/msc/</a></li>
           </ul>
         </div>
@@ -296,12 +402,18 @@
               hx-trigger="load"
               hx-indicator="#buttons-loading"
             >
-              <div id="buttons-loading" class="htmx-indicator">Loading buttons...</div>
+              <div id="buttons-loading" class="htmx-indicator">
+                Loading buttons...
+              </div>
             </div>
           </div>
         </div>
         <h2>Recommendations</h2>
-        <div hx-get="/partials/ui/recommendations.html" hx-trigger="load" hx-swap="innerHTML">
+        <div
+          hx-get="/partials/ui/recommendations.html"
+          hx-trigger="load"
+          hx-swap="innerHTML"
+        >
           <p>Loading recommendations...</p>
         </div>
       </aside>

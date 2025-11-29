@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Gallery | 0xjah.me</title>
     <link rel="icon" type="image/x-icon" href="/static/img/lain-head.jpg" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
     <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
     <style>
@@ -146,7 +149,12 @@
 
       /* Skeleton loading animation for images */
       .gallery-item img:not([src]) {
-        background: linear-gradient(90deg, oklch(15% 0 0) 25%, oklch(20% 0 0) 50%, oklch(15% 0 0) 75%);
+        background: linear-gradient(
+          90deg,
+          oklch(15% 0 0) 25%,
+          oklch(20% 0 0) 50%,
+          oklch(15% 0 0) 75%
+        );
         background-size: 200% 100%;
         animation: skeleton 2s infinite;
       }
@@ -335,7 +343,12 @@
         const nav = document.getElementById("mobile-nav");
         const trigger = document.querySelector(".kec-nav-trigger");
 
-        if (nav && trigger && !nav.contains(event.target) && !trigger.contains(event.target)) {
+        if (
+          nav &&
+          trigger &&
+          !nav.contains(event.target) &&
+          !trigger.contains(event.target)
+        ) {
           nav.classList.remove("active");
         }
       }
@@ -398,14 +411,14 @@
           // Generate gallery grid
           const galleryHtml = data.images
             .map(
-              image => `
+              (image) => `
             <div class="gallery-item" onclick="openModal('${image.url}')">
               <img src="${image.url}" alt="${image.name}" loading="lazy" decoding="async" />
               <div class="gallery-item-overlay">
                 <p class="gallery-item-title">${image.name}</p>
               </div>
             </div>
-          `
+          `,
             )
             .join("");
 
@@ -420,9 +433,11 @@
 
           let errorMessage = "Failed to load gallery";
           if (error.name === "AbortError") {
-            errorMessage = "Request timed out. Please check your connection and try again.";
+            errorMessage =
+              "Request timed out. Please check your connection and try again.";
           } else if (error.message.includes("Failed to fetch")) {
-            errorMessage = "Network error. Please check your connection and try again.";
+            errorMessage =
+              "Network error. Please check your connection and try again.";
           } else {
             errorMessage = `Failed to load gallery: ${error.message}`;
           }
@@ -453,12 +468,12 @@
         let touchStartY = 0;
         let touchStartX = 0;
 
-        const handleTouchStart = e => {
+        const handleTouchStart = (e) => {
           touchStartY = e.touches[0].clientY;
           touchStartX = e.touches[0].clientX;
         };
 
-        const handleTouchEnd = e => {
+        const handleTouchEnd = (e) => {
           if (!touchStartY || !touchStartX) return;
 
           const touchEndY = e.changedTouches[0].clientY;
@@ -476,7 +491,9 @@
         };
 
         // Add event listeners for touch gestures
-        modal.addEventListener("touchstart", handleTouchStart, { passive: true });
+        modal.addEventListener("touchstart", handleTouchStart, {
+          passive: true,
+        });
         modal.addEventListener("touchend", handleTouchEnd, { passive: true });
       }
 
@@ -492,7 +509,7 @@
         // Re-add click listener to new modal
         newModal.addEventListener("click", closeModal);
         const newModalImg = newModal.querySelector("#modalImage");
-        newModalImg.addEventListener("click", e => e.stopPropagation());
+        newModalImg.addEventListener("click", (e) => e.stopPropagation());
       }
 
       // Event listeners
@@ -514,7 +531,10 @@
       // HTMX event listener for when content is swapped in
       document.addEventListener("htmx:afterSwap", function (evt) {
         // Only load gallery if we're on the gallery page
-        if (window.location.pathname === "/gallery" && document.getElementById("gallery-content")) {
+        if (
+          window.location.pathname === "/gallery" &&
+          document.getElementById("gallery-content")
+        ) {
           // Small delay to ensure DOM is ready
           setTimeout(loadGallery, 100);
         }
@@ -523,7 +543,10 @@
       // HTMX event listener for when the page is loaded via navigation
       document.addEventListener("htmx:load", function (evt) {
         // Only load gallery if we're on the gallery page
-        if (window.location.pathname === "/gallery" && document.getElementById("gallery-content")) {
+        if (
+          window.location.pathname === "/gallery" &&
+          document.getElementById("gallery-content")
+        ) {
           loadGallery();
         }
       });
@@ -556,8 +579,18 @@
   <body>
     <div class="site-container">
       <main class="gallery-container">
-        <h1 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px">
-          <a style="border-bottom: none; flex: 1; min-width: 200px" href="/">0xjah.me | Gallery</a>
+        <h1
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+          "
+        >
+          <a style="border-bottom: none; flex: 1; min-width: 200px" href="/"
+            >0xjah.me | Gallery</a
+          >
           <div class="kec-nav-container">
             <img
               src="/static/img/kec.png"
@@ -571,10 +604,28 @@
               <ul>
                 <li><a href="/">/usr/</a></li>
                 <li><a href="/blog">/log/</a></li>
-                <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+                <li>
+                  <a
+                    href="https://github.com/0xjah"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >/proj/</a
+                  >
+                </li>
                 <li><a href="/misc">/msc/</a></li>
-                <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px">
-                  <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer">lainon.life</a>
+                <li
+                  style="
+                    border-top: 1px solid oklch(25% 0 0);
+                    margin-top: 10px;
+                    padding-top: 10px;
+                  "
+                >
+                  <a
+                    href="https://lainon.life/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >lainon.life</a
+                  >
                 </li>
               </ul>
             </div>
@@ -595,7 +646,11 @@
     <!-- Modal for fullscreen image view -->
     <div id="imageModal" class="modal" onclick="closeModal()">
       <span class="modal-close">&times;</span>
-      <img class="modal-content" id="modalImage" onclick="event.stopPropagation()" />
+      <img
+        class="modal-content"
+        id="modalImage"
+        onclick="event.stopPropagation()"
+      />
     </div>
   </body>
 </html>

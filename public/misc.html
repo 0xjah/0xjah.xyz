@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Misc | 0xjah.me</title>
     <link rel="icon" type="image/x-icon" href="/static/img/lain-head.jpg" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
     <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
     <script defer>
@@ -22,7 +25,12 @@
         const nav = document.getElementById("mobile-nav");
         const trigger = document.querySelector(".kec-nav-trigger");
 
-        if (nav && trigger && !nav.contains(event.target) && !trigger.contains(event.target)) {
+        if (
+          nav &&
+          trigger &&
+          !nav.contains(event.target) &&
+          !trigger.contains(event.target)
+        ) {
           nav.classList.remove("active");
         }
       }
@@ -52,7 +60,13 @@
   <body>
     <div class="site-container">
       <main class="about-me">
-        <h1 style="display: flex; justify-content: space-between; align-items: center">
+        <h1
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
           <a style="border-bottom: none" href="/">0xjah.me | Misc</a>
           <div class="kec-nav-container">
             <img
@@ -67,17 +81,38 @@
               <ul>
                 <li><a href="/">/usr/</a></li>
                 <li><a href="/blog">/log/</a></li>
-                <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+                <li>
+                  <a
+                    href="https://github.com/0xjah"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >/proj/</a
+                  >
+                </li>
                 <li><a href="/misc">/msc/</a></li>
-                <li style="border-top: 1px solid oklch(25% 0 0); margin-top: 10px; padding-top: 10px">
-                  <a href="https://lainon.life/" target="_blank" rel="noopener noreferrer">lainon.life</a>
+                <li
+                  style="
+                    border-top: 1px solid oklch(25% 0 0);
+                    margin-top: 10px;
+                    padding-top: 10px;
+                  "
+                >
+                  <a
+                    href="https://lainon.life/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >lainon.life</a
+                  >
                 </li>
               </ul>
             </div>
           </div>
         </h1>
 
-        <p>Public deployments, writeups, and experimental projects—fragments scattered across the Wired.</p>
+        <p>
+          Public deployments, writeups, and experimental projects—fragments
+          scattered across the Wired.
+        </p>
 
         <h2>Projects</h2>
         <ul id="misc-projects">
@@ -98,14 +133,23 @@
           hx-swap="innerHTML"
           hx-indicator="#status-loading"
         >
-          <div id="status-loading" class="htmx-indicator">Loading status...</div>
+          <div id="status-loading" class="htmx-indicator">
+            Loading status...
+          </div>
         </div>
         <h2>Site navigation</h2>
         <div class="nav-links">
           <ul>
             <li><a href="/">/me/</a></li>
             <li><a href="/blog">/log/</a></li>
-            <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
+            <li>
+              <a
+                href="https://github.com/0xjah"
+                target="_blank"
+                rel="noopener noreferrer"
+                >/proj/</a
+              >
+            </li>
             <li><a href="/misc">/msc/</a></li>
           </ul>
         </div>
@@ -114,14 +158,23 @@
         <p>Random but cool.</p>
         <div class="cool-sites">
           <div class="marquee-container">
-            <div class="buttons-container" id="buttons-container" hx-get="/partials/ui/buttons.html" hx-trigger="load">
+            <div
+              class="buttons-container"
+              id="buttons-container"
+              hx-get="/partials/ui/buttons.html"
+              hx-trigger="load"
+            >
               <p>Loading buttons...</p>
             </div>
           </div>
         </div>
 
         <h2>Recommendations</h2>
-        <div hx-get="/partials/ui/recommendations.html" hx-trigger="load" hx-swap="innerHTML">
+        <div
+          hx-get="/partials/ui/recommendations.html"
+          hx-trigger="load"
+          hx-swap="innerHTML"
+        >
           <p>Loading recommendations...</p>
         </div>
       </aside>

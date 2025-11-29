@@ -9,7 +9,7 @@ Quick Start
 
 locally build : 
        make \
-       run         - Run the application locally
+              run         - Run the application locally
               build       - Build the application
               clean       - Clean build artifacts
               test        - Run tests

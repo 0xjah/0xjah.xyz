@@ -1,4 +1,34 @@
-# 0xjah.me
+0xjah.me
+========
 
 Hello there!
 This is my portfolio website's source code :3
+
+Quick Start
+-----------
+
+locally build : 
+       make \
+            	run         - Run the application locally
+              build       - Build the application
+              clean       - Clean build artifacts
+              test        - Run tests
+              fmt         - Format Go code
+              format      - Format all files with Prettier
+              format-check - Check Prettier formatting
+              format-html - Format HTML files only
+              format-css  - Format CSS files only
+              format-js   - Format JS files only
+              format-all  - Format both Go and frontend files
+              setup       - Setup development environment
+              install-hooks - Install git pre-commit hooks
+
+Contributing
+------------
+
+Issues and pull requests are welcome. Please open them on GitHub.
+
+Credits
+-------
+
+Personal website by `0xjah`.

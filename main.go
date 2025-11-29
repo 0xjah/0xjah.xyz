@@ -30,7 +30,6 @@ func main() {
 	mux.HandleFunc("/api/github-last-updated-html", h.GitHubRepoLastUpdatedHTML)
 	mux.HandleFunc("/api/discord-status", h.DiscordStatus)
 	mux.HandleFunc("/api/gallery", h.Gallery)
-	mux.HandleFunc("/api/lain-chat", h.LainChat)
 	mux.HandleFunc("/health", h.HealthCheck)
 
 	// Static files with aggressive caching
@@ -64,9 +63,9 @@ func main() {
 		MaxHeaderBytes: 1 << 16, // 64KB max header size
 	}
 
-	log.Printf("🚀 Server starting on http://%s:%s", cfg.Host, cfg.Port)
-	log.Printf("📝 Environment: %s", cfg.Environment)
-	log.Printf("⚡ Optimizations: Compression enabled, embedded content, optimized timeouts")
+	log.Printf("Server starting on http://%s:%s", cfg.Host, cfg.Port)
+	log.Printf("Environment: %s", cfg.Environment)
+	log.Printf("Optimizations: Compression enabled, embedded content, optimized timeouts")
 
 	// Graceful shutdown setup
 	sigChan := make(chan os.Signal, 1)
@@ -74,22 +73,22 @@ func main() {
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatal("❌ Server failed to start:", err)
+			log.Fatal("Server failed to start:", err)
 		}
 	}()
 
-	log.Println("✅ Server started successfully")
+	log.Println("Server started successfully")
 
 	// Wait for shutdown signal
 	<-sigChan
-	log.Println("🛑 Shutting down server...")
+	log.Println("Shutting down server...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Printf("❌ Server shutdown error: %v", err)
+		log.Printf("Server shutdown error: %v", err)
 	} else {
-		log.Println("✅ Server shutdown complete")
+		log.Println("Server shutdown complete")
 	}
 }

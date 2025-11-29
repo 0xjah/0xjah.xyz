@@ -126,7 +126,10 @@
             <div
               class="mobile-nav-overlay"
               id="mobile-nav"
-              onclick="if (!event.target.closest('a') && !event.target.closest('.kec-nav-trigger')) this.classList.remove('active')"
+              onclick="
+                if (!event.target.closest('a') && !event.target.closest('.kec-nav-trigger'))
+                  this.classList.remove('active');
+              "
             >
               <ul>
                 <li>
@@ -275,7 +278,7 @@
         <h2>Site navigation</h2>
         <div class="nav-links">
           <ul>
-            <li><a href="/">/me/</a></li>
+            <li><a href="/">/usr/</a></li>
             <li><a href="/blog">/log/</a></li>
             <li><a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a></li>
             <li><a href="/misc">/msc/</a></li>

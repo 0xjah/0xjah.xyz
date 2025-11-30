@@ -81,6 +81,7 @@ const char* get_mime(const char *path) {
     if (strcmp(ext, ".jpg") == 0) return "image/jpeg";
     if (strcmp(ext, ".webp") == 0) return "image/webp";
     if (strcmp(ext, ".svg") == 0) return "image/svg+xml";
+    if (strcmp(ext, ".gif") == 0) return "image/gif";
     return "application/octet-stream";
 }
 
@@ -314,6 +315,7 @@ void* handle_client(void *arg) {
     
     printf("%s %s\n", method, path);
     
+    // API routes
     if (strcmp(path, "/api/gallery") == 0) {
         handle_gallery(fd);
     } else if (strcmp(path, "/api/github-status") == 0) {
@@ -321,14 +323,26 @@ void* handle_client(void *arg) {
     } else if (strcmp(path, "/health") == 0) {
         const char *msg = "{\"status\":\"ok\"}";
         send_response(fd, 200, "application/json", msg, strlen(msg));
-    } else if (strcmp(path, "/") == 0) {
+    }
+    // Page routes - serve the corresponding HTML files
+    else if (strcmp(path, "/") == 0) {
         serve_file(fd, "public/index.html");
-    } else if (strncmp(path, "/static/", 8) == 0 || strncmp(path, "/partials/", 10) == 0) {
+    } else if (strcmp(path, "/blog") == 0) {
+        serve_file(fd, "public/blog.html");
+    } else if (strcmp(path, "/misc") == 0) {
+        serve_file(fd, "public/misc.html");
+    } else if (strcmp(path, "/gallery") == 0) {
+        serve_file(fd, "public/gallery.html");
+    }
+    // Static assets and partials
+    else if (strncmp(path, "/static/", 8) == 0 || strncmp(path, "/partials/", 10) == 0) {
         char file[MAX_PATH];
         snprintf(file, sizeof(file), "public%s", path);
         serve_file(fd, file);
-    } else {
-        const char *msg = "404";
+    } 
+    // 404 for everything else
+    else {
+        const char *msg = "404 Not Found";
         send_response(fd, 404, "text/plain", msg, strlen(msg));
     }
     

@@ -1,7 +1,5 @@
 /*
- * Minimal Portfolio Web Server with R2 Support
- * Build: gcc -o server server.c -lcurl -lpthread -lssl -lcrypto -O3 -Wall
- * Run: ./server
+ * Build: gcc -o server main.c -lcurl -lpthread -lssl -lcrypto -O3 -Wall
  */
 
 #include <stdio.h>
@@ -18,14 +16,11 @@
 #include <openssl/hmac.h>
 #include <openssl/sha.h>
 
-#define PORT 3000
 #define BUFFER_SIZE 16384
 #define MAX_PATH 512
 
-/* Configuration */
 typedef struct {
     char port[6];
-    char discord_id[64];
     char github_repo[256];
     char r2_endpoint[512];
     char r2_access_key[256];
@@ -37,7 +32,6 @@ Config cfg;
 int server_fd;
 volatile sig_atomic_t running = 1;
 
-/* CURL response */
 struct MemoryStruct {
     char *memory;
     size_t size;
@@ -58,23 +52,19 @@ static size_t write_cb(void *contents, size_t size, size_t nmemb, void *userp) {
 void load_config() {
     char *e;
     snprintf(cfg.port, sizeof(cfg.port), "%s", (e = getenv("PORT")) ? e : "3000");
-    snprintf(cfg.discord_id, sizeof(cfg.discord_id), "%s", (e = getenv("DISCORD_ID")) ? e : "763769303681335316");
     snprintf(cfg.github_repo, sizeof(cfg.github_repo), "%s", (e = getenv("GITHUB_REPO")) ? e : "0xjah/0xjah.xyz");
     snprintf(cfg.r2_endpoint, sizeof(cfg.r2_endpoint), "%s", (e = getenv("R2_ENDPOINT")) ? e : "");
     snprintf(cfg.r2_access_key, sizeof(cfg.r2_access_key), "%s", (e = getenv("R2_ACCESS_KEY")) ? e : "");
     snprintf(cfg.r2_secret_key, sizeof(cfg.r2_secret_key), "%s", (e = getenv("R2_SECRET_KEY")) ? e : "");
     snprintf(cfg.r2_bucket, sizeof(cfg.r2_bucket), "%s", (e = getenv("R2_BUCKET")) ? e : "");
-    printf("Server loaded on port %s\n", cfg.port);
+    printf("Server on port %s\n", cfg.port);
 }
 
 void send_response(int fd, int code, const char *type, const char *body, size_t len) {
     char header[2048];
     int hlen = snprintf(header, sizeof(header),
-        "HTTP/1.1 %d OK\r\n"
-        "Content-Type: %s\r\n"
-        "Content-Length: %zu\r\n"
-        "Connection: keep-alive\r\n"
-        "Access-Control-Allow-Origin: *\r\n\r\n",
+        "HTTP/1.1 %d OK\r\nContent-Type: %s\r\nContent-Length: %zu\r\n"
+        "Connection: keep-alive\r\nAccess-Control-Allow-Origin: *\r\n\r\n",
         code, type, len);
     write(fd, header, hlen);
     if (body && len > 0) write(fd, body, len);
@@ -117,7 +107,6 @@ void serve_file(int fd, const char *path) {
     free(content);
 }
 
-/* AWS Signature V4 */
 void hmac_sha256(const unsigned char *key, int keylen, const unsigned char *data, 
                  int datalen, unsigned char *out) {
     unsigned int len;
@@ -171,14 +160,14 @@ void create_aws_signature(const char *method, const char *uri, const char *query
 
 void handle_gallery(int fd) {
     if (strlen(cfg.r2_access_key) == 0) {
-        const char *msg = "{\"images\":[],\"error\":\"R2 not configured\"}";
+        const char *msg = "{\"images\":[]}";
         send_response(fd, 200, "application/json", msg, strlen(msg));
         return;
     }
     
     CURL *curl = curl_easy_init();
     if (!curl) {
-        const char *msg = "{\"images\":[],\"error\":\"CURL init failed\"}";
+        const char *msg = "{\"images\":[]}";
         send_response(fd, 500, "application/json", msg, strlen(msg));
         return;
     }
@@ -213,7 +202,6 @@ void handle_gallery(int fd) {
     CURLcode res = curl_easy_perform(curl);
     
     if (res == CURLE_OK && chunk.memory) {
-        /* Parse XML and build JSON response */
         char response[16384] = "{\"images\":[";
         int count = 0;
         char *key_start = chunk.memory;
@@ -228,7 +216,6 @@ void handle_gallery(int fd) {
             strncpy(key, key_start, key_len);
             key[key_len] = '\0';
             
-            /* Skip if not an image */
             if (!strstr(key, ".jpg") && !strstr(key, ".png") && 
                 !strstr(key, ".webp") && !strstr(key, ".jpeg")) {
                 key_start = key_end;
@@ -252,11 +239,8 @@ void handle_gallery(int fd) {
         
         send_response(fd, 200, "application/json", response, strlen(response));
     } else {
-        char error[256];
-        snprintf(error, sizeof(error), 
-            "{\"images\":[],\"error\":\"R2 request failed: %s\"}", 
-            curl_easy_strerror(res));
-        send_response(fd, 500, "application/json", error, strlen(error));
+        const char *msg = "{\"images\":[]}";
+        send_response(fd, 500, "application/json", msg, strlen(msg));
     }
     
     curl_slist_free_all(headers);
@@ -264,44 +248,49 @@ void handle_gallery(int fd) {
     free(chunk.memory);
 }
 
-void handle_discord_status(int fd) {
+void handle_github_status(int fd) {
     CURL *curl = curl_easy_init();
     if (!curl) {
-        const char *msg = "<div><h2>Status</h2><p>online • coding</p></div>";
+        const char *msg = "<div><h2>Status</h2><p>Last updated: unknown</p></div>";
         send_response(fd, 200, "text/html", msg, strlen(msg));
         return;
     }
     
     struct MemoryStruct chunk = {malloc(1), 0};
-    char url[256];
-    snprintf(url, sizeof(url), "https://api.lanyard.rest/v1/users/%s", cfg.discord_id);
+    char url[512];
+    snprintf(url, sizeof(url), "https://api.github.com/repos/%s", cfg.github_repo);
+    
+    struct curl_slist *headers = NULL;
+    headers = curl_slist_append(headers, "User-Agent: 0xjah.xyz/1.0");
     
     curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_cb);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &chunk);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);
     
     CURLcode res = curl_easy_perform(curl);
     
-    char status[64] = "online • coding";
+    char time_str[64] = "unknown";
     if (res == CURLE_OK && chunk.memory) {
-        char *st = strstr(chunk.memory, "\"discord_status\":\"");
-        if (st) {
-            st += 18;
-            char *end = strchr(st, '"');
-            if (end && (end - st) < sizeof(status)) {
-                strncpy(status, st, end - st);
-                status[end - st] = '\0';
+        char *pushed = strstr(chunk.memory, "\"pushed_at\":\"");
+        if (pushed) {
+            pushed += 13;
+            char *end = strchr(pushed, '"');
+            if (end && (end - pushed) < sizeof(time_str)) {
+                strncpy(time_str, pushed, end - pushed);
+                time_str[end - pushed] = '\0';
             }
         }
     }
     
     char response[512];
     snprintf(response, sizeof(response),
-        "<div class=\"status-header\"><h2>Status</h2><p class=\"quote\">%s</p></div>",
-        status);
+        "<div class=\"status-header\"><h2>Status</h2>"
+        "<p class=\"quote\">Last updated: %s</p></div>", time_str);
     
     send_response(fd, 200, "text/html", response, strlen(response));
+    curl_slist_free_all(headers);
     curl_easy_cleanup(curl);
     free(chunk.memory);
 }
@@ -327,10 +316,10 @@ void* handle_client(void *arg) {
     
     if (strcmp(path, "/api/gallery") == 0) {
         handle_gallery(fd);
-    } else if (strcmp(path, "/api/discord-status") == 0) {
-        handle_discord_status(fd);
+    } else if (strcmp(path, "/api/github-status") == 0) {
+        handle_github_status(fd);
     } else if (strcmp(path, "/health") == 0) {
-        const char *msg = "{\"status\":\"healthy\"}";
+        const char *msg = "{\"status\":\"ok\"}";
         send_response(fd, 200, "application/json", msg, strlen(msg));
     } else if (strcmp(path, "/") == 0) {
         serve_file(fd, "public/index.html");
@@ -339,7 +328,8 @@ void* handle_client(void *arg) {
         snprintf(file, sizeof(file), "public%s", path);
         serve_file(fd, file);
     } else {
-        serve_file(fd, "public/index.html");
+        const char *msg = "404";
+        send_response(fd, 404, "text/plain", msg, strlen(msg));
     }
     
     close(fd);
@@ -347,7 +337,6 @@ void* handle_client(void *arg) {
 }
 
 void signal_handler(int sig) {
-    printf("\nShutting down...\n");
     running = 0;
     if (server_fd >= 0) close(server_fd);
 }
@@ -362,7 +351,7 @@ int main() {
     int opt = 1;
     
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-        perror("socket failed");
+        perror("socket");
         exit(1);
     }
     
@@ -373,7 +362,7 @@ int main() {
     addr.sin_port = htons(atoi(cfg.port));
     
     if (bind(server_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-        perror("bind failed");
+        perror("bind");
         exit(1);
     }
     
@@ -391,7 +380,6 @@ int main() {
         
         if (*client_fd < 0) {
             free(client_fd);
-            if (running) perror("accept");
             continue;
         }
         
@@ -401,6 +389,5 @@ int main() {
     }
     
     curl_global_cleanup();
-    printf("Shutdown complete\n");
     return 0;
 }

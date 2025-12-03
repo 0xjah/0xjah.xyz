@@ -26,6 +26,7 @@ typedef struct {
     char r2_access_key[256];
     char r2_secret_key[256];
     char r2_bucket[256];
+    char r2_public_url[512];  // For public image URLs
 } Config;
 
 Config cfg;
@@ -50,6 +51,32 @@ static size_t write_cb(void *contents, size_t size, size_t nmemb, void *userp) {
 }
 
 void load_config() {
+    // Try to load .env file if it exists
+    FILE *env_file = fopen(".env", "r");
+    if (env_file) {
+        char line[512];
+        printf("Loading .env file...\n");
+        while (fgets(line, sizeof(line), env_file)) {
+            // Skip comments and empty lines
+            if (line[0] == '#' || line[0] == '\n') continue;
+            
+            // Remove newline
+            line[strcspn(line, "\n")] = 0;
+            
+            // Parse KEY=VALUE
+            char *eq = strchr(line, '=');
+            if (eq) {
+                *eq = '\0';
+                char *key = line;
+                char *value = eq + 1;
+                
+                // Set environment variable
+                setenv(key, value, 0); // Don't overwrite if already set
+            }
+        }
+        fclose(env_file);
+    }
+    
     char *e;
     snprintf(cfg.port, sizeof(cfg.port), "%s", (e = getenv("PORT")) ? e : "3000");
     snprintf(cfg.github_repo, sizeof(cfg.github_repo), "%s", (e = getenv("GITHUB_REPO")) ? e : "0xjah/0xjah.xyz");
@@ -57,6 +84,7 @@ void load_config() {
     snprintf(cfg.r2_access_key, sizeof(cfg.r2_access_key), "%s", (e = getenv("R2_ACCESS_KEY")) ? e : "");
     snprintf(cfg.r2_secret_key, sizeof(cfg.r2_secret_key), "%s", (e = getenv("R2_SECRET_KEY")) ? e : "");
     snprintf(cfg.r2_bucket, sizeof(cfg.r2_bucket), "%s", (e = getenv("R2_BUCKET")) ? e : "");
+    snprintf(cfg.r2_public_url, sizeof(cfg.r2_public_url), "%s", (e = getenv("R2_PUBLIC_URL")) ? e : "");
     printf("Server on port %s\n", cfg.port);
 }
 
@@ -122,12 +150,12 @@ void sha256_hex(const char *data, char *out) {
 }
 
 void create_aws_signature(const char *method, const char *uri, const char *query,
-                          const char *date, const char *datetime, char *auth_header) {
+                          const char *date, const char *datetime, const char *host, char *auth_header) {
     char canonical_request[4096];
     snprintf(canonical_request, sizeof(canonical_request),
         "%s\n%s\n%s\nhost:%s\nx-amz-content-sha256:UNSIGNED-PAYLOAD\nx-amz-date:%s\n\n"
         "host;x-amz-content-sha256;x-amz-date\nUNSIGNED-PAYLOAD",
-        method, uri, query ? query : "", cfg.r2_endpoint, datetime);
+        method, uri, query ? query : "", host, datetime);
     
     char canonical_hash[65];
     sha256_hex(canonical_request, canonical_hash);
@@ -138,7 +166,7 @@ void create_aws_signature(const char *method, const char *uri, const char *query
         datetime, date, canonical_hash);
     
     unsigned char k_date[32], k_region[32], k_service[32], k_signing[32];
-    char key[256];
+    char key[512];  // Increased from 256
     snprintf(key, sizeof(key), "AWS4%s", cfg.r2_secret_key);
     
     hmac_sha256((unsigned char*)key, strlen(key), (unsigned char*)date, strlen(date), k_date);
@@ -161,15 +189,17 @@ void create_aws_signature(const char *method, const char *uri, const char *query
 
 void handle_gallery(int fd) {
     if (strlen(cfg.r2_access_key) == 0) {
-        const char *msg = "{\"images\":[]}";
+        printf("[Gallery] No R2 credentials configured\n");
+        const char *msg = "{\"images\":[],\"count\":0}";
         send_response(fd, 200, "application/json", msg, strlen(msg));
         return;
     }
     
     CURL *curl = curl_easy_init();
     if (!curl) {
-        const char *msg = "{\"images\":[]}";
-        send_response(fd, 500, "application/json", msg, strlen(msg));
+        printf("[Gallery] Failed to init curl\n");
+        const char *msg = "{\"images\":[],\"count\":0}";
+        send_response(fd, 200, "application/json", msg, strlen(msg));
         return;
     }
     
@@ -179,11 +209,16 @@ void handle_gallery(int fd) {
     strftime(date, sizeof(date), "%Y%m%d", tm_info);
     strftime(datetime, sizeof(datetime), "%Y%m%dT%H%M%SZ", tm_info);
     
+    // Use bucket as subdomain in host
+    char host[1024];
+    snprintf(host, sizeof(host), "%s.%s", cfg.r2_bucket, cfg.r2_endpoint);
+    
     char auth_header[512];
-    create_aws_signature("GET", "/", "list-type=2", date, datetime, auth_header);
+    create_aws_signature("GET", "/", "list-type=2", date, datetime, host, auth_header);
     
     char url[1024];
-    snprintf(url, sizeof(url), "https://%s/%s?list-type=2", cfg.r2_endpoint, cfg.r2_bucket);
+    snprintf(url, sizeof(url), "https://%s?list-type=2", host);
+    printf("[Gallery] Requesting: %s\n", url);
     
     struct curl_slist *headers = NULL;
     char auth_h[600], date_h[100];
@@ -202,47 +237,85 @@ void handle_gallery(int fd) {
     
     CURLcode res = curl_easy_perform(curl);
     
-    if (res == CURLE_OK && chunk.memory) {
-        char response[16384] = "{\"images\":[";
-        int count = 0;
-        char *key_start = chunk.memory;
+    long http_code = 0;
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+    printf("[Gallery] curl result: %d, HTTP code: %ld\n", res, http_code);
+    
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+    printf("[Gallery] curl result: %d, HTTP code: %ld\n", res, http_code);
+    
+    if (res != CURLE_OK || !chunk.memory) {
+        printf("[Gallery] Error: %s\n", curl_easy_strerror(res));
+        const char *msg = "{\"error\":\"Failed to fetch from R2\",\"images\":[],\"count\":0}";
+        send_response(fd, 500, "application/json", msg, strlen(msg));
+        curl_slist_free_all(headers);
+        curl_easy_cleanup(curl);
+        free(chunk.memory);
+        return;
+    }
+    
+    if (http_code != 200) {
+        printf("[Gallery] R2 Error Response: %s\n", chunk.memory);
+        const char *msg = "{\"error\":\"R2 returned non-200 status\",\"images\":[],\"count\":0}";
+        send_response(fd, 500, "application/json", msg, strlen(msg));
+        curl_slist_free_all(headers);
+        curl_easy_cleanup(curl);
+        free(chunk.memory);
+        return;
+    }
+    
+    printf("[Gallery] XML Response length: %zu\n", chunk.size);
+    
+    char response[16384] = "{\"images\":[";
+    int count = 0;
+    char *key_start = chunk.memory;
+    
+    while ((key_start = strstr(key_start, "<Key>")) != NULL) {
+        key_start += 5;
+        char *key_end = strstr(key_start, "</Key>");
+        if (!key_end) break;
         
-        while ((key_start = strstr(key_start, "<Key>")) != NULL) {
-            key_start += 5;
-            char *key_end = strstr(key_start, "</Key>");
-            if (!key_end) break;
-            
-            size_t key_len = key_end - key_start;
-            char key[256];
-            strncpy(key, key_start, key_len);
-            key[key_len] = '\0';
-            
-            if (!strstr(key, ".jpg") && !strstr(key, ".png") && 
-                !strstr(key, ".webp") && !strstr(key, ".jpeg")) {
-                key_start = key_end;
-                continue;
-            }
-            
-            if (count > 0) strcat(response, ",");
-            char img_entry[512];
-            snprintf(img_entry, sizeof(img_entry),
-                "{\"key\":\"%s\",\"url\":\"https://%s/%s/%s\"}",
-                key, cfg.r2_endpoint, cfg.r2_bucket, key);
-            strcat(response, img_entry);
-            count++;
+        size_t key_len = key_end - key_start;
+        if (key_len >= 256) {
             key_start = key_end;
+            continue;
         }
         
-        strcat(response, "],\"count\":");
-        char count_str[16];
-        snprintf(count_str, sizeof(count_str), "%d}", count);
-        strcat(response, count_str);
+        char key[256];
+        strncpy(key, key_start, key_len);
+        key[key_len] = '\0';
         
-        send_response(fd, 200, "application/json", response, strlen(response));
-    } else {
-        const char *msg = "{\"images\":[]}";
-        send_response(fd, 500, "application/json", msg, strlen(msg));
+        if (!strstr(key, ".jpg") && !strstr(key, ".png") && 
+            !strstr(key, ".webp") && !strstr(key, ".jpeg")) {
+            key_start = key_end;
+            continue;
+        }
+        
+        if (count > 0) strcat(response, ",");
+        char img_entry[1536];
+        
+        // Use public URL if configured, otherwise fall back to storage endpoint
+        if (strlen(cfg.r2_public_url) > 0) {
+            snprintf(img_entry, sizeof(img_entry),
+                "{\"name\":\"%s\",\"key\":\"%s\",\"url\":\"https://%s/%s\"}",
+                key, key, cfg.r2_public_url, key);
+        } else {
+            snprintf(img_entry, sizeof(img_entry),
+                "{\"name\":\"%s\",\"key\":\"%s\",\"url\":\"https://%s/%s\"}",
+                key, key, host, key);
+        }
+        strcat(response, img_entry);
+        count++;
+        key_start = key_end;
     }
+    
+    strcat(response, "],\"count\":");
+    char count_str[16];
+    snprintf(count_str, sizeof(count_str), "%d}", count);
+    strcat(response, count_str);
+    
+    printf("[Gallery] Found %d images\n", count);
+    send_response(fd, 200, "application/json", response, strlen(response));
     
     curl_slist_free_all(headers);
     curl_easy_cleanup(curl);
@@ -336,9 +409,14 @@ void* handle_client(void *arg) {
     }
     // Static assets and partials
     else if (strncmp(path, "/static/", 8) == 0 || strncmp(path, "/partials/", 10) == 0) {
-        char file[MAX_PATH];
-        snprintf(file, sizeof(file), "public%s", path);
-        serve_file(fd, file);
+        char file[1024];  // Increased from MAX_PATH
+        if (strlen(path) < 1000) {  // Safety check
+            snprintf(file, sizeof(file), "public%s", path);
+            serve_file(fd, file);
+        } else {
+            const char *msg = "414 URI Too Long";
+            send_response(fd, 414, "text/plain", msg, strlen(msg));
+        }
     } 
     // 404 for everything else
     else {
@@ -351,6 +429,7 @@ void* handle_client(void *arg) {
 }
 
 void signal_handler(int sig) {
+    (void)sig;
     running = 0;
     if (server_fd >= 0) close(server_fd);
 }

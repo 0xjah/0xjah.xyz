@@ -1,20 +1,14 @@
-.PHONY: run build clean
+.PHONY: build clean run
 
 CC = gcc
 CFLAGS = -O3 -Wall
 LDFLAGS = -lcurl -lpthread -lssl -lcrypto
-OPENSSL = $(shell brew --prefix openssl 2>/dev/null)
-
-ifneq ($(OPENSSL),)
-	CFLAGS += -I$(OPENSSL)/include
-	LDFLAGS += -L$(OPENSSL)/lib
-endif
-
-run: build
-	./server
 
 build:
 	$(CC) -o server main.c $(CFLAGS) $(LDFLAGS)
+
+run: build
+	./server
 
 clean:
 	rm -f server

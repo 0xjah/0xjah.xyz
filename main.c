@@ -26,7 +26,7 @@ typedef struct {
     char r2_access_key[256];
     char r2_secret_key[256];
     char r2_bucket[256];
-    char r2_public_url[512];  // For public image URLs
+    char r2_public_url[512];
 } Config;
 
 Config cfg;
@@ -37,6 +37,11 @@ struct MemoryStruct {
     char *memory;
     size_t size;
 };
+
+typedef struct {
+    char key[256];
+    char url[1024];
+} Image;
 
 static size_t write_cb(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t realsize = size * nmemb;
@@ -51,27 +56,19 @@ static size_t write_cb(void *contents, size_t size, size_t nmemb, void *userp) {
 }
 
 void load_config() {
-    // Try to load .env file if it exists
     FILE *env_file = fopen(".env", "r");
     if (env_file) {
         char line[512];
         printf("Loading .env file...\n");
         while (fgets(line, sizeof(line), env_file)) {
-            // Skip comments and empty lines
             if (line[0] == '#' || line[0] == '\n') continue;
-            
-            // Remove newline
             line[strcspn(line, "\n")] = 0;
-            
-            // Parse KEY=VALUE
             char *eq = strchr(line, '=');
             if (eq) {
                 *eq = '\0';
                 char *key = line;
                 char *value = eq + 1;
-                
-                // Set environment variable
-                setenv(key, value, 0); // Don't overwrite if already set
+                setenv(key, value, 0);
             }
         }
         fclose(env_file);
@@ -166,7 +163,7 @@ void create_aws_signature(const char *method, const char *uri, const char *query
         datetime, date, canonical_hash);
     
     unsigned char k_date[32], k_region[32], k_service[32], k_signing[32];
-    char key[512];  // Increased from 256
+    char key[512];
     snprintf(key, sizeof(key), "AWS4%s", cfg.r2_secret_key);
     
     hmac_sha256((unsigned char*)key, strlen(key), (unsigned char*)date, strlen(date), k_date);
@@ -209,7 +206,6 @@ void handle_gallery(int fd) {
     strftime(date, sizeof(date), "%Y%m%d", tm_info);
     strftime(datetime, sizeof(datetime), "%Y%m%dT%H%M%SZ", tm_info);
     
-    // Use bucket as subdomain in host
     char host[1024];
     snprintf(host, sizeof(host), "%s.%s", cfg.r2_bucket, cfg.r2_endpoint);
     
@@ -238,9 +234,6 @@ void handle_gallery(int fd) {
     CURLcode res = curl_easy_perform(curl);
     
     long http_code = 0;
-    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
-    printf("[Gallery] curl result: %d, HTTP code: %ld\n", res, http_code);
-    
     curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
     printf("[Gallery] curl result: %d, HTTP code: %ld\n", res, http_code);
     
@@ -294,7 +287,6 @@ void handle_gallery(int fd) {
         if (count > 0) strcat(response, ",");
         char img_entry[1536];
         
-        // Use public URL if configured, otherwise fall back to storage endpoint
         if (strlen(cfg.r2_public_url) > 0) {
             snprintf(img_entry, sizeof(img_entry),
                 "{\"name\":\"%s\",\"key\":\"%s\",\"url\":\"https://%s/%s\"}",
@@ -322,6 +314,197 @@ void handle_gallery(int fd) {
     free(chunk.memory);
 }
 
+void handle_gallery_partial(int fd) {
+    if (strlen(cfg.r2_access_key) == 0) {
+        printf("[Gallery Partial] No R2 credentials configured\n");
+        const char *msg = "<div class=\"gallery-error\"><i class=\"fas fa-images\"></i><p>No images found in the gallery.</p></div>";
+        send_response(fd, 200, "text/html", msg, strlen(msg));
+        return;
+    }
+    
+    CURL *curl = curl_easy_init();
+    if (!curl) {
+        printf("[Gallery Partial] Failed to init curl\n");
+        const char *msg = "<div class=\"gallery-error\"><i class=\"fas fa-exclamation-triangle\"></i><p>Failed to load gallery.</p></div>";
+        send_response(fd, 200, "text/html", msg, strlen(msg));
+        return;
+    }
+    
+    time_t now = time(NULL);
+    struct tm *tm_info = gmtime(&now);
+    char date[9], datetime[17];
+    strftime(date, sizeof(date), "%Y%m%d", tm_info);
+    strftime(datetime, sizeof(datetime), "%Y%m%dT%H%M%SZ", tm_info);
+    
+    char host[1024];
+    snprintf(host, sizeof(host), "%s.%s", cfg.r2_bucket, cfg.r2_endpoint);
+    
+    char auth_header[512];
+    create_aws_signature("GET", "/", "list-type=2", date, datetime, host, auth_header);
+    
+    char url[1024];
+    snprintf(url, sizeof(url), "https://%s?list-type=2", host);
+    printf("[Gallery Partial] Requesting: %s\n", url);
+    
+    struct curl_slist *headers = NULL;
+    char auth_h[600], date_h[100];
+    snprintf(auth_h, sizeof(auth_h), "Authorization: %s", auth_header);
+    snprintf(date_h, sizeof(date_h), "x-amz-date: %s", datetime);
+    headers = curl_slist_append(headers, auth_h);
+    headers = curl_slist_append(headers, date_h);
+    headers = curl_slist_append(headers, "x-amz-content-sha256: UNSIGNED-PAYLOAD");
+    
+    struct MemoryStruct chunk = {malloc(1), 0};
+    curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_cb);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &chunk);
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+    
+    CURLcode res = curl_easy_perform(curl);
+    
+    long http_code = 0;
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+    printf("[Gallery Partial] curl result: %d, HTTP code: %ld\n", res, http_code);
+    
+    if (res != CURLE_OK || !chunk.memory || http_code != 200) {
+        printf("[Gallery Partial] Error: %s\n", curl_easy_strerror(res));
+        const char *msg = "<div class=\"gallery-error\"><i class=\"fas fa-exclamation-triangle\"></i><p>Failed to load gallery from storage.</p></div>";
+        send_response(fd, 200, "text/html", msg, strlen(msg));
+        curl_slist_free_all(headers);
+        curl_easy_cleanup(curl);
+        free(chunk.memory);
+        return;
+    }
+    
+    // Build sorted array of images
+    Image *images = malloc(1000 * sizeof(Image));
+    int count = 0;
+    char *key_start = chunk.memory;
+    
+    while ((key_start = strstr(key_start, "<Key>")) != NULL && count < 1000) {
+        key_start += 5;
+        char *key_end = strstr(key_start, "</Key>");
+        if (!key_end) break;
+        
+        size_t key_len = key_end - key_start;
+        if (key_len >= 256) {
+            key_start = key_end;
+            continue;
+        }
+        
+        char key[256];
+        strncpy(key, key_start, key_len);
+        key[key_len] = '\0';
+        
+        if (!strstr(key, ".jpg") && !strstr(key, ".png") && 
+            !strstr(key, ".webp") && !strstr(key, ".jpeg")) {
+            key_start = key_end;
+            continue;
+        }
+        
+        strcpy(images[count].key, key);
+        
+        if (strlen(cfg.r2_public_url) > 0) {
+            snprintf(images[count].url, sizeof(images[count].url),
+                "https://%s/%s", cfg.r2_public_url, key);
+        } else {
+            snprintf(images[count].url, sizeof(images[count].url),
+                "https://%s/%s", host, key);
+        }
+        
+        count++;
+        key_start = key_end;
+    }
+    
+    // Sort images alphabetically by key
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = i + 1; j < count; j++) {
+            if (strcmp(images[i].key, images[j].key) > 0) {
+                Image temp = images[i];
+                images[i] = images[j];
+                images[j] = temp;
+            }
+        }
+    }
+    
+    // Build HTML response
+    char *response = malloc(100000);
+    int pos = 0;
+    
+    pos += snprintf(response + pos, 100000 - pos,
+        "<div class=\"gallery-stats\">"
+        "<i class=\"fas fa-images\"></i> %d image%s found"
+        "</div>"
+        "<div class=\"gallery-grid\">", 
+        count, count != 1 ? "s" : "");
+    
+    for (int i = 0; i < count; i++) {
+        pos += snprintf(response + pos, 100000 - pos,
+            "<div class=\"gallery-item\" onclick=\"openModal('%s')\">"
+            "<img src=\"%s\" alt=\"%s\" loading=\"lazy\" decoding=\"async\" />"
+            "<div class=\"gallery-item-overlay\">"
+            "<p class=\"gallery-item-title\">%s</p>"
+            "</div>"
+            "</div>",
+            images[i].url, images[i].url, images[i].key, images[i].key);
+    }
+    
+    pos += snprintf(response + pos, 100000 - pos, "</div>");
+    
+    printf("[Gallery Partial] Generated HTML for %d images\n", count);
+    send_response(fd, 200, "text/html", response, strlen(response));
+    
+    free(images);
+    free(response);
+    curl_slist_free_all(headers);
+    curl_easy_cleanup(curl);
+    free(chunk.memory);
+}
+
+void format_relative_time(const char *iso_time, char *output, size_t out_size) {
+    struct tm tm_time = {0};
+    time_t pushed_time, now_time;
+    
+    // Parse ISO 8601 format: 2024-12-04T15:30:45Z
+    if (sscanf(iso_time, "%d-%d-%dT%d:%d:%d", 
+               &tm_time.tm_year, &tm_time.tm_mon, &tm_time.tm_mday,
+               &tm_time.tm_hour, &tm_time.tm_min, &tm_time.tm_sec) != 6) {
+        snprintf(output, out_size, "recently");
+        return;
+    }
+    
+    tm_time.tm_year -= 1900;
+    tm_time.tm_mon -= 1;
+    pushed_time = timegm(&tm_time);
+    now_time = time(NULL);
+    
+    double diff = difftime(now_time, pushed_time);
+    int seconds = (int)diff;
+    
+    if (seconds < 60) {
+        snprintf(output, out_size, "just now");
+    } else if (seconds < 3600) {
+        int mins = seconds / 60;
+        snprintf(output, out_size, "%dm ago", mins);
+    } else if (seconds < 86400) {
+        int hours = seconds / 3600;
+        snprintf(output, out_size, "%dh ago", hours);
+    } else if (seconds < 604800) {
+        int days = seconds / 86400;
+        snprintf(output, out_size, "%dd ago", days);
+    } else if (seconds < 2592000) {
+        int weeks = seconds / 604800;
+        snprintf(output, out_size, "%dw ago", weeks);
+    } else if (seconds < 31536000) {
+        int months = seconds / 2592000;
+        snprintf(output, out_size, "%dmo ago", months);
+    } else {
+        int years = seconds / 31536000;
+        snprintf(output, out_size, "%dy ago", years);
+    }
+}
+
 void handle_github_status(int fd) {
     CURL *curl = curl_easy_init();
     if (!curl) {
@@ -345,15 +528,17 @@ void handle_github_status(int fd) {
     
     CURLcode res = curl_easy_perform(curl);
     
-    char time_str[64] = "unknown";
+    char time_str[64] = "recently";
     if (res == CURLE_OK && chunk.memory) {
         char *pushed = strstr(chunk.memory, "\"pushed_at\":\"");
         if (pushed) {
             pushed += 13;
             char *end = strchr(pushed, '"');
-            if (end && (end - pushed) < sizeof(time_str)) {
-                strncpy(time_str, pushed, end - pushed);
-                time_str[end - pushed] = '\0';
+            if (end && (end - pushed) < 64) {
+                char iso_time[64];
+                strncpy(iso_time, pushed, end - pushed);
+                iso_time[end - pushed] = '\0';
+                format_relative_time(iso_time, time_str, sizeof(time_str));
             }
         }
     }
@@ -397,7 +582,11 @@ void* handle_client(void *arg) {
         const char *msg = "{\"status\":\"ok\"}";
         send_response(fd, 200, "application/json", msg, strlen(msg));
     }
-    // Page routes - serve the corresponding HTML files
+    // Gallery partial route
+    else if (strcmp(path, "/partials/gallery/grid.html") == 0) {
+        handle_gallery_partial(fd);
+    }
+    // Page routes
     else if (strcmp(path, "/") == 0) {
         serve_file(fd, "public/index.html");
     } else if (strcmp(path, "/blog") == 0) {
@@ -409,8 +598,8 @@ void* handle_client(void *arg) {
     }
     // Static assets and partials
     else if (strncmp(path, "/static/", 8) == 0 || strncmp(path, "/partials/", 10) == 0) {
-        char file[1024];  // Increased from MAX_PATH
-        if (strlen(path) < 1000) {  // Safety check
+        char file[1024];
+        if (strlen(path) < 1000) {
             snprintf(file, sizeof(file), "public%s", path);
             serve_file(fd, file);
         } else {
@@ -418,7 +607,7 @@ void* handle_client(void *arg) {
             send_response(fd, 414, "text/plain", msg, strlen(msg));
         }
     } 
-    // 404 for everything else
+    // 404
     else {
         const char *msg = "404 Not Found";
         send_response(fd, 404, "text/plain", msg, strlen(msg));

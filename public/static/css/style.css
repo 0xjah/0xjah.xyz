@@ -1,8 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Fira+Code&display=swap");
 
 :root {
-  --accent-h: 0;
-  --accent-c: 0;
+  --accent-h: 240;
+  --accent-c: 0.2;
 }
 
 html,

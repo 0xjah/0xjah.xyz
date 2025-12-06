@@ -554,8 +554,32 @@ void handle_github_status(int fd) {
     free(chunk.memory);
 }
 
-// In your handle_client function, around line 580-620
-// Replace the existing route handling with this:
+// Add this helper function near the top with other functions (around line 100)
+
+void get_query_param(const char *query, const char *param, char *value, size_t value_size) {
+    if (!query || !param || !value) return;
+    
+    char *param_start = strstr(query, param);
+    if (!param_start) return;
+    
+    param_start += strlen(param);
+    if (*param_start != '=') return;
+    param_start++; // skip '='
+    
+    char *param_end = strchr(param_start, '&');
+    size_t len;
+    if (param_end) {
+        len = param_end - param_start;
+    } else {
+        len = strlen(param_start);
+    }
+    
+    if (len >= value_size) len = value_size - 1;
+    strncpy(value, param_start, len);
+    value[len] = '\0';
+}
+
+// Then update your handle_client function (around line 580):
 
 void* handle_client(void *arg) {
     int fd = *(int*)arg;
@@ -569,12 +593,19 @@ void* handle_client(void *arg) {
     }
     buffer[n] = '\0';
     
-    char method[16], path[MAX_PATH];
-    sscanf(buffer, "%s %s", method, path);
-    char *q = strchr(path, '?');
-    if (q) *q = '\0';
+    char method[16], path[MAX_PATH], full_path[MAX_PATH];
+    sscanf(buffer, "%s %s", method, full_path);
     
-    printf("%s %s\n", method, path);
+    // Separate path and query string
+    strcpy(path, full_path);
+    char *q = strchr(path, '?');
+    char *query = NULL;
+    if (q) {
+        *q = '\0';
+        query = q + 1;
+    }
+    
+    printf("%s %s%s%s\n", method, path, query ? "?" : "", query ? query : "");
     
     // API routes
     if (strcmp(path, "/api/gallery") == 0) {
@@ -589,11 +620,30 @@ void* handle_client(void *arg) {
     else if (strcmp(path, "/partials/gallery/grid.html") == 0) {
         handle_gallery_partial(fd);
     }
-    // Blog partial routes - THIS WAS MISSING!
+    // Blog partial routes - direct access
     else if (strncmp(path, "/partials/blog/", 15) == 0) {
         char file[1024];
         snprintf(file, sizeof(file), "public%s", path);
         serve_file(fd, file);
+    }
+    // Blog page with query parameter handling
+    else if (strcmp(path, "/blog") == 0) {
+        if (query) {
+            char post_name[256] = {0};
+            get_query_param(query, "post", post_name, sizeof(post_name));
+            
+            if (strlen(post_name) > 0) {
+                // Serve the blog post partial directly
+                char file[1024];
+                snprintf(file, sizeof(file), "public/partials/blog/%s.html", post_name);
+                serve_file(fd, file);
+            } else {
+                // No post specified, serve main blog page
+                serve_file(fd, "public/blog.html");
+            }
+        } else {
+            serve_file(fd, "public/blog.html");
+        }
     }
     // Other partial routes (UI components)
     else if (strncmp(path, "/partials/ui/", 13) == 0) {
@@ -604,8 +654,6 @@ void* handle_client(void *arg) {
     // Page routes
     else if (strcmp(path, "/") == 0) {
         serve_file(fd, "public/index.html");
-    } else if (strcmp(path, "/blog") == 0) {
-        serve_file(fd, "public/blog.html");
     } else if (strcmp(path, "/misc") == 0) {
         serve_file(fd, "public/misc.html");
     } else if (strcmp(path, "/gallery") == 0) {
@@ -631,6 +679,7 @@ void* handle_client(void *arg) {
     close(fd);
     return NULL;
 }
+
 void signal_handler(int sig) {
     (void)sig;
     running = 0;

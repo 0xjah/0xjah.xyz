@@ -554,6 +554,9 @@ void handle_github_status(int fd) {
     free(chunk.memory);
 }
 
+// In your handle_client function, around line 580-620
+// Replace the existing route handling with this:
+
 void* handle_client(void *arg) {
     int fd = *(int*)arg;
     free(arg);
@@ -586,6 +589,18 @@ void* handle_client(void *arg) {
     else if (strcmp(path, "/partials/gallery/grid.html") == 0) {
         handle_gallery_partial(fd);
     }
+    // Blog partial routes - THIS WAS MISSING!
+    else if (strncmp(path, "/partials/blog/", 15) == 0) {
+        char file[1024];
+        snprintf(file, sizeof(file), "public%s", path);
+        serve_file(fd, file);
+    }
+    // Other partial routes (UI components)
+    else if (strncmp(path, "/partials/ui/", 13) == 0) {
+        char file[1024];
+        snprintf(file, sizeof(file), "public%s", path);
+        serve_file(fd, file);
+    }
     // Page routes
     else if (strcmp(path, "/") == 0) {
         serve_file(fd, "public/index.html");
@@ -596,8 +611,8 @@ void* handle_client(void *arg) {
     } else if (strcmp(path, "/gallery") == 0) {
         serve_file(fd, "public/gallery.html");
     }
-    // Static assets and partials
-    else if (strncmp(path, "/static/", 8) == 0 || strncmp(path, "/partials/", 10) == 0) {
+    // Static assets
+    else if (strncmp(path, "/static/", 8) == 0) {
         char file[1024];
         if (strlen(path) < 1000) {
             snprintf(file, sizeof(file), "public%s", path);
@@ -616,7 +631,6 @@ void* handle_client(void *arg) {
     close(fd);
     return NULL;
 }
-
 void signal_handler(int sig) {
     (void)sig;
     running = 0;

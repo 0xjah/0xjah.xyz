@@ -11,50 +11,7 @@
     />
     <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
-    <script defer>
-      // Mobile navigation toggle
-      function toggleMobileNav() {
-        const nav = document.getElementById("mobile-nav");
-        if (nav) {
-          nav.classList.toggle("active");
-        }
-      }
-
-      // Close mobile nav when clicking outside
-      function closeMobileNavOnOutsideClick(event) {
-        const nav = document.getElementById("mobile-nav");
-        const trigger = document.querySelector(".kec-nav-trigger");
-
-        if (
-          nav &&
-          trigger &&
-          !nav.contains(event.target) &&
-          !trigger.contains(event.target)
-        ) {
-          nav.classList.remove("active");
-        }
-      }
-
-      // Event listeners
-      document.addEventListener("DOMContentLoaded", function () {
-        // Add click outside listener for navigation
-        document.addEventListener("click", closeMobileNavOnOutsideClick);
-      });
-
-      // Prevent navigation to current page
-      document.addEventListener("htmx:beforeRequest", function (evt) {
-        // Check if trying to navigate to current page
-        if (evt.detail.requestConfig.verb === "get") {
-          const currentPath = window.location.pathname;
-          const targetPath = evt.detail.requestConfig.path;
-
-          // If navigating to the same page, prevent the request
-          if (currentPath === targetPath) {
-            evt.preventDefault();
-          }
-        }
-      });
-    </script>
+    <script src="/static/js/main.js" defer></script>
   </head>
 
   <body>
@@ -152,21 +109,6 @@
             </li>
             <li><a href="/misc">/msc/</a></li>
           </ul>
-        </div>
-
-        <h2>Buttons</h2>
-        <p>Random but cool.</p>
-        <div class="cool-sites">
-          <div class="marquee-container">
-            <div
-              class="buttons-container"
-              id="buttons-container"
-              hx-get="/partials/ui/buttons.html"
-              hx-trigger="load"
-            >
-              <p>Loading buttons...</p>
-            </div>
-          </div>
         </div>
 
         <h2>Recommendations</h2>

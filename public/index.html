@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" hx-boost="true" hx-ext="head-support">
   <head>
     <meta charset="UTF-8" />
@@ -15,111 +15,10 @@
       src="https://unpkg.com/htmx.org/dist/ext/head-support.js"
       defer
     ></script>
-    <script defer>
-      // HTMX-powered splash manager
-      window.splashManager = {
-        shown: sessionStorage.getItem("splashShown") === "true",
-
-        show: function (splashScreen) {
-          if (!splashScreen || this.shown) return;
-
-          document.getElementById("splash").style.display = "block";
-          requestAnimationFrame(() => {
-            splashScreen.classList.add("fade-in");
-          });
-
-          // Auto-hide after 2.5 seconds
-          setTimeout(() => this.hide(splashScreen), 2500);
-        },
-
-        hide: function (splashScreen) {
-          if (!splashScreen) return;
-
-          splashScreen.classList.add("fade-out");
-          setTimeout(() => {
-            document.getElementById("splash").style.display = "none";
-            this.shown = true;
-            sessionStorage.setItem("splashShown", "true");
-          }, 400);
-        },
-
-        init: function () {
-          const splashDiv = document.getElementById("splash");
-          if (!splashDiv || this.shown) {
-            if (splashDiv) splashDiv.style.display = "none";
-            return;
-          }
-          htmx.trigger(splashDiv, "load");
-        },
-      };
-
-      // HTMX event handlers
-      document.addEventListener("htmx:beforeRequest", function (evt) {
-        // Prevent navigation to current page
-        if (evt.detail.requestConfig.verb === "get") {
-          const currentPath = window.location.pathname;
-          const targetPath = evt.detail.requestConfig.path;
-
-          if (
-            currentPath === targetPath ||
-            (currentPath === "/" && targetPath === "/")
-          ) {
-            evt.preventDefault();
-          }
-        }
-      });
-
-      document.addEventListener("htmx:afterSettle", function (evt) {
-        // Handle splash screen on initial load
-        if (evt.target.id === "splash" && !splashManager.shown) {
-          const splashScreen = document.querySelector(".splash-screen");
-          if (splashScreen) splashManager.show(splashScreen);
-        }
-      });
-
-      // Global navigation toggle function
-      window.toggleMobileNav = function () {
-        const nav = document.getElementById("mobile-nav");
-        if (nav) {
-          nav.classList.toggle("active");
-        }
-      };
-
-      // HTMX error handling
-      document.addEventListener("htmx:responseError", function (evt) {
-        console.error("HTMX request failed:", evt.detail);
-        if (evt.target.id === "status-header") {
-          evt.target.innerHTML = '<div class="error">Status unavailable</div>';
-        } else if (evt.target.id === "projects-list") {
-          evt.target.innerHTML =
-            '<div class="error">Projects unavailable</div>';
-        } else if (evt.target.id === "buttons-container") {
-          evt.target.innerHTML = '<div class="error">Buttons unavailable</div>';
-        } else if (evt.target.id === "email") {
-          evt.target.innerHTML = "Email unavailable";
-        }
-      });
-
-      document.addEventListener("htmx:timeout", function (evt) {
-        console.warn("HTMX request timed out:", evt.detail);
-        evt.target.innerHTML = '<div class="error">Request timed out</div>';
-      });
-
-      // Initialize on DOM load
-      document.addEventListener("DOMContentLoaded", function () {
-        splashManager.init();
-      });
-    </script>
+    <script src="/static/js/main.js" defer></script>
   </head>
 
   <body>
-    <div
-      id="splash"
-      hx-get="/partials/ui/splash.html"
-      hx-trigger="load"
-      hx-swap="innerHTML"
-      style="display: none"
-    ></div>
     <div class="site-container">
       <main class="about-me">
         <h1
@@ -229,15 +128,15 @@
           alt="0xjah Avatar"
         />
         <p>
-          Hi, I'm 0xjah, a 20 year old self-taught programmer and pentester with
+          Hi, I'm Ahmad, a 20 year old self taught programmer and pentester with
           an interest in C and electronics.
         </p>
 
         <p>
-          My introduction to technology began through broader interests—history,
-          philosophy, art, and language. These disciplines shaped my
+          My introduction to technology began through broader interests history,
+          philosophy, and language. These disciplines shaped my
           understanding of systems and connections, eventually leading me to
-          programming at 18. I started with Python, progressed to C, and now
+          programming at 18. I started with c++, progressed to C, and now
           focus on Rust and Go for their clarity, reliability, and performance.
           For me, programming is not only a technical practice but a structured
           way to understand and build within an interconnected world.
@@ -291,12 +190,6 @@
           </div>
         </div>
 
-        <h2>Publications/Press</h2>
-        <ul>
-          <li>Lain Iwakura - Currently a work in progress</li>
-          <li>More to come...</li>
-        </ul>
-
         <h2>Connect</h2>
         <div class="social-links">
           <i class="fab fa-github"></i>
@@ -318,37 +211,18 @@
           <br />
 
           <i class="fa-solid fa-envelope"></i>
-          <span
-            id="email"
-            hx-get="/partials/ui/email.html"
-            hx-trigger="load"
-            hx-swap="innerHTML"
-            hx-indicator="#email-loading"
-          >
-            <span id="email-loading" class="htmx-indicator"
-              >Loading email...</span
-            >
-          </span>
+          <a href="mailto:0xjah@waifu.club">0xjah[at]waifu[dot]club</a>
           <br />
 
           <div class="crypto">
             <i class="fa-brands fa-bitcoin"></i>
             <span class="crypto-label">BTC:</span>
-            <span class="crypto-addr"
-              >bc1q3fuzzq5avauzjsf4yka8p83jvt93rzdgxfyvzp5wwz</span
-            >
-            <div class="crypto-addr crypto-secondary">kt97dhea3qhy7j27</div>
+            <span class="crypto-addr" data-addr="bc1q3fuzzq5avauzjsf4yka8p83jvt93rzdgxfyvzp5wwzkt97dhea3qhy7j27" title="Click to copy" onclick="copyAddress(this)">bc1q3fuzzq5avauzjsf4yka8p83jvt93rzdgxfyvzp5wwzkt97dhea3qhy7j27</span>
           </div>
-
           <div class="crypto">
             <i class="fab fa-monero"></i>
             <span class="crypto-label">XMR:</span>
-            <span class="crypto-addr"
-              >49FAkwTHXeVZsaHouMBJ1r4sqyiNXKDbZU5zBmK9on4j6</span
-            >
-            <div class="crypto-addr crypto-secondary">
-              6EivJELwWuHFbdSUuV4Uk9U5MWfqHNrvAvpUyXDpGkzAJbE5Gh
-            </div>
+            <span class="crypto-addr" data-addr="49FAkwTHXeVZsaHouMBJ1r4sqyiNXKDbZU5zBmK9on4j66EivJELwWuHFbdSUuV4Uk9U5MWfqHNrvAvpUyXDpGkzAJbE5Gh" title="Click to copy" onclick="copyAddress(this)">49FAkwTHXeVZsaHouMBJ1r4sqyiNXKDbZU5zBmK9on4j66EivJELwWuHFbdSUuV4Uk9U5MWfqHNrvAvpUyXDpGkzAJbE5Gh</span>
           </div>
         </div>
 
@@ -389,24 +263,6 @@
             </li>
             <li><a href="/misc">/msc/</a></li>
           </ul>
-        </div>
-
-        <h2>Buttons</h2>
-        <p>Random but cool.</p>
-        <div class="cool-sites">
-          <div class="marquee-container">
-            <div
-              class="buttons-container"
-              id="buttons-container"
-              hx-get="/partials/ui/buttons.html"
-              hx-trigger="load"
-              hx-indicator="#buttons-loading"
-            >
-              <div id="buttons-loading" class="htmx-indicator">
-                Loading buttons...
-              </div>
-            </div>
-          </div>
         </div>
         <h2>Recommendations</h2>
         <div

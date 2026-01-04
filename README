@@ -1,24 +1,24 @@
-# 0xjah.me
+0xjah.me
+========
 
 Hello there!
 This is my portfolio website's source code :3
 
-## Quick Start
+Quick Start
+-----------
 
 locally build :
 make \
- run - Run the application locally
-build - Build the application
-clean - Clean build artifacts
-test - Run tests
-fmt - Format Go code
-setup - Setup development environment
-install-hooks - Install git pre-commit hooks
+      run - Run the application locally
+      build - Build the application
+      clean - Clean build artifacts
 
-## Contributing
+Contributing
+------------
 
 Issues and pull requests are welcome. Please open them on GitHub.
 
-## Credits
+Credits
+-------
 
 Personal website by `0xjah`.

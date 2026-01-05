@@ -1,99 +1,57 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" hx-boost="true">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Gallery | 0xjah.me</title>
-    <link rel="icon" type="image/x-icon" href="/static/img/logo.svg" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
-    <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
-    <script src="/static/js/main.js" defer></script>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gallery | 0xjah.me</title>
 
-  <body>
-    <div class="site-container">
-      <main class="gallery-container">
-        <h1
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-          "
-        >
-          <a style="border-bottom: none; flex: 1; min-width: 200px" href="/"
-            >0xjah.me | Gallery</a
-          >
-          <div class="kec-nav-container">
-            <img
-              src="/static/img/kec.png"
-              style="width: 40px; height: 40px; object-fit: contain"
-              alt="Kec Group Logo"
-              class="kec-nav-trigger"
-              onclick="toggleMobileNav()"
-              title="Click for navigation"
-            />
-            <div class="mobile-nav-overlay" id="mobile-nav">
-              <ul>
-                <li><a href="/">/usr/</a></li>
-                <li><a href="/blog">/log/</a></li>
-                <li>
-                  <a
-                    href="https://github.com/0xjah"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >/proj/</a
-                  >
-                </li>
-                <li><a href="/misc">/msc/</a></li>
-                <li
-                  style="
-                    border-top: 1px solid oklch(25% 0 0);
-                    margin-top: 10px;
-                    padding-top: 10px;
-                  "
-                >
-                  <a
-                    href="https://lainon.life/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >lainon.life</a
-                  >
-                </li>
-              </ul>
-            </div>
-          </div>
-        </h1>
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/static/img/logo.svg">
 
-        <p>Images That I Found it Cool.</p>
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/static/css/style.css" type="text/css">
 
-        <div 
-          id="gallery-content"
-          hx-get="/partials/gallery/grid.html"
-          hx-trigger="load once"
-          hx-swap="innerHTML"
-        >
-          <div class="gallery-loading">
-            <i class="fas fa-spinner fa-spin"></i>
-            <p>Loading gallery...</p>
-          </div>
+  <!-- Scripts -->
+  <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
+  <script src="/static/js/main.js" defer></script>
+</head>
+
+<body>
+  <div class="site-container">
+
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <main class="gallery-container">
+
+      <!-- Header with Navigation -->
+      <header class="site-header">
+        <h1><a href="/">0xjah.me</a> <span class="page-title">/ gallery</span></h1>
+        <nav class="top-nav">
+          <a href="/">/me/</a>
+          <a href="/blog">/log/</a>
+          <a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a>
+          <a href="/misc">/msc/</a>
+        </nav>
+      </header>
+
+      <p>Images That I Found it Cool.</p>
+
+      <!-- Gallery Content -->
+      <div id="gallery-content" hx-get="/partials/gallery/grid.html" hx-trigger="load once" hx-swap="innerHTML">
+        <div class="gallery-loading">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Loading gallery...</p>
         </div>
-      </main>
-    </div>
+      </div>
 
-    <!-- Modal for fullscreen image view -->
-    <div id="imageModal" class="modal" onclick="closeModal()">
-      <span class="modal-close">&times;</span>
-      <img
-        class="modal-content"
-        id="modalImage"
-        onclick="event.stopPropagation()"
-      />
-    </div>
-  </body>
+    </main>
+
+  </div>
+
+  <!-- ===================== IMAGE MODAL ===================== -->
+  <div id="imageModal" class="modal" onclick="closeModal()">
+    <span class="modal-close">&times;</span>
+    <img class="modal-content" id="modalImage" onclick="event.stopPropagation()">
+  </div>
+
+</body>
 </html>

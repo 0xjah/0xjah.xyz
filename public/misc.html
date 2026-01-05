@@ -1,125 +1,52 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" hx-boost="true">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Misc | 0xjah.me</title>
-    <link rel="icon" type="image/x-icon" href="/static/img/logo.svg" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
-    <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
-    <script src="/static/js/main.js" defer></script>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Misc | 0xjah.me</title>
 
-  <body>
-    <div class="site-container">
-      <main class="about-me">
-        <h1
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          "
-        >
-          <a style="border-bottom: none" href="/">0xjah.me | Misc</a>
-          <div class="kec-nav-container">
-            <img
-              src="/static/img/kec.png"
-              style="width: 40px"
-              alt="Kec Group Logo"
-              class="kec-nav-trigger"
-              onclick="toggleMobileNav()"
-              title="Click for navigation"
-            />
-            <div class="mobile-nav-overlay" id="mobile-nav">
-              <ul>
-                <li><a href="/">/usr/</a></li>
-                <li><a href="/blog">/log/</a></li>
-                <li>
-                  <a
-                    href="https://github.com/0xjah"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >/proj/</a
-                  >
-                </li>
-                <li><a href="/misc">/msc/</a></li>
-                <li
-                  style="
-                    border-top: 1px solid oklch(25% 0 0);
-                    margin-top: 10px;
-                    padding-top: 10px;
-                  "
-                >
-                  <a
-                    href="https://lainon.life/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >lainon.life</a
-                  >
-                </li>
-              </ul>
-            </div>
-          </div>
-        </h1>
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/static/img/logo.svg">
 
-        <p>
-          Public deployments, writeups, and experimental projects—fragments
-          scattered across the Wired.
-        </p>
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/static/css/style.css" type="text/css">
 
-        <h2>Projects</h2>
-        <ul id="misc-projects">
-          <li>
-            <a href="/gallery" style="color: inherit; text-decoration: none">
-              Gallery
-              <i class="fa-regular fa-folder"></i>
-            </a>
-          </li>
-        </ul>
-      </main>
+  <!-- Scripts -->
+  <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
+  <script src="/static/js/main.js" defer></script>
+</head>
 
-      <aside class="status">
-        <div
-          id="status-header"
-          hx-get="/api/github-status"
-          hx-trigger="load, every 30s"
-          hx-swap="innerHTML"
-          hx-indicator="#status-loading"
-        >
-          <div id="status-loading" class="htmx-indicator">
-            Loading status...
-          </div>
-        </div>
-        <h2>Site navigation</h2>
-        <div class="nav-links">
-          <ul>
-            <li><a href="/">/me/</a></li>
-            <li><a href="/blog">/log/</a></li>
-            <li>
-              <a
-                href="https://github.com/0xjah"
-                target="_blank"
-                rel="noopener noreferrer"
-                >/proj/</a
-              >
-            </li>
-            <li><a href="/misc">/msc/</a></li>
-          </ul>
-        </div>
+<body>
+  <div class="site-container">
 
-        <h2>Recommendations</h2>
-        <div
-          hx-get="/partials/ui/recommendations.html"
-          hx-trigger="load"
-          hx-swap="innerHTML"
-        >
-          <p>Loading recommendations...</p>
-        </div>
-      </aside>
-    </div>
-  </body>
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <main class="about-me">
+
+      <!-- Header with Navigation -->
+      <header class="site-header">
+        <h1><a href="/">0xjah.me</a> <span class="page-title">/ misc</span></h1>
+        <nav class="top-nav">
+          <a href="/">/me/</a>
+          <a href="/blog">/log/</a>
+          <a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a>
+          <a href="/misc">/msc/</a>
+        </nav>
+      </header>
+
+      <p>Public deployments, writeups, and anything else idk.</p>
+
+      <!-- Projects Section -->
+      <h2>Projects</h2>
+      <ul id="misc-projects">
+        <li>
+          <a href="/gallery" style="color: inherit; text-decoration: none">
+            Gallery <i class="fa-regular fa-folder"></i>
+          </a>
+        </li>
+      </ul>
+
+    </main>
+
+  </div>
+</body>
 </html>

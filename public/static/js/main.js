@@ -3,13 +3,6 @@ const $=s=>document.getElementById(s),$$=s=>document.querySelectorAll(s);
 const showBtn=v=>{const b=$("end-button-container");if(b)b.style.display=v?"block":"none"};
 const scroll=d=>setTimeout(()=>(document.querySelector("h1")||window).scrollIntoView?.({behavior:"smooth",block:"start"})||window.scrollTo({top:0,behavior:"smooth"}),d||100);
 
-// Nav
-window.toggleMobileNav=()=>$("mobile-nav")?.classList.toggle("active");
-document.addEventListener("click",e=>{const n=$("mobile-nav"),t=document.querySelector(".kec-nav-trigger");if(n&&t&&!n.contains(e.target)&&!t.contains(e.target))n.classList.remove("active")});
-
-// Crypto copy
-window.copyAddress=el=>{const a=el.dataset.addr,o=el.textContent;navigator.clipboard.writeText(a).then(()=>{el.textContent="Copied!";el.classList.add("copied");setTimeout(()=>{el.textContent=o;el.classList.remove("copied")},1500)})};
-
 // Gallery
 window.openModal=u=>{const m=$("imageModal"),i=$("modalImage");if(m&&i){i.src=u;m.classList.add("active");document.body.style.overflow="hidden"}};
 window.closeModal=()=>{const m=$("imageModal");if(m){m.classList.remove("active");document.body.style.overflow="auto"}};

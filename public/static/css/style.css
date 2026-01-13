@@ -321,6 +321,11 @@ li:before {
   opacity: 1;
 }
 
+.gallery-item-title {
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin: 0;
+}
 
 /* Modal */
 .modal {

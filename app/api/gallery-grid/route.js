@@ -29,7 +29,7 @@ export async function GET() {
     const grid = images.map(({ key, url }) => `
       <div class="gallery-item" onclick="openModal('${url}')">
         <img src="${url}" alt="${key}" loading="lazy" decoding="async"/>
-        <div class="gallery-item-overlay">${key}</div>
+        <div class="gallery-item-overlay"><p class="gallery-item-title">${key}</p></div>
       </div>`).join('');
 
     return html(`

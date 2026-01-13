@@ -1,0 +1,20 @@
+{
+  "name": "0xjah-xyz",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal website for 0xjah",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site - no build needed'",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.490.0"
+  },
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

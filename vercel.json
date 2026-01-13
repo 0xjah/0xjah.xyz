@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "buildCommand": null,
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/api/gallery", "destination": "/api/gallery" },
+    { "source": "/api/github-status", "destination": "/api/github-status" },
+    { "source": "/partials/gallery/grid.html", "destination": "/api/gallery-partial" },
+    { "source": "/health", "destination": "/api/health" },
+    { "source": "/blog", "destination": "/blog.html" },
+    { "source": "/misc", "destination": "/misc.html" },
+    { "source": "/gallery", "destination": "/gallery.html" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
+      ]
+    }
+  ]
+}

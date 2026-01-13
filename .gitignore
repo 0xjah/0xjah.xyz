@@ -9,3 +9,5 @@ server
 .DS_Store
 *.log
 .server.pid
+node_modules/
+package-lock.json

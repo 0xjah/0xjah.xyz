@@ -1,13 +1,19 @@
+# Vercel
 .vercel
-*.exe
-*.dll
-*.so
-*.dylib
-server
+
+# Environment
 .env
 .env.local
-.DS_Store
-*.log
-.server.pid
+
+# Dependencies
 node_modules/
-package-lock.json
+
+# Next.js
+.next/
+out/
+
+# OS
+.DS_Store
+
+# Logs
+*.log

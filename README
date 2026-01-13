@@ -7,11 +7,9 @@ This is my portfolio website's source code :3
 Quick Start
 -----------
 
-locally build :
-make \
-      run - Run the application locally
-      build - Build the application
-      clean - Clean build artifacts
+npm install
+npm run dev    # Development
+npm run build  # Production build
 
 Contributing
 ------------

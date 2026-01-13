@@ -19,13 +19,24 @@ document.addEventListener("htmx:timeout",e=>e.target.innerHTML='<div class="erro
 // Blog init
 document.addEventListener("DOMContentLoaded",()=>{
   if(!/^\/blog(\.html)?$/.test(location.pathname))return;
-  $$(".post-link").forEach(l=>l.addEventListener("click",()=>setTimeout(()=>showBtn(1),200)));
+  const content=$("blog-post-content");
+  const hasContent=()=>content&&content.innerHTML.trim().length>0;
+  
+  // Show button if content exists (server-rendered)
+  showBtn(hasContent());
+  
+  // Only fetch via HTMX if content is empty (not server-rendered)
   const p=new URLSearchParams(location.search).get("post");
-  if(p&&typeof htmx!=="undefined")htmx.ajax("GET",`/partials/blog/${p}.html`,{target:"#blog-post-content",swap:"innerHTML"}).then(()=>{showBtn(1);scroll(300)});
-  if(typeof htmx!=="undefined"){
-    htmx.on("htmx:afterSwap",e=>{if(e.detail.target.id==="blog-post-content"){showBtn(1);scroll()}if(e.detail.target.classList?.contains("site-container")){showBtn(0);const c=$("blog-post-content");if(c)c.innerHTML="";scroll()}});
-    htmx.on("htmx:beforeTransition",e=>{if(!e.detail.path.includes("?post=")){showBtn(0);const c=$("blog-post-content");if(c)c.innerHTML=""}});
-    htmx.on("htmx:afterRequest",e=>{if(e.detail.requestConfig.path?.includes("/partials/blog/"))setTimeout(()=>showBtn(1),100)});
+  if(p&&!hasContent()&&typeof htmx!=="undefined"){
+    htmx.ajax("GET",`/blog?post=${p}`,{target:"#blog-post-content",swap:"innerHTML"}).then(()=>{showBtn(1);scroll(300)});
   }
-  document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="r"){e.preventDefault();location.href="/blog"}});
+});
+
+// Global HTMX listeners for blog (must be outside DOMContentLoaded)
+document.addEventListener("htmx:afterSwap",e=>{
+  if(e.detail.target.id==="blog-post-content"){showBtn(1);scroll()}
+  if(e.detail.target.classList?.contains("site-container")){showBtn(0);const c=$("blog-post-content");if(c)c.innerHTML="";scroll()}
+});
+document.addEventListener("htmx:beforeTransition",e=>{
+  if(!e.detail.path?.includes("?post=")){showBtn(0);const c=$("blog-post-content");if(c)c.innerHTML=""}
 });

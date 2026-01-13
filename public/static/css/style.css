@@ -381,6 +381,28 @@ li:before {
   font-size: 13px;
 }
 
+/* ===================== BACK BUTTON ===================== */
+#end-button-container {
+  display: none;
+  margin-top: 48px;
+  text-align: center;
+}
+
+#back-to-top-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+#back-to-top-btn:hover {
+  color: var(--accent);
+}
+
 /* ===================== UTILITIES ===================== */
 .htmx-indicator {
   opacity: 0.6;
@@ -395,16 +417,6 @@ li:before {
   background: oklch(15% 0.05 30);
   border-left: 3px solid oklch(70% 0.15 30);
   border-radius: 4px;
-}
-
-/* ===================== ANIMATIONS ===================== */
-.fade-in {
-  animation: fadeIn 0.3s ease-in;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ===================== RESPONSIVE ===================== */

@@ -1,9 +1,11 @@
-# 0xjah.me
+0xjah.me
+========
 
 Hello there!
 This is my portfolio website's source code :3
 
-## Dependencies
+Dependencies
+------------
 
 - gcc
 - libcurl
@@ -11,7 +13,8 @@ This is my portfolio website's source code :3
 - md4c (brew install md4c)
 - pthreads
 
-## Quick Start
+Quick Start
+------------
 
 cd server
 make build
@@ -24,10 +27,14 @@ make build
 cd ..
 ./server/server
 
-## Contributing
+Contributing
+------------
 
 Issues and pull requests are welcome. Please open them on GitHub.
 
-## Credits
+Credits
+-------
 
 Personal website by `0xjah`.
+
+

@@ -1,0 +1,8 @@
+.git
+.gitignore
+.env
+*.md
+LICENSE
+README
+server/server
+.DS_Store

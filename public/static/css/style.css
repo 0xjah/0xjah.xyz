@@ -481,3 +481,16 @@ li:before {
     opacity: 1;
   }
 }
+
+/* ===================== BLOG POST CONTENT ===================== */
+.blog-post a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  border-bottom: none;
+}
+
+.blog-post a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}

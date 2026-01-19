@@ -48,6 +48,17 @@
 
       <!-- Blog Posts List -->
       <ul id="blog-posts">
+        <li data-category="philosophy">
+          <a href="/blog?post=post_suckless"
+             hx-get="/blog?post=post_suckless"
+             hx-target="#blog-post-content"
+             hx-push-url="true"
+             hx-swap="innerHTML"
+             class="post-link">
+            How Suckless Made Libre Computing Feel Possible - Jan 19, 2026
+          </a>
+        </li>
+
         <li data-category="tech">
           <a href="/blog?post=post_htmx_revolution"
              hx-get="/blog?post=post_htmx_revolution"

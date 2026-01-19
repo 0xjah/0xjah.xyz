@@ -3,6 +3,13 @@ const $=s=>document.getElementById(s),$$=s=>document.querySelectorAll(s);
 const showBtn=v=>{const b=$("end-button-container");if(b)b.style.display=v?"block":"none"};
 const scroll=d=>setTimeout(()=>(document.querySelector("h1")||window).scrollIntoView?.({behavior:"smooth",block:"start"})||window.scrollTo({top:0,behavior:"smooth"}),d||100);
 
+// Theme Toggle
+const getTheme=()=>localStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme:light)").matches?"light":"dark");
+const setTheme=t=>{document.documentElement.setAttribute("data-theme",t);localStorage.setItem("theme",t)};
+window.toggleTheme=()=>setTheme(getTheme()==="dark"?"light":"dark");
+document.addEventListener("DOMContentLoaded",()=>{setTheme(getTheme())});
+
+
 // Gallery
 window.openModal=u=>{const m=$("imageModal"),i=$("modalImage");if(m&&i){i.src=u;m.classList.add("active");document.body.style.overflow="hidden"}};
 window.closeModal=()=>{const m=$("imageModal");if(m){m.classList.remove("active");document.body.style.overflow="auto"}};

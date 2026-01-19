@@ -66,13 +66,13 @@ The planet pays.
 
 ## Charts: Making the Cost Visible
 
-### Global Electricity Consumption (Approx.)
+### Global Electricity Consumption
 
-```mermaid
-pie
-    title Global Electricity Consumption
-    "Data Centers (1–1.5%)" : 1.2
-    "All Other Uses" : 98.8
+```
+┌─────────────────────────────────────────────────────┐
+│  Data Centers:  █░░░░░░░░░░░░░░░░░░░░░░░░  1-1.5%  │
+│  Everything Else:  ████████████████████████  98.5%  │
+└─────────────────────────────────────────────────────┘
 ```
 
 _Source: International Energy Agency (IEA)_
@@ -81,18 +81,16 @@ _Source: International Energy Agency (IEA)_
 
 ### Infrastructure Impact of Cloud + AI
 
-```mermaid
-bar
-    title Relative Impact of Big Tech Infrastructure
-    x-axis Category
-    y-axis Relative Impact
-    "Energy Use" : 8
-    "Water Use" : 7
-    "E-Waste" : 6
-    "Data Extraction" : 9
+```
+Impact Scale (conceptual, 1-10):
+
+Energy Use       ████████░░  8/10
+Water Use        ███████░░░  7/10
+E-Waste          ██████░░░░  6/10
+Data Extraction  █████████░  9/10
 ```
 
-_Conceptual scale based on IEA, UNEP, Nature Sustainability, Scientific American._
+_Based on IEA, UNEP, Nature Sustainability, Scientific American._
 
 ---
 
@@ -101,17 +99,21 @@ _Conceptual scale based on IEA, UNEP, Nature Sustainability, Scientific American
 The cloud is global.
 The damage is local.
 
-```mermaid
-flowchart LR
-    Cloud[Cloud & AI Infrastructure]
-
-    US[Southwestern US<br/>Water Stress]
-    EU[Northern Europe<br/>Energy Load]
-    GS[Global South<br/>E-Waste & Mining]
-
-    Cloud --> US
-    Cloud --> EU
-    Cloud --> GS
+```
+┌──────────────────────────────────────────────────────────┐
+│                                                          │
+│              Cloud & AI Infrastructure                   │
+│                        │                                 │
+│         ┌──────────────┼──────────────┐                  │
+│         │              │              │                  │
+│         ▼              ▼              ▼                  │
+│  ┌─────────────┐ ┌───────────┐ ┌─────────────────┐       │
+│  │ SW United   │ │ Northern  │ │ Global South    │       │
+│  │ States      │ │ Europe    │ │                 │       │
+│  │ Water Stress│ │Energy Load│ │ E-Waste & Mining│       │
+│  └─────────────┘ └───────────┘ └─────────────────┘       │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ---

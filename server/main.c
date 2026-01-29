@@ -783,12 +783,30 @@ static void query_param_get(const char *query, const char *param, char *value, s
  * Request Router
  * ============================================================================ */
 
+static int strcasestr_exists(const char *haystack, const char *needle)
+{
+    if (!haystack || !needle)
+        return 0;
+    size_t needle_len = strlen(needle);
+    for (const char *p = haystack; *p; p++)
+    {
+        if (strncasecmp(p, needle, needle_len) == 0)
+            return 1;
+    }
+    return 0;
+}
+
 static int is_htmx_request(const char *buffer)
 {
     /* HX-Boosted requests expect full page, not partial */
-    if (strstr(buffer, "HX-Boosted: true") != NULL)
+    if (strcasestr_exists(buffer, "HX-Boosted: true") ||
+        strcasestr_exists(buffer, "HX-Boosted:true"))
         return 0;
-    return strstr(buffer, "HX-Request: true") != NULL;
+    /* Check for HX-Request header (case-insensitive, with/without space) */
+    return strcasestr_exists(buffer, "HX-Request: true") ||
+           strcasestr_exists(buffer, "HX-Request:true") ||
+           strcasestr_exists(buffer, "hx-request: true") ||
+           strcasestr_exists(buffer, "hx-request:true");
 }
 
 static void *handle_client(void *arg)

@@ -1,4 +1,4 @@
-// 0xjah.me - Main JS
+// 0xjah.xyz - Main JS
 const $=s=>document.getElementById(s),$$=s=>document.querySelectorAll(s);
 const showBtn=v=>{const b=$("end-button-container");if(b)b.style.display=v?"block":"none"};
 const scroll=d=>setTimeout(()=>(document.querySelector("h1")||window).scrollIntoView?.({behavior:"smooth",block:"start"})||window.scrollTo({top:0,behavior:"smooth"}),d||100);

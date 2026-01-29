@@ -785,6 +785,9 @@ static void query_param_get(const char *query, const char *param, char *value, s
 
 static int is_htmx_request(const char *buffer)
 {
+    /* HX-Boosted requests expect full page, not partial */
+    if (strstr(buffer, "HX-Boosted: true") != NULL)
+        return 0;
     return strstr(buffer, "HX-Request: true") != NULL;
 }
 

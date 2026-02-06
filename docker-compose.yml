@@ -1,0 +1,9 @@
+services:
+  0xjah-xyz:
+    container_name: "0xjah.xyz"
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+     - "26062:3000"

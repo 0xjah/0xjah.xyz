@@ -190,11 +190,7 @@ li::before {
   margin: 10px 10px 0 0;
   object-fit: cover;
   float: left;
-  filter: grayscale(1);
-  transition: filter 0.3s;
 }
-
-.profile-img:hover { filter: grayscale(0); }
 
 /* ===================== PROJECTS ===================== */
 .project-list {

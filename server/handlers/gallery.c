@@ -21,17 +21,17 @@ typedef struct {
     char url[1024];
 } GalleryImage;
 
-static size_t gallery_curl_write_cb(void *contents, size_t size, size_t nmemb, void *userp) {
+static size_t gallery_curl_write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t realsize = size * nmemb;
-    Buffer *buf = (Buffer *)userp;
-    buffer_append(buf, contents, realsize);
+    Buffer *buffer = (Buffer *)userp;
+    buffer_append(buffer, contents, realsize);
     return realsize;
 }
 
 static int gallery_fetch_images(GalleryImage *images, int max_images) {
-    const Config *cfg = config_get();
+    const Config *config = config_get();
 
-    if (strlen(cfg->r2_access_key) == 0) {
+    if (strlen(config->r2_access_key) == 0) {
         return 0;
     }
 
@@ -47,7 +47,7 @@ static int gallery_fetch_images(GalleryImage *images, int max_images) {
     strftime(datetime, sizeof(datetime), "%Y%m%dT%H%M%SZ", tm);
 
     char host[1024];
-    snprintf(host, sizeof(host), "%s.%s", cfg->r2_bucket, cfg->r2_endpoint);
+    snprintf(host, sizeof(host), "%s.%s", config->r2_bucket, config->r2_endpoint);
 
     char auth_header[512];
     aws_signature_create("GET",
@@ -56,8 +56,8 @@ static int gallery_fetch_images(GalleryImage *images, int max_images) {
                          date,
                          datetime,
                          host,
-                         cfg->r2_access_key,
-                         cfg->r2_secret_key,
+                         config->r2_access_key,
+                         config->r2_secret_key,
                          auth_header,
                          sizeof(auth_header));
 
@@ -77,7 +77,7 @@ static int gallery_fetch_images(GalleryImage *images, int max_images) {
 
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, gallery_curl_write_cb);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, gallery_curl_write_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
 
@@ -115,9 +115,9 @@ static int gallery_fetch_images(GalleryImage *images, int max_images) {
             }
 
             strcpy(images[count].key, key);
-            if (strlen(cfg->r2_public_url) > 0) {
+            if (strlen(config->r2_public_url) > 0) {
                 snprintf(images[count].url, sizeof(images[count].url),
-                         "https://%s/%s", cfg->r2_public_url, key);
+                         "https://%s/%s", config->r2_public_url, key);
             } else {
                 snprintf(images[count].url, sizeof(images[count].url),
                          "https://%s/%s", host, key);

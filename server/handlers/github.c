@@ -11,10 +11,10 @@
 #include <string.h>
 #include <time.h>
 
-static size_t github_curl_write_cb(void *contents, size_t size, size_t nmemb, void *userp) {
+static size_t github_curl_write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t realsize = size * nmemb;
-    Buffer *buf = (Buffer *)userp;
-    buffer_append(buf, contents, realsize);
+    Buffer *buffer = (Buffer *)userp;
+    buffer_append(buffer, contents, realsize);
     return realsize;
 }
 
@@ -65,19 +65,19 @@ void github_status_serve(int fd) {
         return;
     }
 
-    const Config *cfg = config_get();
+    const Config *config = config_get();
     Buffer response = {0};
     buffer_init(&response, 4096);
 
     char url[512];
-    snprintf(url, sizeof(url), "https://api.github.com/repos/%s", cfg->github_repo);
+    snprintf(url, sizeof(url), "https://api.github.com/repos/%s", config->github_repo);
 
     struct curl_slist *headers = NULL;
     headers = curl_slist_append(headers, "User-Agent: 0xjah.xyz/1.0");
 
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, github_curl_write_cb);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, github_curl_write_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);
 
@@ -133,7 +133,7 @@ void github_projects_serve(int fd) {
 
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, github_curl_write_cb);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, github_curl_write_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 8L);
 

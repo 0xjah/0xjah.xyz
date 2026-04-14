@@ -89,7 +89,7 @@ static void router_dispatch(int fd, const char *path, const char *query, int htm
     } else if (strcmp(path, "/health") == 0 || strcmp(path, "/api/health") == 0) {
         const char *msg = "{\"status\":\"ok\"}";
         http_send(fd, 200, "application/json", msg, strlen(msg), NULL);
-    } else if (strcmp(path, "/partials/gallery/grid.html") == 0 ||
+    } else if (strcmp(path, "/partials/gallery-grid.html") == 0 ||
                strcmp(path, "/api/gallery-grid") == 0) {
         gallery_serve_html(fd);
     } else if (strcmp(path, "/blog") == 0) {
@@ -100,17 +100,17 @@ static void router_dispatch(int fd, const char *path, const char *query, int htm
             router_sanitize_post_name(post_name);
             blog_serve_post(fd, post_name, htmx);
         } else {
-            static_serve_file(fd, "public/blog.html");
+            static_serve_file(fd, "web/pages/blog.html");
         }
     } else if (strcmp(path, "/") == 0) {
-        static_serve_file(fd, "public/index.html");
+        static_serve_file(fd, "web/pages/index.html");
     } else if (strcmp(path, "/misc") == 0) {
-        static_serve_file(fd, "public/misc.html");
+        static_serve_file(fd, "web/pages/misc.html");
     } else if (strcmp(path, "/gallery") == 0) {
-        static_serve_file(fd, "public/gallery.html");
-    } else if (strncmp(path, "/static/", 8) == 0 || strncmp(path, "/partials/", 10) == 0) {
+        static_serve_file(fd, "web/pages/gallery.html");
+    } else if (strncmp(path, "/assets/", 8) == 0 || strncmp(path, "/partials/", 10) == 0) {
         char file_path[1024];
-        snprintf(file_path, sizeof(file_path), "public%s", path);
+        snprintf(file_path, sizeof(file_path), "web%s", path);
         static_serve_file(fd, file_path);
     } else {
         http_error(fd, 404, "404 Not Found");

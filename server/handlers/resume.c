@@ -5,9 +5,9 @@
 #include "static.h"
 
 void resume_serve(int fd) {
-    Buffer buf = {0};
+    Buffer response_buffer = {0};
 
-    if (static_read_file("public/static/resume.pdf", &buf) < 0) {
+    if (static_read_file("web/assets/documents/resume.pdf", &response_buffer) < 0) {
         http_error(fd, 404, "Resume not found");
         return;
     }
@@ -15,8 +15,8 @@ void resume_serve(int fd) {
     http_send(fd,
               200,
               "application/pdf",
-              buf.data,
-              buf.size,
+              response_buffer.data,
+              response_buffer.size,
               "Content-Disposition: attachment; filename=\"ahmad_jahaf_resume.pdf\"\r\n");
-    buffer_free(&buf);
+    buffer_free(&response_buffer);
 }

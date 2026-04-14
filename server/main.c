@@ -31,12 +31,12 @@ int main(void) {
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
 
-    const Config *cfg = config_get();
+    const Config *config = config_get();
 
     struct sockaddr_in addr = {
         .sin_family = AF_INET,
         .sin_addr.s_addr = INADDR_ANY,
-        .sin_port = htons((unsigned short)atoi(cfg->port))
+        .sin_port = htons((unsigned short)atoi(config->port))
     };
 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -59,7 +59,7 @@ int main(void) {
 
     printf("\n");
     printf("  0xjah.xyz server\n");
-    printf("  http://0.0.0.0:%s\n", cfg->port);
+    printf("  http://0.0.0.0:%s\n", config->port);
     printf("\n");
 
     while (running) {

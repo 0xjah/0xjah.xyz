@@ -4,16 +4,16 @@
 
 #include <string.h>
 
-static void markdown_render_cb(const MD_CHAR *html, MD_SIZE size, void *userdata) {
-    Buffer *buf = (Buffer *)userdata;
-    buffer_append(buf, html, size);
+static void markdown_render_callback(const MD_CHAR *html, MD_SIZE size, void *userdata) {
+    Buffer *buffer = (Buffer *)userdata;
+    buffer_append(buffer, html, size);
 }
 
 int markdown_to_html(const char *md_content, Buffer *html_out) {
     buffer_init(html_out, strlen(md_content) * 2);
     return md_html(md_content,
                    strlen(md_content),
-                   markdown_render_cb,
+                   markdown_render_callback,
                    html_out,
                    MD_FLAG_TABLES | MD_FLAG_STRIKETHROUGH | MD_FLAG_TASKLISTS | MD_FLAG_NOHTML,
                    0);

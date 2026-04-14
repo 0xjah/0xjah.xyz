@@ -9,8 +9,8 @@ typedef struct {
     size_t capacity;
 } Buffer;
 
-void buffer_init(Buffer *buf, size_t initial_size);
-void buffer_append(Buffer *buf, const char *data, size_t len);
-void buffer_free(Buffer *buf);
+void buffer_init(Buffer *buffer, size_t initial_size);
+void buffer_append(Buffer *buffer, const char *data, size_t len);
+void buffer_free(Buffer *buffer);
 
 #endif

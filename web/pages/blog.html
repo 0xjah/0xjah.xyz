@@ -6,14 +6,14 @@
   <title>Blog | 0xjah.xyz</title>
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/static/img/favicon.png">
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/assets/css/main.css" type="text/css">
 
   <!-- Scripts -->
   <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
-  <script src="/static/js/main.js" defer></script>
+  <script src="/assets/js/main.js" defer></script>
 </head>
 
 <body>
@@ -31,8 +31,8 @@
           <a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a>
           <a href="/misc">/msc/</a>
           <button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-            <img src="/static/icons/light-mode.svg" alt="Light mode" class="icon-sun">
-            <img src="/static/icons/dark-mode.svg" alt="Dark mode" class="icon-moon">
+            <img src="/assets/icons/light-mode.svg" alt="Light mode" class="icon-sun">
+            <img src="/assets/icons/dark-mode.svg" alt="Dark mode" class="icon-moon">
           </button>
         </nav>
       </header>
@@ -53,8 +53,8 @@
       <!-- Blog Posts List -->
       <ul id="blog-posts">
         <li data-category="philosophy">
-          <a href="/blog?post=post_suckless"
-             hx-get="/blog?post=post_suckless"
+          <a href="/blog?post=suckless"
+             hx-get="/blog?post=suckless"
              hx-target="#blog-post-content"
              hx-push-url="true"
              hx-swap="innerHTML"
@@ -64,8 +64,8 @@
         </li>
 
         <li data-category="tech">
-          <a href="/blog?post=post_htmx_revolution"
-             hx-get="/blog?post=post_htmx_revolution"
+          <a href="/blog?post=htmx-revolution"
+             hx-get="/blog?post=htmx-revolution"
              hx-target="#blog-post-content"
              hx-push-url="true"
              hx-swap="innerHTML"
@@ -75,8 +75,8 @@
         </li>
 
         <li data-category="tech">
-          <a href="/blog?post=post_ai_is_trash"
-             hx-get="/blog?post=post_ai_is_trash"
+          <a href="/blog?post=ai-is-trash"
+             hx-get="/blog?post=ai-is-trash"
              hx-target="#blog-post-content"
              hx-push-url="true"
              hx-swap="innerHTML"
@@ -86,8 +86,8 @@
         </li>
 
         <li data-category="anime">
-          <a href="/blog?post=post_lain"
-             hx-get="/blog?post=post_lain"
+          <a href="/blog?post=lain"
+             hx-get="/blog?post=lain"
              hx-target="#blog-post-content"
              hx-push-url="true"
              hx-swap="innerHTML"
@@ -97,8 +97,8 @@
         </li>
 
         <li data-category="movie">
-          <a href="/blog?post=post_lily_chou_chou"
-             hx-get="/blog?post=post_lily_chou_chou"
+          <a href="/blog?post=lily-chou-chou"
+             hx-get="/blog?post=lily-chou-chou"
              hx-target="#blog-post-content"
              hx-push-url="true"
              hx-swap="innerHTML"
@@ -108,8 +108,8 @@
         </li>
 
         <li data-category="religion">
-          <a href="/blog?post=post_muslim_support"
-             hx-get="/blog?post=post_muslim_support"
+          <a href="/blog?post=muslim-support"
+             hx-get="/blog?post=muslim-support"
              hx-target="#blog-post-content"
              hx-push-url="true"
              hx-swap="innerHTML"
@@ -119,8 +119,8 @@
         </li>
 
         <li data-category="philosophy">
-          <a href="/blog?post=post_nature_corporations"
-             hx-get="/blog?post=post_nature_corporations"
+          <a href="/blog?post=nature-corporations"
+             hx-get="/blog?post=nature-corporations"
              hx-target="#blog-post-content"
              hx-push-url="true"
              hx-swap="innerHTML"
@@ -130,8 +130,8 @@
         </li>
 
         <li data-category="philosophy">
-          <a href="/blog?post=post_privacy"
-             hx-get="/blog?post=post_privacy"
+          <a href="/blog?post=privacy"
+             hx-get="/blog?post=privacy"
              hx-target="#blog-post-content"
              hx-push-url="true"
              hx-swap="innerHTML"

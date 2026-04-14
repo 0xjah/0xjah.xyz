@@ -6,15 +6,15 @@
   <title>Home | 0xjah.xyz</title>
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/static/img/favicon.png">
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/assets/css/main.css" type="text/css">
 
   <!-- Scripts -->
   <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
   <script src="https://unpkg.com/htmx.org/dist/ext/head-support.js" defer></script>
-  <script src="/static/js/main.js" defer></script>
+  <script src="/assets/js/main.js" defer></script>
 </head>
 
 <body>
@@ -32,8 +32,8 @@
           <a href="https://github.com/0xjah" target="_blank" rel="noopener noreferrer">/proj/</a>
           <a href="/misc">/msc/</a>
           <button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-            <img src="/static/icons/light-mode.svg" alt="Light mode" class="icon-sun">
-            <img src="/static/icons/dark-mode.svg" alt="Dark mode" class="icon-moon">
+            <img src="/assets/icons/light-mode.svg" alt="Light mode" class="icon-sun">
+            <img src="/assets/icons/dark-mode.svg" alt="Dark mode" class="icon-moon">
           </button>
         </nav>
       </header>
@@ -65,7 +65,7 @@
 
       <!-- Projects Section -->
       <h2>Projects</h2>
-      <div id="projects-list" hx-get="/partials/ui/projects.html" hx-trigger="load" hx-indicator="#projects-loading">
+      <div id="projects-list" hx-get="/partials/projects.html" hx-trigger="load" hx-indicator="#projects-loading">
         <div id="projects-loading" class="htmx-indicator">Loading projects...</div>
       </div>
 
@@ -86,7 +86,7 @@
 
       <!-- Recommendations -->
       <h2>Recommendations</h2>
-      <div hx-get="/partials/ui/recommendations.html" hx-trigger="load" hx-swap="innerHTML">
+      <div hx-get="/partials/recommendations.html" hx-trigger="load" hx-swap="innerHTML">
         <p>Loading recommendations...</p>
       </div>
 

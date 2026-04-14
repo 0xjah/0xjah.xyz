@@ -3,6 +3,18 @@
 CC = gcc
 CFLAGS = -O3 -Wall
 LDFLAGS = -lcurl -lpthread -lssl -lcrypto -lmd4c-html
+SRC = main.c \
+    core/config.c \
+    core/http.c \
+    core/router.c \
+    handlers/blog.c \
+    handlers/gallery.c \
+    handlers/github.c \
+    handlers/resume.c \
+    handlers/static.c \
+    utils/aws.c \
+    utils/buffer.c \
+    utils/markdown.c
 
 # Detect macOS and add library paths
 UNAME_S := $(shell uname -s)
@@ -20,10 +32,10 @@ ifeq ($(UNAME_S),Darwin)
 endif
 
 build:
-	$(CC) -o server main.c $(CFLAGS) $(LDFLAGS)
+	$(CC) -o server $(SRC) $(CFLAGS) $(LDFLAGS)
 
 run: build
 	cd .. && ./server/server
 
 clean:
-	rm -f server
+	rm -f server *.o core/*.o handlers/*.o utils/*.o

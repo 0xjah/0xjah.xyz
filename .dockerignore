@@ -1,8 +1,7 @@
 .git
 .gitignore
 .env
-*.md
 LICENSE
-README
+README.md
 server/server
 .DS_Store

@@ -11,11 +11,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY server/main.c server/
-COPY server/Makefile server/
+COPY server/ ./server/
 
 # Build for Linux
-RUN cd server && gcc -o server main.c -O3 -Wall -lcurl -lpthread -lssl -lcrypto -lmd4c-html
+RUN cd server && make build
 
 # Runtime stage
 FROM debian:bookworm-slim
@@ -33,7 +32,7 @@ WORKDIR /app
 COPY --from=builder /app/server/server ./server/server
 
 # Copy static files and content
-COPY public/ ./public/
+COPY web/ ./web/
 COPY content/ ./content/
 
 # Railway injects PORT env var

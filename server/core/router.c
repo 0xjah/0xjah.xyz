@@ -3,7 +3,6 @@
 #include "http.h"
 #include "../handlers/blog.h"
 #include "../handlers/gallery.h"
-#include "../handlers/github.h"
 #include "../handlers/resume.h"
 #include "../handlers/static.h"
 
@@ -80,10 +79,6 @@ static void router_sanitize_post_name(char *post_name) {
 static void router_dispatch(int fd, const char *path, const char *query, int htmx) {
     if (strcmp(path, "/api/gallery") == 0) {
         gallery_serve_json(fd);
-    } else if (strcmp(path, "/api/github-status") == 0) {
-        github_status_serve(fd);
-    } else if (strcmp(path, "/api/github-projects") == 0) {
-        github_projects_serve(fd);
     } else if (strcmp(path, "/api/resume") == 0) {
         resume_serve(fd);
     } else if (strcmp(path, "/health") == 0 || strcmp(path, "/api/health") == 0) {

@@ -9,7 +9,6 @@ SRC = main.c \
     core/router.c \
     handlers/blog.c \
     handlers/gallery.c \
-    handlers/github.c \
     handlers/resume.c \
     handlers/static.c \
     utils/aws.c \

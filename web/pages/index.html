@@ -65,10 +65,7 @@
 
       <!-- Projects Section -->
       <h2>Projects</h2>
-      <div id="projects-list" hx-get="/partials/projects.html" hx-trigger="load" hx-indicator="#projects-loading">
-        <div id="projects-loading" class="htmx-indicator">Loading projects...</div>
-      </div>
-
+      <div hx-get="/partials/projects.html" hx-trigger="load" hx-swap="innerHTML"></div>
       <!-- Connect Section -->
       <h2>Connect</h2>
       <div class="social-links">

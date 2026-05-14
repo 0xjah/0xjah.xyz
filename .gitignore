@@ -17,3 +17,6 @@ out/
 
 # Logs
 *.log
+
+#server
+server 

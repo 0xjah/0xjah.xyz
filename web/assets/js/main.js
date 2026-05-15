@@ -7,7 +7,24 @@ const scroll=d=>setTimeout(()=>(document.querySelector("h1")||window).scrollInto
 const getTheme=()=>localStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme:light)").matches?"light":"dark");
 const setTheme=t=>{document.documentElement.setAttribute("data-theme",t);localStorage.setItem("theme",t)};
 window.toggleTheme=()=>setTheme(getTheme()==="dark"?"light":"dark");
-document.addEventListener("DOMContentLoaded",()=>{setTheme(getTheme())});
+document.addEventListener("DOMContentLoaded",()=>{
+  setTheme(getTheme());
+  document.querySelectorAll(".resume-link[data-resume-url]").forEach(a=>{
+    a.addEventListener("click",e=>{
+      e.preventDefault();
+      const url=a.getAttribute("data-resume-url");
+      if(!url)return;
+      const name=a.getAttribute("data-resume-name")||"";
+      const link=document.createElement("a");
+      link.href=url;
+      if(name)link.download=name;
+      link.rel="noopener";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    });
+  });
+});
 
 
 // Gallery

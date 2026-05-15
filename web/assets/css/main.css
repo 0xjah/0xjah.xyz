@@ -8,7 +8,7 @@
 
 /* ===================== VARIABLES ===================== */
 :root {
-  --accent: #5588ff;
+  --accent: #c6c6c6;
   --bg: #000;
   --fg: #fff;
   --muted: #888;
@@ -20,8 +20,8 @@
 }
 
 [data-theme="light"] {
-  --accent: #2255cc;
-  --bg: #fff;
+  --accent: #424242;
+  --bg: #F4F3F2;
   --fg: #000;
   --muted: #666;
   --border: #ddd;
@@ -32,8 +32,8 @@
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
-    --accent: #2255cc;
-    --bg: #fff;
+    --accent: #e6e6e6;
+    --bg: #F4F3F2;
     --fg: #000;
     --muted: #666;
     --border: #ddd;

@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 
 
 // Gallery
-window.openModal=u=>{const m=$("imageModal"),i=$("modalImage");if(m&&i){i.src=u;m.classList.add("active");document.body.style.overflow="hidden"}};
+window.openModal=(u,alt)=>{const m=$("imageModal"),i=$("modalImage");if(m&&i){i.src=u;i.alt=alt||"";m.classList.add("active");document.body.style.overflow="hidden"}};
 window.closeModal=()=>{const m=$("imageModal");if(m){m.classList.remove("active");document.body.style.overflow="auto"}};
 document.addEventListener("keydown",e=>e.key==="Escape"&&closeModal());
 

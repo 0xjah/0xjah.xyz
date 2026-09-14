@@ -202,12 +202,13 @@ void gallery_serve_html(int fd) {
         char item[2048];
         int len = snprintf(item,
                            sizeof(item),
-                           "<div class=\"gallery-item\" onclick=\"openModal('%s')\">"
+                           "<div class=\"gallery-item\" onclick=\"openModal('%s', '%s')\">"
                            "<img src=\"%s\" alt=\"%s\" loading=\"lazy\" decoding=\"async\" />"
                            "<div class=\"gallery-item-overlay\">"
                            "<p class=\"gallery-item-title\">%s</p>"
                            "</div></div>",
                            images[i].url,
+                           images[i].key,
                            images[i].url,
                            images[i].key,
                            images[i].key);

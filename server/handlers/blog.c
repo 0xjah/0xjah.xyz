@@ -68,6 +68,28 @@ static void blog_buffer_replace_once(Buffer *out, const char *content, size_t co
     buffer_append(out, pos + needle_len, content_len - prefix_len - needle_len);
 }
 
+typedef struct {
+    const char *needle;
+    const char *replacement;
+} BlogReplacement;
+
+static void blog_apply_replacements(Buffer *out, const char *content, size_t content_len,
+                                     const BlogReplacement *replacements, size_t count) {
+    Buffer current = {0};
+    buffer_init(&current, content_len);
+    buffer_append(&current, content, content_len);
+
+    for (size_t i = 0; i < count; i++) {
+        Buffer next = {0};
+        blog_buffer_replace_once(&next, current.data, current.size,
+                                  replacements[i].needle, replacements[i].replacement);
+        buffer_free(&current);
+        current = next;
+    }
+
+    *out = current;
+}
+
 void blog_serve_post(int fd, const char *post_name, int htmx_request) {
     const Config *config = config_get();
 
@@ -105,7 +127,6 @@ void blog_serve_post(int fd, const char *post_name, int htmx_request) {
             char raw_title[BLOG_TITLE_MAX];
             blog_extract_title(file_buffer.data, raw_title, sizeof(raw_title));
 
-            Buffer titled_buffer = {0};
             Buffer described_buffer = {0};
             const char *meta_source = page_buffer.data;
             size_t meta_source_len = page_buffer.size;
@@ -114,20 +135,44 @@ void blog_serve_post(int fd, const char *post_name, int htmx_request) {
                 char escaped_title[BLOG_TITLE_MAX];
                 blog_html_escape(raw_title, escaped_title, sizeof(escaped_title));
 
-                char title_replacement[BLOG_TITLE_MAX + 32];
-                snprintf(title_replacement, sizeof(title_replacement), "<title>%s | 0xjah.xyz</title>", escaped_title);
-                blog_buffer_replace_once(&titled_buffer, page_buffer.data, page_buffer.size,
-                                          "<title>Blog | 0xjah.xyz</title>", title_replacement);
+                char title_tag[BLOG_TITLE_MAX + 32];
+                snprintf(title_tag, sizeof(title_tag), "<title>%s | 0xjah.xyz</title>", escaped_title);
 
-                char desc_replacement[BLOG_TITLE_MAX + 96];
-                snprintf(desc_replacement, sizeof(desc_replacement),
-                         "<meta name=\"description\" content=\"%s &mdash; a post on 0xjah's blog.\">",
-                         escaped_title);
-                blog_buffer_replace_once(&described_buffer, titled_buffer.data, titled_buffer.size,
-                                          "<meta name=\"description\" content=\"Ahmad's blog &mdash; tech, philosophy, anime, movies, and religion, written by a self-taught programmer and pentester.\">",
-                                          desc_replacement);
+                char description_text[BLOG_TITLE_MAX + 64];
+                snprintf(description_text, sizeof(description_text),
+                         "%s &mdash; a post on 0xjah's blog.", escaped_title);
 
-                buffer_free(&titled_buffer);
+                char meta_desc[BLOG_TITLE_MAX + 96];
+                snprintf(meta_desc, sizeof(meta_desc), "<meta name=\"description\" content=\"%s\">", description_text);
+
+                char og_title[BLOG_TITLE_MAX + 48];
+                snprintf(og_title, sizeof(og_title), "<meta property=\"og:title\" content=\"%s | 0xjah.xyz\">", escaped_title);
+
+                char og_description[BLOG_TITLE_MAX + 96];
+                snprintf(og_description, sizeof(og_description), "<meta property=\"og:description\" content=\"%s\">", description_text);
+
+                char og_url[BLOG_MAX_PATH];
+                snprintf(og_url, sizeof(og_url), "<meta property=\"og:url\" content=\"https://0xjah.xyz/blog?post=%s\">", post_name);
+
+                char twitter_title[BLOG_TITLE_MAX + 48];
+                snprintf(twitter_title, sizeof(twitter_title), "<meta name=\"twitter:title\" content=\"%s | 0xjah.xyz\">", escaped_title);
+
+                char twitter_description[BLOG_TITLE_MAX + 96];
+                snprintf(twitter_description, sizeof(twitter_description), "<meta name=\"twitter:description\" content=\"%s\">", description_text);
+
+                const BlogReplacement replacements[] = {
+                    {"<title>Blog | 0xjah.xyz</title>", title_tag},
+                    {"<meta name=\"description\" content=\"Ahmad's blog &mdash; tech, philosophy, anime, movies, and religion, written by a self-taught programmer and pentester.\">", meta_desc},
+                    {"<meta property=\"og:url\" content=\"https://0xjah.xyz/blog\">", og_url},
+                    {"<meta property=\"og:title\" content=\"Blog | 0xjah.xyz\">", og_title},
+                    {"<meta property=\"og:description\" content=\"Ahmad's blog &mdash; tech, philosophy, anime, movies, and religion, written by a self-taught programmer and pentester.\">", og_description},
+                    {"<meta name=\"twitter:title\" content=\"Blog | 0xjah.xyz\">", twitter_title},
+                    {"<meta name=\"twitter:description\" content=\"Ahmad's blog &mdash; tech, philosophy, anime, movies, and religion, written by a self-taught programmer and pentester.\">", twitter_description},
+                };
+
+                blog_apply_replacements(&described_buffer, page_buffer.data, page_buffer.size,
+                                         replacements, sizeof(replacements) / sizeof(replacements[0]));
+
                 meta_source = described_buffer.data;
                 meta_source_len = described_buffer.size;
             }

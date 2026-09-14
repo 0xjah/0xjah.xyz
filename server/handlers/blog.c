@@ -10,6 +10,63 @@
 #include <string.h>
 
 #define BLOG_MAX_PATH 512
+#define BLOG_TITLE_MAX 256
+
+static void blog_extract_title(const char *raw, char *out, size_t out_size) {
+    out[0] = '\0';
+
+    const char *frontmatter_end = strstr(raw, "\n---");
+    const char *marker = strstr(raw, "title: \"");
+    if (!marker || (frontmatter_end && marker > frontmatter_end)) {
+        return;
+    }
+
+    marker += 8;
+    const char *end = strchr(marker, '"');
+    if (!end) {
+        return;
+    }
+
+    size_t len = (size_t)(end - marker);
+    if (len >= out_size) {
+        len = out_size - 1;
+    }
+    strncpy(out, marker, len);
+    out[len] = '\0';
+}
+
+static void blog_html_escape(const char *in, char *out, size_t out_size) {
+    size_t oi = 0;
+    for (const char *p = in; *p && oi + 6 < out_size; p++) {
+        switch (*p) {
+            case '&': oi += (size_t)snprintf(out + oi, out_size - oi, "&amp;"); break;
+            case '<': oi += (size_t)snprintf(out + oi, out_size - oi, "&lt;"); break;
+            case '>': oi += (size_t)snprintf(out + oi, out_size - oi, "&gt;"); break;
+            case '"': oi += (size_t)snprintf(out + oi, out_size - oi, "&quot;"); break;
+            default: out[oi++] = *p;
+        }
+    }
+    out[oi] = '\0';
+}
+
+static void blog_buffer_replace_once(Buffer *out, const char *content, size_t content_len,
+                                      const char *needle, const char *replacement) {
+    const char *pos = strstr(content, needle);
+    if (!pos) {
+        buffer_init(out, content_len);
+        buffer_append(out, content, content_len);
+        return;
+    }
+
+    size_t needle_len = strlen(needle);
+    size_t replacement_len = strlen(replacement);
+    size_t prefix_len = (size_t)(pos - content);
+
+    buffer_init(out, content_len + replacement_len);
+    buffer_append(out, content, prefix_len);
+    buffer_append(out, replacement, replacement_len);
+    buffer_append(out, pos + needle_len, content_len - prefix_len - needle_len);
+}
 
 void blog_serve_post(int fd, const char *post_name, int htmx_request) {
     const Config *config = config_get();
@@ -45,15 +102,45 @@ void blog_serve_post(int fd, const char *post_name, int htmx_request) {
         if (static_read_file("web/pages/blog.html", &page_buffer) < 0) {
             http_send(fd, 200, "text/html; charset=utf-8", response.data, response.size, NULL);
         } else {
+            char raw_title[BLOG_TITLE_MAX];
+            blog_extract_title(file_buffer.data, raw_title, sizeof(raw_title));
+
+            Buffer titled_buffer = {0};
+            Buffer described_buffer = {0};
+            const char *meta_source = page_buffer.data;
+            size_t meta_source_len = page_buffer.size;
+
+            if (raw_title[0] != '\0') {
+                char escaped_title[BLOG_TITLE_MAX];
+                blog_html_escape(raw_title, escaped_title, sizeof(escaped_title));
+
+                char title_replacement[BLOG_TITLE_MAX + 32];
+                snprintf(title_replacement, sizeof(title_replacement), "<title>%s | 0xjah.xyz</title>", escaped_title);
+                blog_buffer_replace_once(&titled_buffer, page_buffer.data, page_buffer.size,
+                                          "<title>Blog | 0xjah.xyz</title>", title_replacement);
+
+                char desc_replacement[BLOG_TITLE_MAX + 96];
+                snprintf(desc_replacement, sizeof(desc_replacement),
+                         "<meta name=\"description\" content=\"%s &mdash; a post on 0xjah's blog.\">",
+                         escaped_title);
+                blog_buffer_replace_once(&described_buffer, titled_buffer.data, titled_buffer.size,
+                                          "<meta name=\"description\" content=\"Ahmad's blog &mdash; tech, philosophy, anime, movies, and religion, written by a self-taught programmer and pentester.\">",
+                                          desc_replacement);
+
+                buffer_free(&titled_buffer);
+                meta_source = described_buffer.data;
+                meta_source_len = described_buffer.size;
+            }
+
             const char *marker = "<div id=\"blog-post-content\" style=\"margin-top: 20px\"></div>";
-            char *insert_point = strstr(page_buffer.data, marker);
+            const char *insert_point = strstr(meta_source, marker);
 
             if (insert_point) {
                 Buffer full_page = {0};
-                buffer_init(&full_page, page_buffer.size + response.size);
+                buffer_init(&full_page, meta_source_len + response.size);
 
-                size_t prefix_len = (size_t)(insert_point - page_buffer.data);
-                buffer_append(&full_page, page_buffer.data, prefix_len);
+                size_t prefix_len = (size_t)(insert_point - meta_source);
+                buffer_append(&full_page, meta_source, prefix_len);
                 buffer_append(&full_page,
                               "<div id=\"blog-post-content\" style=\"margin-top: 20px\">",
                               53);
@@ -61,12 +148,16 @@ void blog_serve_post(int fd, const char *post_name, int htmx_request) {
                 buffer_append(&full_page, "</div>", 6);
                 buffer_append(&full_page,
                               insert_point + strlen(marker),
-                              page_buffer.size - prefix_len - strlen(marker));
+                              meta_source_len - prefix_len - strlen(marker));
 
                 http_send(fd, 200, "text/html; charset=utf-8", full_page.data, full_page.size, NULL);
                 buffer_free(&full_page);
             } else {
                 http_send(fd, 200, "text/html; charset=utf-8", response.data, response.size, NULL);
+            }
+
+            if (raw_title[0] != '\0') {
+                buffer_free(&described_buffer);
             }
             buffer_free(&page_buffer);
         }

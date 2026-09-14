@@ -14,6 +14,7 @@ const char *http_mime_type_get(const char *path) {
         {".css", "text/css"},
         {".js", "application/javascript"},
         {".json", "application/json"},
+        {".txt", "text/plain; charset=utf-8"},
         {".pdf", "application/pdf"},
         {".png", "image/png"},
         {".jpg", "image/jpeg"},

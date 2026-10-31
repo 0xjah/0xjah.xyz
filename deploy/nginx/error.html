@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!-- Served by nginx for errors it produces itself (e.g. app down). Self-contained: the app may be unreachable.
+     The status code is filled in by nginx SSI. Deployed to /usr/share/nginx/0xjah.xyz/__error.html -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title><!--# echo var="status" default="Error" --> | 0xjah.xyz</title>
+  <style>
+    @font-face { font-family: "Pixtura"; src: url(data:font/woff2;base64,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) format("woff2"); font-display: block; }
+    :root { --bg: #000; --fg: #fff; --muted: #888; --border: #222; color-scheme: dark; }
+    @media (prefers-color-scheme: light) { :root { --bg: #F4F3F2; --fg: #000; --muted: #666; --border: #ddd; color-scheme: light; } }
+    html, body { background: var(--bg); color: var(--fg); margin: 0; font: 15px/1.7 "Iosevka Term", ui-monospace, monospace; }
+    .site-container { max-width: 800px; margin: 0 auto; padding: 60px 24px; }
+    h1, .error-code { font-family: "Pixtura", ui-monospace, monospace; font-weight: 400; -webkit-font-smoothing: none; }
+    h1 { font-size: 24px; line-height: 1.2; margin: 0 0 40px; }
+    .page-title { color: var(--muted); }
+    .error-code { font-size: 72px; line-height: 1; margin: 40px 0 24px; }
+    p { margin: 0 0 16px; }
+    a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--border); }
+    h1 a { border-bottom: none; }
+  </style>
+</head>
+<body>
+  <div class="site-container">
+    <main>
+      <h1><a href="/">0xjah.xyz</a> <span class="page-title">/ <!--# echo var="status" default="error" --></span></h1>
+      <p class="error-code"><!--# echo var="status" default="error" --></p>
+<!--# if expr="$status = /^5/" -->
+      <p>The server is having a moment. Try again in a bit.</p>
+<!--# else -->
+      <p>That request couldn't be handled.</p>
+<!--# endif -->
+      <p><a href="/">Go back home</a>.</p>
+    </main>
+  </div>
+</body>
+</html>

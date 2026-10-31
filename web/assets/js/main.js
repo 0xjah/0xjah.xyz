@@ -1,6 +1,5 @@
 // 0xjah.xyz - Main JS
 const $=s=>document.getElementById(s),$$=s=>document.querySelectorAll(s);
-const showBtn=v=>{const b=$("end-button-container");if(b)b.style.display=v?"block":"none"};
 const scroll=d=>setTimeout(()=>(document.querySelector("h1")||window).scrollIntoView?.({behavior:"smooth",block:"start"})||window.scrollTo({top:0,behavior:"smooth"}),d||100);
 
 // Theme Toggle
@@ -45,22 +44,19 @@ document.addEventListener("DOMContentLoaded",()=>{
   if(!/^\/blog(\.html)?$/.test(location.pathname))return;
   const content=$("blog-post-content");
   const hasContent=()=>content&&content.innerHTML.trim().length>0;
-  
-  // Show button if content exists (server-rendered)
-  showBtn(hasContent());
-  
+
   // Only fetch via HTMX if content is empty (not server-rendered)
   const p=new URLSearchParams(location.search).get("post");
   if(p&&!hasContent()&&typeof htmx!=="undefined"){
-    htmx.ajax("GET",`/blog?post=${p}`,{target:"#blog-post-content",swap:"innerHTML"}).then(()=>{showBtn(1);scroll(300)});
+    htmx.ajax("GET",`/blog?post=${p}`,{target:"#blog-post-content",swap:"innerHTML"}).then(()=>scroll(300));
   }
 });
 
 // Global HTMX listeners for blog (must be outside DOMContentLoaded)
 document.addEventListener("htmx:afterSwap",e=>{
-  if(e.detail.target.id==="blog-post-content"){showBtn(1);scroll()}
-  if(e.detail.target.classList?.contains("site-container")){showBtn(0);const c=$("blog-post-content");if(c)c.innerHTML="";scroll()}
+  if(e.detail.target.id==="blog-post-content")scroll()
+  if(e.detail.target.classList?.contains("site-container")){const c=$("blog-post-content");if(c)c.innerHTML="";scroll()}
 });
 document.addEventListener("htmx:beforeTransition",e=>{
-  if(!e.detail.path?.includes("?post=")){showBtn(0);const c=$("blog-post-content");if(c)c.innerHTML=""}
+  if(!e.detail.path?.includes("?post=")){const c=$("blog-post-content");if(c)c.innerHTML=""}
 });

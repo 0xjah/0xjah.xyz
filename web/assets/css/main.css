@@ -431,24 +431,32 @@ h3 {
   font-size: 13px;
 }
 
-/* ===================== BACK BUTTON ===================== */
-#end-button-container {
+/* ===================== POST NAV ===================== */
+.post-nav {
   display: none;
+  justify-content: space-between;
+  gap: 8px;
   margin-top: 48px;
-  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
 }
 
-#back-to-top-btn {
-  background: none;
-  border: none;
+/* Show only while a post is loaded (the content div is empty otherwise). */
+#blog-post-content:not(:empty) + .post-nav { display: flex; }
+
+.post-nav-link {
+  border: 1px solid var(--border);
   color: var(--muted);
-  font: 13px var(--font-mono);
-  padding: 0;
-  cursor: pointer;
-  transition: color var(--transition);
+  font-size: 13px;
+  padding: 6px 14px;
+  transition: color var(--transition), border-color var(--transition);
 }
 
-#back-to-top-btn:hover { color: var(--accent); }
+.post-nav-link:hover,
+.post-nav-link:focus-visible {
+  color: var(--fg);
+  border-color: var(--muted);
+}
 
 /* ===================== ERROR PAGE ===================== */
 .error-code {

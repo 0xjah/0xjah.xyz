@@ -98,7 +98,7 @@ void blog_serve_post(int fd, const char *post_name, int htmx_request) {
 
     Buffer file_buffer = {0};
     if (static_read_file(path, &file_buffer) < 0) {
-        http_error(fd, 404, "Post not found");
+        http_error(fd, 404, "That post doesn't exist.");
         return;
     }
 
@@ -107,7 +107,7 @@ void blog_serve_post(int fd, const char *post_name, int htmx_request) {
     Buffer html_buffer = {0};
     if (markdown_to_html(md_content, &html_buffer) != 0) {
         buffer_free(&file_buffer);
-        http_error(fd, 500, "Markdown parsing failed");
+        http_error(fd, 500, "Something broke while rendering this post. Try again later.");
         return;
     }
 

@@ -450,6 +450,13 @@ h3 {
 
 #back-to-top-btn:hover { color: var(--accent); }
 
+/* ===================== ERROR PAGE ===================== */
+.error-code {
+  font: 72px/1 var(--font-display);
+  -webkit-font-smoothing: none;
+  margin: 40px 0 24px;
+}
+
 /* ===================== UTILITIES ===================== */
 .htmx-indicator {
   opacity: 0.6;

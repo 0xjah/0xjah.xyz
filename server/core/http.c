@@ -1,5 +1,7 @@
 #include "http.h"
 
+#include "../handlers/static.h"
+
 #include <strings.h>
 #include <string.h>
 #include <unistd.h>
@@ -42,6 +44,20 @@ const char *http_mime_type_get(const char *path) {
     return "application/octet-stream";
 }
 
+static const char *http_reason(int status) {
+    switch (status) {
+        case 200: return "OK";
+        case 400: return "Bad Request";
+        case 403: return "Forbidden";
+        case 404: return "Not Found";
+        case 405: return "Method Not Allowed";
+        case 500: return "Internal Server Error";
+        case 502: return "Bad Gateway";
+        case 503: return "Service Unavailable";
+        default:  return status < 500 ? "Client Error" : "Server Error";
+    }
+}
+
 void http_send(int fd, int status, const char *content_type, const char *body, size_t len,
                const char *extra_headers) {
     char header[2048];
@@ -54,7 +70,7 @@ void http_send(int fd, int status, const char *content_type, const char *body, s
                         "%s"
                         "\r\n",
                         status,
-                        status == 200 ? "OK" : (status == 404 ? "Not Found" : "Error"),
+                        http_reason(status),
                         content_type,
                         len,
                         extra_headers ? extra_headers : "");
@@ -65,6 +81,38 @@ void http_send(int fd, int status, const char *content_type, const char *body, s
     }
 }
 
+// Renders web/pages/error.html, filling {{code}} and {{message}}.
+// message is always a server-side constant, never request data, so it isn't escaped.
 void http_error(int fd, int status, const char *message) {
-    http_send(fd, status, "text/plain", message, strlen(message), NULL);
+    Buffer page = {0};
+    if (static_read_file("web/pages/error.html", &page) < 0) {
+        http_send(fd, status, "text/plain", message, strlen(message), NULL);
+        return;
+    }
+
+    char code[16];
+    snprintf(code, sizeof(code), "%d", status);
+
+    Buffer out = {0};
+    buffer_init(&out, page.size + 256);
+    const char *p = page.data;
+    const char *t;
+    while ((t = strstr(p, "{{")) != NULL) {
+        buffer_append(&out, p, (size_t)(t - p));
+        if (strncmp(t, "{{code}}", 8) == 0) {
+            buffer_append(&out, code, strlen(code));
+            p = t + 8;
+        } else if (strncmp(t, "{{message}}", 11) == 0) {
+            buffer_append(&out, message, strlen(message));
+            p = t + 11;
+        } else {
+            buffer_append(&out, t, 2);
+            p = t + 2;
+        }
+    }
+    buffer_append(&out, p, strlen(p));
+
+    http_send(fd, status, "text/html; charset=utf-8", out.data, out.size, NULL);
+    buffer_free(&out);
+    buffer_free(&page);
 }

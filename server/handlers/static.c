@@ -30,13 +30,9 @@ int static_read_file(const char *path, Buffer *buffer) {
 }
 
 void static_serve_file(int fd, const char *path) {
-    static_serve_file_status(fd, path, 200);
-}
-
-void static_serve_file_status(int fd, const char *path, int status) {
     Buffer file_buffer = {0};
     if (static_read_file(path, &file_buffer) < 0) {
-        http_error(fd, 404, "404 Not Found");
+        http_error(fd, 404, "There's nothing here. The page doesn't exist, or it moved.");
         return;
     }
 
@@ -48,6 +44,6 @@ void static_serve_file_status(int fd, const char *path, int status) {
         cache = "Cache-Control: public, max-age=3600\r\n";
     }
 
-    http_send(fd, status, http_mime_type_get(path), file_buffer.data, file_buffer.size, cache);
+    http_send(fd, 200, http_mime_type_get(path), file_buffer.data, file_buffer.size, cache);
     buffer_free(&file_buffer);
 }

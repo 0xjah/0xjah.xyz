@@ -22,7 +22,7 @@ void resume_serve(int fd) {
     const Config *config = config_get();
 
     if (strlen(config->r2_access_key) == 0) {
-        http_error(fd, 503, "Resume unavailable");
+        http_error(fd, 503, "The resume is unavailable right now. Try again later.");
         return;
     }
 
@@ -49,7 +49,7 @@ void resume_serve(int fd) {
 
     CURL *curl = curl_easy_init();
     if (!curl) {
-        http_error(fd, 500, "curl init failed");
+        http_error(fd, 500, "Something broke while fetching the resume. Try again later.");
         return;
     }
 
@@ -79,7 +79,7 @@ void resume_serve(int fd) {
 
     if (res != CURLE_OK || http_code != 200) {
         buffer_free(&response);
-        http_error(fd, 404, "Resume not found");
+        http_error(fd, 404, "The resume couldn't be found. Try again later.");
         return;
     }
 

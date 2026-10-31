@@ -147,7 +147,7 @@ static int gallery_fetch_images(GalleryImage *images, int max_images) {
 void gallery_serve_json(int fd) {
     GalleryImage *images = malloc(GALLERY_MAX_IMAGES * sizeof(GalleryImage));
     if (!images) {
-        http_error(fd, 500, "Gallery memory allocation failed");
+        http_error(fd, 500, "Something broke while loading the gallery. Try again later.");
         return;
     }
 
@@ -179,7 +179,7 @@ void gallery_serve_json(int fd) {
 void gallery_serve_html(int fd) {
     GalleryImage *images = malloc(GALLERY_MAX_IMAGES * sizeof(GalleryImage));
     if (!images) {
-        http_error(fd, 500, "Gallery memory allocation failed");
+        http_error(fd, 500, "Something broke while loading the gallery. Try again later.");
         return;
     }
 

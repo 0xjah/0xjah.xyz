@@ -113,7 +113,7 @@ static void router_dispatch(int fd, const char *path, const char *query, int htm
         snprintf(file_path, sizeof(file_path), "web%s", path);
         static_serve_file(fd, file_path);
     } else {
-        static_serve_file_status(fd, "web/pages/404.html", 404);
+        http_error(fd, 404, "There's nothing here. The page doesn't exist, or it moved.");
     }
 }
 

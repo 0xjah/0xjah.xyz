@@ -131,6 +131,10 @@ li::before {
   color: var(--muted);
 }
 
+/* Numbered lists keep their numbers instead of the dash bullet. */
+ol > li { padding-left: 4px; }
+ol > li::before { content: none; }
+
 /* ===================== HEADER ===================== */
 .site-header {
   display: flex;
@@ -431,18 +435,137 @@ h3 {
   font-size: 13px;
 }
 
-/* ===================== POST NAV ===================== */
+/* ===================== POST TERMINAL ===================== */
+/* Visible when opened as a modal (JS) or when the server rendered a post into it (no JS). */
+.term[open],
+.term:has(#blog-post-content:not(:empty)) {
+  display: flex;
+}
+
+.term {
+  flex-direction: column;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  margin: auto;
+  width: min(880px, calc(100vw - 48px));
+  height: min(86dvh, 960px);
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid color-mix(in srgb, var(--fg) 22%, var(--bg));
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .55);
+}
+
+.term::backdrop { background: rgba(0, 0, 0, .7); }
+
+.term[open] { animation: term-in .16s ease-out; }
+.term[open]::backdrop { animation: term-fade .16s ease-out; }
+
+@keyframes term-in { from { opacity: 0; transform: translateY(10px) scale(.985); } }
+@keyframes term-fade { from { opacity: 0; } }
+
+/* Page behind the terminal must not scroll. */
+html:has(.term[open]) { overflow: hidden; }
+
+.term-bar {
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--fg) 5%, var(--bg));
+  color: var(--muted);
+  font-size: 13px;
+  user-select: none;
+}
+
+.term-dots { display: flex; gap: 6px; }
+
+.term-dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--fg) 20%, var(--bg));
+}
+
+.term-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.term-close {
+  justify-self: end;
+  padding: 0 6px;
+  border: none;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.term-close:hover,
+.term-close:focus-visible { color: var(--fg); }
+
+.term-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding: 24px 32px 32px;
+  outline: none;
+}
+
+.term-prompt {
+  margin: 0 0 24px;
+  color: var(--muted);
+}
+
+.term-end { margin: 32px 0 0; }
+
+.term-cursor {
+  display: inline-block;
+  width: .6em;
+  height: 1.1em;
+  vertical-align: text-bottom;
+  background: var(--fg);
+  animation: term-blink 1s steps(1) infinite;
+}
+
+@keyframes term-blink { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .term[open], .term[open]::backdrop, .term-cursor { animation: none; }
+}
+
+/* Post content inside the terminal */
+.blog-post h1:first-child { margin-top: 0; }
+.blog-post img { max-width: 100%; height: auto; }
+
+.blog-post pre {
+  overflow-x: auto;
+  padding: 12px 16px;
+  margin: 0 0 16px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--fg) 4%, var(--bg));
+}
+
+.blog-post code { font: 14px/1.6 var(--font-mono); }
+.blog-post :not(pre) > code { overflow-wrap: anywhere; }
+
 .post-nav {
-  display: none;
+  display: flex;
   justify-content: space-between;
   gap: 8px;
-  margin-top: 48px;
+  margin-top: 32px;
   padding-top: 24px;
   border-top: 1px solid var(--border);
 }
-
-/* Show only while a post is loaded (the content div is empty otherwise). */
-#blog-post-content:not(:empty) + .post-nav { display: flex; }
 
 .post-nav-link {
   border: 1px solid var(--border);
@@ -456,6 +579,18 @@ h3 {
 .post-nav-link:focus-visible {
   color: var(--fg);
   border-color: var(--muted);
+}
+
+/* Phones: the terminal takes the whole screen. */
+@media (max-width: 600px) {
+  .term {
+    width: 100%;
+    height: 100dvh;
+    border: none;
+  }
+  .term-body { padding: 16px 16px 24px; }
+  .term-dots { display: none; }
+  .term-bar { grid-template-columns: 1fr auto; }
 }
 
 /* ===================== ERROR PAGE ===================== */

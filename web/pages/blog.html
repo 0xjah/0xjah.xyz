@@ -70,104 +70,73 @@
       </div>
 
       <!-- Blog Posts List -->
-      <ul id="blog-posts">
+      <ul id="blog-posts" hx-boost="false">
         <li data-category="philosophy">
-          <a href="/blog?post=suckless"
-             hx-get="/blog?post=suckless"
-             hx-target="#blog-post-content"
-             hx-push-url="true"
-             hx-swap="innerHTML"
-             class="post-link">
+          <a href="/blog?post=suckless" class="post-link">
             How Suckless Made Libre Computing Feel Possible - Jan 19, 2026
           </a>
         </li>
 
         <li data-category="tech">
-          <a href="/blog?post=htmx-revolution"
-             hx-get="/blog?post=htmx-revolution"
-             hx-target="#blog-post-content"
-             hx-push-url="true"
-             hx-swap="innerHTML"
-             class="post-link">
+          <a href="/blog?post=htmx-revolution" class="post-link">
             The HTMX Revolution: Simplicity Over Complexity - Jul 27, 2025
           </a>
         </li>
 
         <li data-category="tech">
-          <a href="/blog?post=ai-is-trash"
-             hx-get="/blog?post=ai-is-trash"
-             hx-target="#blog-post-content"
-             hx-push-url="true"
-             hx-swap="innerHTML"
-             class="post-link">
+          <a href="/blog?post=ai-is-trash" class="post-link">
             Ai is trash unless locally - Jun 07, 2025
           </a>
         </li>
 
         <li data-category="anime">
-          <a href="/blog?post=lain"
-             hx-get="/blog?post=lain"
-             hx-target="#blog-post-content"
-             hx-push-url="true"
-             hx-swap="innerHTML"
-             class="post-link">
+          <a href="/blog?post=lain" class="post-link">
             Why Serial Experiments Lain is the best anime ever - Jan 27, 2023
           </a>
         </li>
 
         <li data-category="movie">
-          <a href="/blog?post=lily-chou-chou"
-             hx-get="/blog?post=lily-chou-chou"
-             hx-target="#blog-post-content"
-             hx-push-url="true"
-             hx-swap="innerHTML"
-             class="post-link">
+          <a href="/blog?post=lily-chou-chou" class="post-link">
             Whispers in the Ether: All About Lily Chou-Chou - Jun 07, 2023
           </a>
         </li>
 
         <li data-category="religion">
-          <a href="/blog?post=muslim-support"
-             hx-get="/blog?post=muslim-support"
-             hx-target="#blog-post-content"
-             hx-push-url="true"
-             hx-swap="innerHTML"
-             class="post-link">
+          <a href="/blog?post=muslim-support" class="post-link">
             The Obligation to Support Muslims - Jul 30, 2025
           </a>
         </li>
 
         <li data-category="philosophy">
-          <a href="/blog?post=nature-corporations"
-             hx-get="/blog?post=nature-corporations"
-             hx-target="#blog-post-content"
-             hx-push-url="true"
-             hx-swap="innerHTML"
-             class="post-link">
+          <a href="/blog?post=nature-corporations" class="post-link">
             Why We Must Reconnect with Nature and Stop Funding Destructive Corporations - Jan 18, 2026
           </a>
         </li>
 
         <li data-category="philosophy">
-          <a href="/blog?post=privacy"
-             hx-get="/blog?post=privacy"
-             hx-target="#blog-post-content"
-             hx-push-url="true"
-             hx-swap="innerHTML"
-             class="post-link">
+          <a href="/blog?post=privacy" class="post-link">
             Why You Should Care About Your Privacy in This Era - Jun 09, 2025
           </a>
         </li>
       </ul>
 
-      <!-- Blog Post Content Container -->
-      <div id="blog-post-content" style="margin-top: 20px"></div>
-
-      <!-- Post navigation: shown by CSS only while a post is open -->
-      <nav class="post-nav" aria-label="Post navigation">
-        <a href="/blog" class="post-nav-link">← all posts</a>
-        <a href="#top" class="post-nav-link">↑ top</a>
-      </nav>
+      <!-- Post terminal. Shown by CSS when the server rendered a post into it (works without JS); JS makes it a modal. -->
+      <dialog id="post-term" class="term" aria-labelledby="term-title" hx-boost="false">
+        <div class="term-bar">
+          <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="term-title" id="term-title">0xjah@log: ~/blog</span>
+          <a href="/blog" class="term-close" data-term-close aria-label="Close post">&times;</a>
+        </div>
+        <div class="term-body" id="term-body" tabindex="0">
+          <p class="term-prompt">$ cat <span id="term-file">post.md</span></p>
+          <div id="blog-post-content"></div>
+          <p class="term-prompt term-end" aria-hidden="true">$ <span class="term-cursor"></span></p>
+          <nav class="post-nav" aria-label="Post navigation">
+            <a href="/blog" class="post-nav-link" data-term-close>&larr; all posts</a>
+            <a href="#term-body" class="post-nav-link" data-term-top>&uarr; top</a>
+          </nav>
+        </div>
+      </dialog>
 
     </div>
 

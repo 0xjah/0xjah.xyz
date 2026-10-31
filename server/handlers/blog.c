@@ -177,7 +177,7 @@ void blog_serve_post(int fd, const char *post_name, int htmx_request) {
                 meta_source_len = described_buffer.size;
             }
 
-            const char *marker = "<div id=\"blog-post-content\" style=\"margin-top: 20px\"></div>";
+            const char *marker = "<div id=\"blog-post-content\"></div>";
             const char *insert_point = strstr(meta_source, marker);
 
             if (insert_point) {
@@ -186,9 +186,8 @@ void blog_serve_post(int fd, const char *post_name, int htmx_request) {
 
                 size_t prefix_len = (size_t)(insert_point - meta_source);
                 buffer_append(&full_page, meta_source, prefix_len);
-                buffer_append(&full_page,
-                              "<div id=\"blog-post-content\" style=\"margin-top: 20px\">",
-                              53);
+                const char *open_tag = "<div id=\"blog-post-content\">";
+                buffer_append(&full_page, open_tag, strlen(open_tag));
                 buffer_append(&full_page, response.data, response.size);
                 buffer_append(&full_page, "</div>", 6);
                 buffer_append(&full_page,

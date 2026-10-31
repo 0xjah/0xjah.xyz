@@ -107,7 +107,8 @@ static void router_dispatch(int fd, const char *path, const char *query, int htm
         static_serve_file(fd, "web/robots.txt");
     } else if (strcmp(path, "/sitemap.xml") == 0) {
         static_serve_file(fd, "web/sitemap.xml");
-    } else if (strncmp(path, "/assets/", 8) == 0 || strncmp(path, "/partials/", 10) == 0) {
+    } else if ((strncmp(path, "/assets/", 8) == 0 || strncmp(path, "/partials/", 10) == 0) &&
+               !strstr(path, "..")) {
         char file_path[1024];
         snprintf(file_path, sizeof(file_path), "web%s", path);
         static_serve_file(fd, file_path);

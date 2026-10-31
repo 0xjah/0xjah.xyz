@@ -1,9 +1,19 @@
+/* Both fonts are preloaded in every page <head>; keep these URLs in sync with the preload tags. */
 @font-face {
   font-family: "Iosevka Term";
-  src: url(../fonts/iosevka-term-regular.woff2) format("woff2");
+  src: url(/assets/fonts/iosevka-term-latin.woff2) format("woff2");
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: fallback;
+}
+
+/* Pixel font on a 12px grid: only use it at multiples of 12px or it blurs. */
+@font-face {
+  font-family: "Pixtura";
+  src: url(/assets/fonts/pixtura12.woff2) format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
 }
 
 /* ===================== VARIABLES ===================== */
@@ -16,6 +26,8 @@
   --error: #ff6b6b;
   --error-bg: #1a0a0a;
   --transition: 0.2s ease;
+  --font-mono: "Iosevka Term", ui-monospace, monospace;
+  --font-display: "Pixtura", var(--font-mono);
   color-scheme: dark;
 }
 
@@ -32,7 +44,7 @@
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
-    --accent: #e6e6e6;
+    --accent: #424242;
     --bg: #F4F3F2;
     --fg: #000;
     --muted: #666;
@@ -49,10 +61,18 @@
 html, body {
   background: var(--bg);
   color: var(--fg);
-  font: 15px/1.7 "Iosevka Term", ui-monospace, monospace;
+  font: 15px/1.7 var(--font-mono);
   margin: 0;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .site-header h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-synthesis: none;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
 }
 
 /* ===================== LAYOUT ===================== */
@@ -64,14 +84,14 @@ html, body {
 
 /* ===================== TYPOGRAPHY ===================== */
 h1 {
-  font: 400 20px/1.4 inherit;
+  font-size: 36px;
+  line-height: 1.2;
   margin: 0 0 40px;
 }
 
 h2 {
-  font: 400 14px/1.4 inherit;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-size: 24px;
+  line-height: 1.2;
   color: var(--muted);
   margin: 48px 0 16px;
   padding-top: 24px;
@@ -123,14 +143,19 @@ li::before {
 
 .site-header h1 {
   margin: 0;
-  font-size: 18px;
+  font-size: 24px;
+}
+
+h3 {
+  font-size: 24px;
+  line-height: 1.2;
 }
 
 .site-header h1 a { border-bottom: none; }
 .site-header .page-title { color: var(--muted); }
 
 .resume-link {
-  font-size: 12px;
+  font: 12px var(--font-mono);
   color: var(--muted);
   padding: 4px 8px;
 }
@@ -268,8 +293,7 @@ li::before {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--muted);
-  font-family: "Iosevka Term", ui-monospace, monospace;
-  font-size: 12px;
+  font: 12px var(--font-mono);
   padding: 4px 12px;
   cursor: pointer;
   transition: all var(--transition);
@@ -418,7 +442,7 @@ li::before {
   background: none;
   border: none;
   color: var(--muted);
-  font: 13px inherit;
+  font: 13px var(--font-mono);
   padding: 0;
   cursor: pointer;
   transition: color var(--transition);

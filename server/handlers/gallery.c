@@ -192,7 +192,7 @@ void gallery_serve_html(int fd) {
     int hlen = snprintf(header,
                         sizeof(header),
                         "<div class=\"gallery-stats\">"
-                        "<i class=\"fas fa-images\"></i> %d image%s found"
+                        "%d image%s found"
                         "</div><div class=\"gallery-grid\">",
                         count,
                         count != 1 ? "s" : "");

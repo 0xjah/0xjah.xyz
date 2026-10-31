@@ -20,11 +20,18 @@
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
 
+  <!-- Fonts: preload so text renders in the right font on first paint -->
+  <link rel="preload" href="/assets/fonts/iosevka-term-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/pixtura12.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- Apply saved theme before paint (avoids a dark/light flash) -->
+  <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+
   <!-- Stylesheets -->
   <link rel="stylesheet" href="/assets/css/main.css" type="text/css">
 
   <!-- Scripts -->
-  <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
+  <script src="/assets/js/htmx.min.js" defer></script>
   <script src="/assets/js/main.js" defer></script>
 </head>
 
@@ -54,7 +61,6 @@
       <!-- Gallery Content -->
       <div id="gallery-content" hx-get="/partials/gallery-grid.html" hx-trigger="load once" hx-swap="innerHTML">
         <div class="gallery-loading">
-          <i class="fas fa-spinner fa-spin"></i>
           <p>Loading gallery...</p>
         </div>
       </div>

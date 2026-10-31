@@ -18,5 +18,5 @@ out/
 # Logs
 *.log
 
-#server
-server 
+# server binary
+/server/server 

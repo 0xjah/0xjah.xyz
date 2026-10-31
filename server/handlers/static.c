@@ -3,6 +3,7 @@
 #include "../core/http.h"
 
 #include <stdio.h>
+#include <string.h>
 
 int static_read_file(const char *path, Buffer *buffer) {
     FILE *fp = fopen(path, "rb");
@@ -39,6 +40,14 @@ void static_serve_file_status(int fd, const char *path, int status) {
         return;
     }
 
-    http_send(fd, status, http_mime_type_get(path), file_buffer.data, file_buffer.size, NULL);
+    // Font filenames change whenever the font does, so they can be cached forever.
+    const char *cache = NULL;
+    if (strstr(path, "/assets/fonts/")) {
+        cache = "Cache-Control: public, max-age=31536000, immutable\r\n";
+    } else if (strstr(path, "/assets/")) {
+        cache = "Cache-Control: public, max-age=3600\r\n";
+    }
+
+    http_send(fd, status, http_mime_type_get(path), file_buffer.data, file_buffer.size, cache);
     buffer_free(&file_buffer);
 }

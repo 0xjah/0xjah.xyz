@@ -27,6 +27,9 @@
   <!-- Apply saved theme before paint (avoids a dark/light flash) -->
   <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 
+  <!-- Gallery images come from R2: open that connection early -->
+  <link rel="preconnect" href="https://pub-4b1a0460b57849199d5b56581139f4b7.r2.dev">
+
   <!-- Stylesheets -->
   <link rel="stylesheet" href="/assets/css/main.css" type="text/css">
 
@@ -60,8 +63,17 @@
 
       <!-- Gallery Content -->
       <div id="gallery-content" hx-get="/partials/gallery-grid.html" hx-trigger="load once" hx-swap="innerHTML">
-        <div class="gallery-loading">
-          <p>Loading gallery...</p>
+        <!-- Skeleton shown until the grid arrives -->
+        <div class="gallery-stats gallery-stats-skeleton">Loading gallery…</div>
+        <div class="gallery-grid" aria-hidden="true">
+          <div class="gallery-item" style="aspect-ratio: 3/4"></div>
+          <div class="gallery-item" style="aspect-ratio: 1/1"></div>
+          <div class="gallery-item" style="aspect-ratio: 4/5"></div>
+          <div class="gallery-item" style="aspect-ratio: 3/4"></div>
+          <div class="gallery-item" style="aspect-ratio: 1/1"></div>
+          <div class="gallery-item" style="aspect-ratio: 4/3"></div>
+          <div class="gallery-item" style="aspect-ratio: 3/4"></div>
+          <div class="gallery-item" style="aspect-ratio: 4/5"></div>
         </div>
       </div>
 

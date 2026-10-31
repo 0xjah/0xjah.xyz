@@ -360,8 +360,10 @@ h3 {
   width: 100%;
   height: auto;
   display: block;
-  transition: transform 0.3s;
 }
+
+/* Until loaded the img has no height; pin it to the skeleton tile (invisible). */
+.gallery-item:not(.loaded) img { position: absolute; inset: 0; height: 100%; object-fit: cover; opacity: 0; }
 
 .gallery-item:hover img { transform: scale(1.05); }
 
@@ -376,6 +378,28 @@ h3 {
 }
 
 .gallery-item:hover .gallery-item-overlay { opacity: 1; }
+
+/* Skeleton: tiles shimmer until their image has loaded (.loaded is set by the img onload). */
+.gallery-stats { color: var(--muted); font-size: 13px; }
+
+.gallery-item:not(.loaded) { aspect-ratio: 4 / 5; cursor: default; }
+.gallery-item:not(.loaded) .gallery-item-overlay { display: none; }
+.gallery-item img { transition: opacity .3s ease, transform .3s; }
+
+.gallery-item:not(.loaded)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--fg) 7%, transparent), transparent);
+  transform: translateX(-100%);
+  animation: gallery-shimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes gallery-shimmer { to { transform: translateX(100%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-item:not(.loaded)::after { animation: none; }
+}
 
 .gallery-item-title {
   font-size: 0.9rem;

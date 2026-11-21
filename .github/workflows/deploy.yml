@@ -14,12 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Joins the tailnet as an ephemeral tag:ci node; SSH on the server is tailnet-only.
+      # Joins the tailnet as tag:ci; SSH on the server is tailnet-only.
+      # shortcut: auth keys expire (90 days max), so deploys break then; switch to an OAuth client to stop that.
       - uses: tailscale/github-action@v3
         with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:ci
+          authkey: ${{ secrets.TS_AUTHKEY }}
 
       - name: Upload and build
         env:

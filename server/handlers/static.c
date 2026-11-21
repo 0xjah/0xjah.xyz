@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
 
 int static_read_file(const char *path, Buffer *buffer) {
     FILE *fp = fopen(path, "rb");
@@ -11,9 +12,13 @@ int static_read_file(const char *path, Buffer *buffer) {
         return -1;
     }
 
-    fseek(fp, 0, SEEK_END);
-    long size = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
+    // fopen succeeds on directories on Linux, and their "size" is garbage.
+    struct stat st;
+    if (fstat(fileno(fp), &st) < 0 || !S_ISREG(st.st_mode)) {
+        fclose(fp);
+        return -1;
+    }
+    long size = (long)st.st_size;
 
     buffer_init(buffer, (size_t)size + 1);
     if (!buffer->data) {

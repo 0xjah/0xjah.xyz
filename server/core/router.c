@@ -129,8 +129,12 @@ void *router_handle_client(void *arg) {
     }
     buffer[n] = '\0';
 
-    char method[16], full_path[ROUTER_MAX_PATH], path[ROUTER_MAX_PATH];
-    sscanf(buffer, "%15s %511s", method, full_path);
+    char method[16] = "", full_path[ROUTER_MAX_PATH] = "", path[ROUTER_MAX_PATH];
+    if (sscanf(buffer, "%15s %511s", method, full_path) != 2 || full_path[0] != '/') {
+        http_error(fd, 400, "That request didn't make sense to the server.");
+        close(fd);
+        return NULL;
+    }
 
     strncpy(path, full_path, sizeof(path) - 1);
     path[sizeof(path) - 1] = '\0';

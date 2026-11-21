@@ -1,0 +1,11 @@
+[Unit]
+Description=Nightly LimeSurvey database backup
+
+[Timer]
+# 02:30 UTC, before the 04:00 unattended-upgrades reboot window. Runs at boot if a night was missed.
+OnCalendar=*-*-* 02:30:00 UTC
+Persistent=true
+RandomizedDelaySec=10m
+
+[Install]
+WantedBy=timers.target

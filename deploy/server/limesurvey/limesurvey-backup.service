@@ -1,0 +1,11 @@
+[Unit]
+Description=Back up the LimeSurvey database
+After=mariadb.service
+Requires=mariadb.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/limesurvey-backup
+Nice=10
+IOSchedulingClass=idle
+UMask=0077

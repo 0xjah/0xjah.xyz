@@ -1,0 +1,13 @@
+#!/bin/sh
+# Nightly dump of the LimeSurvey database (survey responses are personal data under Jordan's PDPL).
+# Installed as /usr/local/sbin/limesurvey-backup, run by limesurvey-backup.timer. Keeps 14 days.
+set -eu
+DIR=/var/backups/limesurvey
+umask 077
+install -d -m 0700 -o root -g root "$DIR"
+OUT="$DIR/limesurvey-$(date -u +%Y-%m-%dT%H%M).sql.gz"
+mariadb-dump --single-transaction --quick --routines --triggers --default-character-set=utf8mb4 limesurvey | gzip -9 > "$OUT.tmp"
+gzip -t "$OUT.tmp"
+mv "$OUT.tmp" "$OUT"
+find "$DIR" -name 'limesurvey-*.sql.gz' -mtime +13 -delete
+echo "backup written: $OUT ($(du -h "$OUT" | cut -f1))"

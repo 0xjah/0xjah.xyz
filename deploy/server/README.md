@@ -12,6 +12,7 @@ Edit here first, then copy to the server.
 | `sysctl-hardening.conf` | `/etc/sysctl.d/90-hardening.conf` |
 | `apt-auto-reboot.conf` | `/etc/apt/apt.conf.d/52auto-reboot` |
 | `deploy-sudoers` | `/etc/sudoers.d/deploy` |
+| `limesurvey/` | LimeSurvey for survey.0xjah.xyz: php-fpm pool, limits, nightly backup (see `limesurvey/README.md`) |
 
 Secrets live in `/etc/0xjah.xyz.env` (root, 0600), never in this repo.
 

@@ -1,0 +1,2 @@
+# The GitHub deploy user may restart the site and nothing else.
+deploy ALL=(root) NOPASSWD: /usr/bin/systemctl restart 0xjah.xyz

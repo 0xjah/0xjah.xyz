@@ -1,0 +1,27 @@
+[Unit]
+Description=0xjah.xyz website
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=xyz
+WorkingDirectory=/opt/0xjah.xyz
+EnvironmentFile=/etc/0xjah.xyz.env
+Environment=PORT=26062
+ExecStart=/opt/0xjah.xyz/server/server
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+TasksMax=256
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target

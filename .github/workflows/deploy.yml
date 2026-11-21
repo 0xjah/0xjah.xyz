@@ -1,0 +1,37 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["**.md", "deploy/**"]
+  workflow_dispatch:
+
+concurrency: deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Joins the tailnet as an ephemeral tag:ci node; SSH on the server is tailnet-only.
+      - uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Upload and build
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          echo "100.110.85.52 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMf3BQSN2EiqUsr78VTvhQgQR12e3v6M0X7VZiJYk8z1" > ~/.ssh/known_hosts
+          git ls-files -z | rsync -az --from0 --files-from=- ./ deploy@100.110.85.52:/opt/0xjah.xyz/
+          ssh deploy@100.110.85.52 'cd /opt/0xjah.xyz/server && make build && sudo systemctl restart 0xjah.xyz'
+
+      - name: Check the site
+        run: |
+          sleep 2
+          curl -fsS --retry 5 --retry-delay 3 --retry-all-errors https://0xjah.xyz/health

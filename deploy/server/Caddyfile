@@ -1,0 +1,18 @@
+{
+	admin off
+}
+
+0xjah.xyz, www.0xjah.xyz {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=63072000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Content-Security-Policy "frame-ancestors 'none'"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+		-Server
+	}
+	reverse_proxy 127.0.0.1:26062 {
+		header_down -Server
+	}
+}

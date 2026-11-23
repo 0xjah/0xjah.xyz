@@ -7,21 +7,6 @@ const setTheme=t=>{document.documentElement.setAttribute("data-theme",t);localSt
 window.toggleTheme=()=>setTheme(getTheme()==="dark"?"light":"dark");
 document.addEventListener("DOMContentLoaded",()=>{
   setTheme(getTheme());
-  document.querySelectorAll(".resume-link[data-resume-url]").forEach(a=>{
-    a.addEventListener("click",e=>{
-      e.preventDefault();
-      const url=a.getAttribute("data-resume-url");
-      if(!url)return;
-      const name=a.getAttribute("data-resume-name")||"";
-      const link=document.createElement("a");
-      link.href=url;
-      if(name)link.download=name;
-      link.rel="noopener";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    });
-  });
 });
 
 
